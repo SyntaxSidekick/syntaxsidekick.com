@@ -1,4 +1,6 @@
 <?php
+require_once get_stylesheet_directory() . '/inc/mega-menu-tutorials.php';
+
 function syntaxsidekick_child_setup() {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
@@ -41,6 +43,17 @@ function syntaxsidekick_child_enqueue_assets() {
         $nav_script_ver,
         true
     );
+
+    if (function_exists('syntaxsidekick_get_mega_menu_js_payload')) {
+        $payload = syntaxsidekick_get_mega_menu_js_payload();
+        if (is_array($payload)) {
+            wp_add_inline_script(
+                'syntaxsidekick-mega-menu',
+                'window.syntaxsidekickMegaMenuData = ' . wp_json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ';',
+                'before'
+            );
+        }
+    }
 }
 add_action('wp_enqueue_scripts', 'syntaxsidekick_child_enqueue_assets', 30);
 
@@ -54,6 +67,130 @@ function syntaxsidekick_excerpt_more($more) {
 }
 add_filter('excerpt_more', 'syntaxsidekick_excerpt_more');
 
+/**
+ * Return local SVG icon markup by name.
+ *
+ * @param string $icon_name Icon filename without extension.
+ * @param array  $args      Optional render args.
+ *
+ * @return string
+ */
+function syntaxsidekick_icon($icon_name, $args = array()) {
+    static $raw_cache = array();
+
+    $icon_name = sanitize_key((string) $icon_name);
+    if ('' === $icon_name) {
+        return '';
+    }
+
+    if (! array_key_exists($icon_name, $raw_cache)) {
+        $icons_dir = trailingslashit(get_stylesheet_directory()) . 'assets/icons/';
+        $path = $icons_dir . $icon_name . '.svg';
+
+        if (! file_exists($path) || ! is_readable($path)) {
+            $raw_cache[$icon_name] = '';
+        } else {
+            $raw = file_get_contents($path);
+            if (false === $raw || '' === trim($raw)) {
+                $raw_cache[$icon_name] = '';
+            } else {
+                $raw = preg_replace('/<\?xml[^>]*>\s*/i', '', $raw);
+                $raw = is_string($raw) ? preg_replace('/<title>.*?<\/title>/is', '', $raw) : '';
+                $raw = is_string($raw) ? trim($raw) : '';
+                $raw_cache[$icon_name] = $raw;
+            }
+        }
+    }
+
+    $svg = $raw_cache[$icon_name];
+    if (! is_string($svg) || '' === $svg) {
+        return '';
+    }
+
+    $defaults = array(
+        'class' => 'ss-menu-icon ss-icon--neutral',
+        'decorative' => true,
+        'title' => '',
+        'label' => '',
+    );
+
+    $args = wp_parse_args(is_array($args) ? $args : array(), $defaults);
+    $class_attr = trim((string) $args['class']);
+    $decorative = (bool) $args['decorative'];
+    $title = trim((string) $args['title']);
+    $label = trim((string) $args['label']);
+
+    if (false === stripos($svg, 'viewBox=')) {
+        $svg = preg_replace('/<svg\b/i', '<svg viewBox="0 0 24 24"', $svg, 1);
+        if (! is_string($svg)) {
+            return '';
+        }
+    }
+
+    $attrs = array();
+    if ('' !== $class_attr) {
+        $attrs[] = 'class="' . esc_attr($class_attr) . '"';
+    }
+
+    if ($decorative) {
+        $attrs[] = 'aria-hidden="true"';
+        $attrs[] = 'focusable="false"';
+    } else {
+        $attrs[] = 'role="img"';
+
+        if ('' !== $label) {
+            $attrs[] = 'aria-label="' . esc_attr($label) . '"';
+        }
+
+        if ('' !== $title && '' === $label) {
+            $attrs[] = 'aria-label="' . esc_attr($title) . '"';
+        }
+    }
+
+    $svg = preg_replace('/<svg\b([^>]*)>/i', '<svg$1 ' . implode(' ', $attrs) . '>', $svg, 1);
+    if (! is_string($svg) || '' === trim($svg)) {
+        return '';
+    }
+
+    if (! $decorative && '' !== $title) {
+        $svg = preg_replace('/<svg\b[^>]*>/i', '$0<title>' . esc_html($title) . '</title>', $svg, 1);
+        if (! is_string($svg)) {
+            return '';
+        }
+    }
+
+    return $svg;
+}
+
+/**
+ * Get semantic icon color utility class by slug.
+ *
+ * @param string $slug Icon/topic slug.
+ *
+ * @return string
+ */
+function syntaxsidekick_get_icon_color_class($slug) {
+    $slug = sanitize_key((string) $slug);
+
+    $map = array(
+        'html' => 'ss-icon--html5',
+        'html5' => 'ss-icon--html5',
+        'css' => 'ss-icon--css',
+        'javascript' => 'ss-icon--javascript',
+        'js' => 'ss-icon--javascript',
+        'typescript' => 'ss-icon--typescript',
+        'ts' => 'ss-icon--typescript',
+        'react' => 'ss-icon--react',
+        'vue' => 'ss-icon--vue',
+        'vuejs' => 'ss-icon--vue',
+        'wordpress' => 'ss-icon--wordpress',
+        'accessibility' => 'ss-icon--accessibility',
+        'performance' => 'ss-icon--performance',
+    );
+
+    return $map[$slug] ?? 'ss-icon--neutral';
+}
+
 function syntaxsidekick_fallback_menu($args = array()) {
     $menu_class = ! empty($args['menu_class']) ? (string) $args['menu_class'] : 'ss-nav-list ss-nav-list--fallback';
 
@@ -66,12 +203,12 @@ function syntaxsidekick_fallback_menu($args = array()) {
         array(
             'label' => 'Articles',
             'url' => home_url('/articles/'),
-            'active' => is_page('articles'),
+            'active' => is_page('articles') || is_category('articles') || has_category('articles'),
         ),
         array(
             'label' => 'Tutorials',
             'url' => home_url('/tutorials/'),
-            'active' => is_page('tutorials'),
+            'active' => is_page('tutorials') || is_category('tutorials') || has_category('tutorials'),
         ),
         array(
             'label' => 'Guides',

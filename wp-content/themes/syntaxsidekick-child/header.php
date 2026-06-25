@@ -34,6 +34,10 @@
             ?>
         </nav>
 
+        <?php if (function_exists('syntaxsidekick_render_mega_menu_templates')) : ?>
+            <?php syntaxsidekick_render_mega_menu_templates(); ?>
+        <?php endif; ?>
+
         <a class="ss-search-link" href="<?php echo esc_url(home_url('/?s=')); ?>" aria-label="Search">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <circle cx="11" cy="11" r="7"></circle>

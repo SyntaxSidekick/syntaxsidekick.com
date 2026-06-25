@@ -12,191 +12,9 @@
   var nav = root.querySelector(".ss-primary-nav");
   var menuToggle = root.querySelector(".ss-menu-toggle");
   var searchButton = root.querySelector(".ss-search-link");
-
-  var megaMenuData = [
-    {
-      label: "Home",
-      url: "/",
-      hasMegaMenu: false,
-      active: false,
-      activePaths: ["/"],
-      columns: [],
-      cta: null
-    },
-    {
-      label: "Articles",
-      url: "/articles/",
-      hasMegaMenu: true,
-      active: false,
-      activePaths: ["/articles/", "/category/"],
-      columns: [
-        {
-          title: "Browse Categories",
-          type: "linkList",
-          items: [
-            { label: "Front-End", url: "/category/front-end/" },
-            { label: "UX Engineering", url: "/category/ux-engineering/" },
-            { label: "Accessibility", url: "/category/accessibility/" },
-            { label: "Performance", url: "/category/performance/" },
-            { label: "Architecture", url: "/category/architecture/" },
-            { label: "AI & Development", url: "/category/ai-development/" },
-            { label: "Design Systems", url: "/category/design-systems/" },
-            { label: "Career Growth", url: "/category/career-growth/" }
-          ]
-        },
-        {
-          title: "Popular Articles",
-          type: "storyList",
-          items: [
-            { label: "Is Sass Dead?", url: "/articles/is-sass-dead/" },
-            { label: "AI Isn't Replacing Developers", url: "/articles/ai-isnt-replacing-developers/" },
-            { label: "Design Systems vs Component Libraries", url: "/articles/design-systems-vs-component-libraries/" },
-            { label: "Why Core Web Vitals Matter", url: "/articles/why-core-web-vitals-matter/" },
-            { label: "Building Better Developer Experience", url: "/articles/building-better-developer-experience/" }
-          ]
-        }
-      ],
-      cta: {
-        label: "View all articles",
-        url: "/articles/"
-      }
-    },
-    {
-      label: "Tutorials",
-      url: "/tutorials/",
-      hasMegaMenu: true,
-      active: false,
-      activePaths: ["/tutorials/"],
-      columns: [
-        {
-          title: "Browse Categories",
-          type: "categoryList",
-          items: [
-            { label: "All Tutorials", url: "/tutorials/", count: 42, iconText: "AT", iconClass: "ss-topic-grid", highlight: true },
-            { label: "HTML", url: "/tutorials/html/", count: 6, iconText: "H", iconClass: "ss-topic-html" },
-            { label: "CSS", url: "/tutorials/css/", count: 8, iconText: "C", iconClass: "ss-topic-css" },
-            { label: "JavaScript", url: "/tutorials/javascript/", count: 12, iconText: "JS", iconClass: "ss-topic-js" },
-            { label: "TypeScript", url: "/tutorials/typescript/", count: 7, iconText: "TS", iconClass: "ss-topic-ts" },
-            { label: "React", url: "/tutorials/react/", count: 14, iconText: "R", iconClass: "ss-topic-react" },
-            { label: "Vue", url: "/tutorials/vue/", count: 6, iconText: "V", iconClass: "ss-topic-vue" },
-            { label: "Performance", url: "/tutorials/performance/", count: 4, iconText: "P", iconClass: "ss-topic-perf" },
-            { label: "Accessibility", url: "/tutorials/accessibility/", count: 5, iconText: "A", iconClass: "ss-topic-a11y" }
-          ],
-          cta: {
-            label: "View all categories",
-            detail: "See all 9 categories",
-            url: "/tutorials/categories/"
-          }
-        },
-        {
-          title: "Popular Tutorials",
-          type: "featuredList",
-          items: [
-            { label: "React Server Components Explained", url: "/tutorials/react-server-components-explained/", meta: "12 min read", thumbText: "R", thumbClass: "ss-thumb-react" },
-            { label: "JavaScript Promises in Depth", url: "/tutorials/javascript-promises-in-depth/", meta: "10 min read", thumbText: "JS", thumbClass: "ss-thumb-js" },
-            { label: "Modern CSS Layouts with Grid", url: "/tutorials/modern-css-layouts-with-grid/", meta: "9 min read", thumbText: "C", thumbClass: "ss-thumb-css" },
-            { label: "TypeScript Basics for Beginners", url: "/tutorials/typescript-basics-for-beginners/", meta: "8 min read", thumbText: "TS", thumbClass: "ss-thumb-ts" },
-            { label: "Vue 3 Composition API Guide", url: "/tutorials/vue-3-composition-api-guide/", meta: "11 min read", thumbText: "V", thumbClass: "ss-thumb-vue" }
-          ]
-        }
-      ],
-      cta: {
-        label: "View all tutorials",
-        url: "/tutorials/",
-        variant: "green"
-      }
-    },
-    {
-      label: "Resources",
-      url: "/resources/",
-      hasMegaMenu: true,
-      active: false,
-      activePaths: ["/resources/"],
-      columns: [
-        {
-          title: "Resource Types",
-          type: "linkList",
-          items: [
-            { label: "Cheat Sheets", url: "/resources/cheat-sheets/" },
-            { label: "Snippets", url: "/resources/snippets/" },
-            { label: "Templates", url: "/resources/templates/" },
-            { label: "Tools", url: "/resources/tools/" },
-            { label: "Downloads", url: "/resources/downloads/" }
-          ]
-        },
-        {
-          title: "Popular Resources",
-          type: "storyList",
-          items: [
-            { label: "CSS Grid Cheat Sheet", url: "/resources/css-grid-cheat-sheet/" },
-            { label: "Accessibility Checklist", url: "/resources/accessibility-checklist/" },
-            { label: "Design Token Starter Kit", url: "/resources/design-token-starter-kit/" },
-            { label: "Component Library Template", url: "/resources/component-library-template/" },
-            { label: "Front-End Interview Guide", url: "/resources/front-end-interview-guide/" }
-          ]
-        }
-      ],
-      cta: {
-        label: "View all resources",
-        url: "/resources/"
-      }
-    },
-    {
-      label: "Guides",
-      url: "/guides/",
-      hasMegaMenu: true,
-      active: false,
-      activePaths: ["/guides/"],
-      columns: [
-        {
-          title: "Guide Topics",
-          type: "linkList",
-          items: [
-            { label: "CSS", url: "/guides/css/" },
-            { label: "JavaScript", url: "/guides/javascript/" },
-            { label: "TypeScript", url: "/guides/typescript/" },
-            { label: "React", url: "/guides/react/" },
-            { label: "Accessibility", url: "/guides/accessibility/" },
-            { label: "Performance", url: "/guides/performance/" },
-            { label: "Design Systems", url: "/guides/design-systems/" }
-          ]
-        },
-        {
-          title: "Featured Guides",
-          type: "storyList",
-          items: [
-            { label: "Complete CSS Grid Guide", url: "/guides/complete-css-grid-guide/" },
-            { label: "Accessibility Handbook", url: "/guides/accessibility-handbook/" },
-            { label: "React Performance Guide", url: "/guides/react-performance-guide/" },
-            { label: "Design Systems Playbook", url: "/guides/design-systems-playbook/" },
-            { label: "Front-End Architecture Guide", url: "/guides/front-end-architecture-guide/" }
-          ]
-        }
-      ],
-      cta: {
-        label: "View all guides",
-        url: "/guides/"
-      }
-    },
-    {
-      label: "About",
-      url: "/about/",
-      hasMegaMenu: false,
-      active: false,
-      activePaths: ["/about/"],
-      columns: [],
-      cta: null
-    },
-    {
-      label: "Contact",
-      url: "/contact/",
-      hasMegaMenu: false,
-      active: false,
-      activePaths: ["/contact/"],
-      columns: [],
-      cta: null
-    }
-  ];
+  var megaMenuData = Array.isArray(window.syntaxsidekickMegaMenuData)
+    ? window.syntaxsidekickMegaMenuData
+    : [];
 
   var activeItem = null;
   var closeTimer = null;
@@ -244,88 +62,23 @@
     return element;
   }
 
-  function renderCta(cta) {
-    if (!cta) {
-      return null;
-    }
-
-    var ctaClass = "ss-panel-cta";
-    if (cta.variant === "green") {
-      ctaClass += " ss-panel-cta-green";
-    }
-
-    var ctaLink = createElement("a", ctaClass);
-    ctaLink.href = toAbsoluteUrl(cta.url);
-
-    var left = createElement("span");
-    left.textContent = cta.label;
-
-    if (cta.detail) {
-      var detail = createElement("small", null, cta.detail);
-      left.appendChild(detail);
-    }
-
-    ctaLink.appendChild(left);
-    ctaLink.appendChild(createElement("span", null, "->"));
-
-    return ctaLink;
-  }
-
-  function renderColumnList(column) {
-    var listClass = "ss-mega-list";
-    if (column.type === "storyList") {
-      listClass = "ss-story-list";
-    } else if (column.type === "categoryList") {
-      listClass = "ss-category-list";
-    } else if (column.type === "featuredList") {
-      listClass = "ss-popular-list";
-    }
-
-    var list = createElement("ul", listClass);
-    list.setAttribute("role", "list");
-
-    (column.items || []).forEach(function (entry) {
-      var item = createElement("li");
-      var link = createElement("a");
-      link.href = toAbsoluteUrl(entry.url);
-
-      if (column.type === "categoryList") {
-        if (entry.highlight) {
-          link.classList.add("is-highlight");
-        }
-
-        var topic = createElement("span", "ss-topic");
-        var icon = createElement("span", "ss-topic-icon " + (entry.iconClass || ""), entry.iconText || "");
-        topic.appendChild(icon);
-        topic.appendChild(document.createTextNode(entry.label));
-
-        var count = createElement("span", "ss-count", String(entry.count || 0));
-        link.appendChild(topic);
-        link.appendChild(count);
-      } else if (column.type === "featuredList") {
-        var thumbClass = "ss-thumb" + (entry.thumbClass ? " " + entry.thumbClass : "");
-        link.appendChild(createElement("span", thumbClass, entry.thumbText || ""));
-        link.appendChild(createElement("span", "ss-copy", entry.label));
-        link.appendChild(createElement("span", "ss-meta", entry.meta || ""));
-      } else {
-        link.textContent = entry.label;
-      }
-
-      item.appendChild(link);
-      list.appendChild(item);
-    });
-
-    return list;
-  }
-
   function renderMegaMenu() {
     if (!nav) {
+      return;
+    }
+
+    if (!Array.isArray(megaMenuData) || !megaMenuData.length) {
       return;
     }
 
     var currentPath = normalizePath(window.location.pathname);
 
     megaMenuData.forEach(function (item) {
+      if (item.forceActive) {
+        item.active = true;
+        return;
+      }
+
       var paths = item.activePaths || [item.url];
       item.active = paths.some(function (path) {
         var matchPath = normalizePath(path);
@@ -350,7 +103,13 @@
 
     megaMenuData.forEach(function (item, index) {
       var liClass = "ss-nav-item";
-      if (item.hasMegaMenu) {
+      var templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
+      var panelTemplate = templateId ? document.getElementById(templateId) : null;
+      var hasPanelTemplate = Boolean(panelTemplate && panelTemplate.innerHTML.trim());
+      var hasMegaBehavior = Boolean(item.hasMegaMenu && hasPanelTemplate);
+      var useSplitLink = hasMegaBehavior && (item.key === "tutorials" || item.key === "articles");
+
+      if (hasMegaBehavior) {
         liClass += " ss-nav-item-has-mega";
       }
       if (item.active) {
@@ -359,7 +118,7 @@
 
       var li = createElement("li", liClass);
 
-      if (!item.hasMegaMenu) {
+      if (!hasMegaBehavior) {
         var linkClass = "ss-nav-link";
         if (item.active) {
           linkClass += " is-active";
@@ -382,6 +141,11 @@
       trigger.setAttribute("aria-expanded", "false");
       trigger.setAttribute("aria-controls", panelId);
       trigger.setAttribute("aria-haspopup", "true");
+      if (useSplitLink) {
+        trigger.textContent = "";
+        trigger.classList.add("ss-nav-trigger--icon");
+        trigger.setAttribute("aria-label", "Toggle " + item.label + " menu");
+      }
       trigger.appendChild(createElement("span", "ss-trigger-caret"));
 
       var panel = createElement("section", "ss-mega-panel");
@@ -389,33 +153,24 @@
       panel.setAttribute("role", "region");
       panel.setAttribute("aria-label", item.label + " menu");
       panel.setAttribute("aria-hidden", "true");
+      panel.innerHTML = panelTemplate.innerHTML;
 
-      panel.appendChild(createElement("div", "ss-mega-pointer"));
-
-      var contentClass = "ss-mega-content";
-      if ((item.columns || []).length > 1) {
-        contentClass += " ss-mega-two-col";
-      }
-      var content = createElement("div", contentClass);
-
-      (item.columns || []).forEach(function (column) {
-        var columnWrap = createElement("div", "ss-mega-column");
-        columnWrap.appendChild(createElement("h2", "ss-mega-title", String(column.title || "").toUpperCase()));
-        columnWrap.appendChild(renderColumnList(column));
-
-        if (column.cta) {
-          columnWrap.appendChild(renderCta(column.cta));
+      if (useSplitLink) {
+        var splitWrap = createElement("div", "ss-nav-split");
+        var splitLinkClass = "ss-nav-link";
+        if (item.active) {
+          splitLinkClass += " is-active";
         }
 
-        content.appendChild(columnWrap);
-      });
+        var splitLink = createElement("a", splitLinkClass, item.label);
+        splitLink.href = toAbsoluteUrl(item.url);
 
-      if (item.cta && content.lastElementChild) {
-        content.lastElementChild.appendChild(renderCta(item.cta));
+        splitWrap.appendChild(splitLink);
+        splitWrap.appendChild(trigger);
+        li.appendChild(splitWrap);
+      } else {
+        li.appendChild(trigger);
       }
-
-      panel.appendChild(content);
-      li.appendChild(trigger);
       li.appendChild(panel);
       list.appendChild(li);
     });
@@ -626,7 +381,17 @@
     var trigger = activeItem.querySelector(".ss-nav-trigger");
     var panel = getPanel(activeItem);
     var panelFocusables = getFocusables(panel);
-    var focusables = [trigger].concat(panelFocusables);
+    var activeLink = activeItem.querySelector(".ss-nav-link");
+    var focusables = [];
+
+    if (activeLink) {
+      focusables.push(activeLink);
+    }
+    if (trigger) {
+      focusables.push(trigger);
+    }
+
+    focusables = focusables.concat(panelFocusables);
 
     if (!focusables.length) {
       return;
@@ -709,6 +474,27 @@
       if (!isDesktop()) {
         return;
       }
+      scheduleClose(item);
+    });
+
+    item.addEventListener("focusin", function () {
+      if (!isDesktop()) {
+        return;
+      }
+      cancelScheduledClose();
+      openMenu(item, false);
+    });
+
+    item.addEventListener("focusout", function (event) {
+      if (!isDesktop()) {
+        return;
+      }
+
+      var nextTarget = event.relatedTarget;
+      if (nextTarget && item.contains(nextTarget)) {
+        return;
+      }
+
       scheduleClose(item);
     });
 
