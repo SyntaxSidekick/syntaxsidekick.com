@@ -110,11 +110,22 @@ function syntaxsidekick_get_mega_menu_posts($section_slug, $limit = 5) {
         return $cache[$cache_key];
     }
 
+    $version = function_exists('syntaxsidekick_perf_cache_version')
+        ? syntaxsidekick_perf_cache_version()
+        : 1;
+    $transient_key = 'ss_mega_posts_' . md5($section_slug . ':' . $limit . ':' . $version);
+    $stored_posts = get_transient($transient_key);
+    if (is_array($stored_posts)) {
+        $cache[$cache_key] = $stored_posts;
+        return $stored_posts;
+    }
+
     $args = array(
         'post_type' => 'post',
         'post_status' => 'publish',
         'ignore_sticky_posts' => true,
         'posts_per_page' => $limit,
+        'no_found_rows' => true,
         'orderby' => 'date',
         'order' => 'DESC',
     );
@@ -142,6 +153,7 @@ function syntaxsidekick_get_mega_menu_posts($section_slug, $limit = 5) {
     }
 
     wp_reset_postdata();
+    set_transient($transient_key, $posts, 10 * MINUTE_IN_SECONDS);
     $cache[$cache_key] = $posts;
 
     return $posts;

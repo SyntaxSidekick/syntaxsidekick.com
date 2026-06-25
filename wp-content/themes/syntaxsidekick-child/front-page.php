@@ -20,6 +20,7 @@ $featured_query = new WP_Query(
         'post_status' => 'publish',
         'posts_per_page' => 3,
         'ignore_sticky_posts' => true,
+        'no_found_rows' => true,
     )
 );
 
@@ -32,6 +33,7 @@ $recent_query = new WP_Query(
         'posts_per_page' => 5,
         'ignore_sticky_posts' => true,
         'post__not_in' => $featured_ids,
+        'no_found_rows' => true,
     )
 );
 
@@ -43,6 +45,7 @@ $popular_query = new WP_Query(
         'ignore_sticky_posts' => true,
         'orderby' => 'comment_count',
         'order' => 'DESC',
+        'no_found_rows' => true,
     )
 );
 

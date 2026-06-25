@@ -2,7 +2,7 @@
     <div class="ss-container ss-site-footer__grid">
         <section class="ss-site-footer__brand" aria-label="SyntaxSidekick brand">
             <a class="ss-logo ss-site-footer__logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="SyntaxSidekick home">
-                <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/images/logo.png'); ?>" alt="SyntaxSidekick">
+                <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/images/logo.png'); ?>" alt="SyntaxSidekick" width="600" height="180" loading="lazy" decoding="async">
             </a>
             <p>Step-by-step tutorials and resources to level up your front-end skills and build amazing projects.</p>
 

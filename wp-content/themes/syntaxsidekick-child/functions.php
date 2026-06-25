@@ -18,6 +18,53 @@ function syntaxsidekick_child_setup() {
 }
 add_action('after_setup_theme', 'syntaxsidekick_child_setup');
 
+/**
+ * Return file-based asset version when possible.
+ *
+ * @param string $relative_path Path relative to child theme root.
+ *
+ * @return string
+ */
+function syntaxsidekick_get_asset_version($relative_path) {
+    $relative_path = ltrim((string) $relative_path, '/');
+    $asset_path = trailingslashit(get_stylesheet_directory()) . $relative_path;
+
+    if (file_exists($asset_path)) {
+        return (string) filemtime($asset_path);
+    }
+
+    return (string) wp_get_theme()->get('Version');
+}
+
+/**
+ * Return cache version for transient invalidation.
+ *
+ * @return int
+ */
+function syntaxsidekick_perf_cache_version() {
+    $version = (int) get_option('syntaxsidekick_perf_cache_version', 1);
+    return max(1, $version);
+}
+
+/**
+ * Bump performance cache version when content changes.
+ *
+ * @return void
+ */
+function syntaxsidekick_bump_perf_cache_version() {
+    update_option('syntaxsidekick_perf_cache_version', syntaxsidekick_perf_cache_version() + 1, false);
+}
+
+add_action('save_post', 'syntaxsidekick_bump_perf_cache_version');
+add_action('deleted_post', 'syntaxsidekick_bump_perf_cache_version');
+add_action('set_object_terms', 'syntaxsidekick_bump_perf_cache_version');
+add_action('created_category', 'syntaxsidekick_bump_perf_cache_version');
+add_action('edited_category', 'syntaxsidekick_bump_perf_cache_version');
+add_action('delete_category', 'syntaxsidekick_bump_perf_cache_version');
+add_action('created_post_tag', 'syntaxsidekick_bump_perf_cache_version');
+add_action('edited_post_tag', 'syntaxsidekick_bump_perf_cache_version');
+add_action('delete_post_tag', 'syntaxsidekick_bump_perf_cache_version');
+
 function syntaxsidekick_child_dequeue_parent_assets() {
     // The child theme provides its own full stylesheet and navigation script.
     wp_dequeue_style('syntax-sidekick-style');
@@ -29,12 +76,14 @@ function syntaxsidekick_child_dequeue_parent_assets() {
 add_action('wp_enqueue_scripts', 'syntaxsidekick_child_dequeue_parent_assets', 20);
 
 function syntaxsidekick_child_enqueue_assets() {
-    wp_enqueue_style('syntaxsidekick-child-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+    wp_enqueue_style(
+        'syntaxsidekick-child-style',
+        get_stylesheet_uri(),
+        array(),
+        syntaxsidekick_get_asset_version('style.css')
+    );
 
-    $nav_script_path = get_stylesheet_directory() . '/assets/js/mega-menu.js';
-    $nav_script_ver  = file_exists($nav_script_path)
-        ? (string) filemtime($nav_script_path)
-        : wp_get_theme()->get('Version');
+    $nav_script_ver = syntaxsidekick_get_asset_version('assets/js/mega-menu.js');
 
     wp_enqueue_script(
         'syntaxsidekick-mega-menu',
@@ -43,6 +92,7 @@ function syntaxsidekick_child_enqueue_assets() {
         $nav_script_ver,
         true
     );
+    wp_script_add_data('syntaxsidekick-mega-menu', 'strategy', 'defer');
 
     if (function_exists('syntaxsidekick_get_mega_menu_js_payload')) {
         $payload = syntaxsidekick_get_mega_menu_js_payload();
@@ -56,6 +106,105 @@ function syntaxsidekick_child_enqueue_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'syntaxsidekick_child_enqueue_assets', 30);
+
+/**
+ * Restrict Easy TOC frontend assets to singular post pages.
+ *
+ * @return bool
+ */
+function syntaxsidekick_should_load_eztoc_assets() {
+    return ! is_admin() && is_singular('post');
+}
+
+/**
+ * Execute Easy TOC enqueue callbacks only when TOC is expected.
+ *
+ * @return void
+ */
+function syntaxsidekick_enqueue_eztoc_conditionally() {
+    if (! syntaxsidekick_should_load_eztoc_assets() || ! class_exists('ezTOC')) {
+        return;
+    }
+
+    ezTOC::enqueue_scripts();
+    ezTOC::ez_toc_inline_styles();
+    ezTOC::ez_toc_inline_sticky_styles();
+    ezTOC::enqueue_scripts_for_exclude_css();
+}
+
+/**
+ * Print Easy TOC schema only on supported single posts.
+ *
+ * @return void
+ */
+function syntaxsidekick_eztoc_schema_conditionally() {
+    if (! syntaxsidekick_should_load_eztoc_assets() || ! class_exists('ezTOC')) {
+        return;
+    }
+
+    ezTOC::ez_toc_schema_sitenav_creator();
+}
+
+/**
+ * Rewire Easy TOC frontend hooks so they run only where needed.
+ *
+ * @return void
+ */
+function syntaxsidekick_optimize_toc_assets() {
+    if (! class_exists('ezTOC')) {
+        return;
+    }
+
+    remove_action('wp_enqueue_scripts', array('ezTOC', 'enqueue_scripts'));
+    remove_action('wp_enqueue_scripts', array('ezTOC', 'ez_toc_inline_styles'));
+    remove_action('wp_enqueue_scripts', array('ezTOC', 'ez_toc_inline_sticky_styles'));
+    remove_action('wp_enqueue_scripts', array('ezTOC', 'enqueue_scripts_for_exclude_css'));
+    remove_action('wp_head', array('ezTOC', 'ez_toc_schema_sitenav_creator'));
+
+    add_action('wp_enqueue_scripts', 'syntaxsidekick_enqueue_eztoc_conditionally', 11);
+    add_action('wp_head', 'syntaxsidekick_eztoc_schema_conditionally', 11);
+}
+add_action('init', 'syntaxsidekick_optimize_toc_assets', 20);
+
+/**
+ * Disable front-end assets/features we do not use.
+ *
+ * @return void
+ */
+function syntaxsidekick_optimize_frontend_bootstrap() {
+    if (is_admin()) {
+        return;
+    }
+
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_print_styles', 'print_emoji_styles');
+    remove_action('wp_head', 'wp_oembed_add_discovery_links');
+    remove_action('wp_head', 'wp_oembed_add_host_js');
+    wp_dequeue_script('wp-embed');
+}
+add_action('init', 'syntaxsidekick_optimize_frontend_bootstrap');
+
+/**
+ * Remove jQuery Migrate from frontend payload while keeping jQuery.
+ *
+ * @param WP_Scripts $scripts Scripts registry.
+ *
+ * @return void
+ */
+function syntaxsidekick_remove_jquery_migrate($scripts) {
+    if (is_admin() || ! ($scripts instanceof WP_Scripts)) {
+        return;
+    }
+
+    if (! isset($scripts->registered['jquery']) || ! is_array($scripts->registered['jquery']->deps)) {
+        return;
+    }
+
+    $scripts->registered['jquery']->deps = array_values(
+        array_diff($scripts->registered['jquery']->deps, array('jquery-migrate'))
+    );
+}
+add_action('wp_default_scripts', 'syntaxsidekick_remove_jquery_migrate');
 
 function syntaxsidekick_excerpt_length($length) {
     return 22;

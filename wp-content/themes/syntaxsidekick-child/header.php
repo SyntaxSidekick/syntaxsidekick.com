@@ -12,7 +12,7 @@
 <header class="ss-site-header ss-mega-nav" data-ss-mega-nav>
     <div class="ss-container ss-header-grid">
         <a class="ss-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr(get_bloginfo('name') . ' home'); ?>">
-            <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/images/logo.png'); ?>" alt="SyntaxSidekick">
+            <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/images/logo.png'); ?>" alt="SyntaxSidekick" width="600" height="180" decoding="async" fetchpriority="high">
         </a>
 
         <button class="ss-menu-toggle" type="button" aria-controls="ss-primary-navigation" aria-expanded="false" aria-label="Open main menu">

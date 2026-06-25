@@ -107,112 +107,151 @@ $current_page = max(1, (int) $tutorials_query->get('paged'));
 $range_start = $total_posts > 0 ? (($current_page - 1) * $per_page) + 1 : 0;
 $range_end = $total_posts > 0 ? min($total_posts, $current_page * $per_page) : 0;
 
-$count_index = array('all' => array('all' => 0));
-foreach (array_keys($topics) as $topic_slug) {
-    $count_index[$topic_slug] = array('all' => 0);
-}
+$perf_cache_version = function_exists('syntaxsidekick_perf_cache_version')
+    ? syntaxsidekick_perf_cache_version()
+    : 1;
 
-if ($supports_level) {
-    foreach (array_keys($level_items) as $level_slug) {
-        $count_index['all'][$level_slug] = 0;
-        foreach (array_keys($topics) as $topic_slug) {
-            $count_index[$topic_slug][$level_slug] = 0;
-        }
-
-        $level_sources[$level_slug] = null;
-        $level_tag = get_term_by('slug', $level_slug, 'post_tag');
-        if ($level_tag instanceof WP_Term) {
-            $level_sources[$level_slug] = 'tag';
-            continue;
-        }
-
-        $level_category = get_category_by_slug($level_slug);
-        if ($level_category instanceof WP_Term) {
-            $level_sources[$level_slug] = 'category';
-        }
-    }
-}
-
-$count_query_args = array(
-    'post_type' => 'post',
-    'post_status' => 'publish',
-    'ignore_sticky_posts' => true,
-    'posts_per_page' => -1,
-    'fields' => 'ids',
-    'no_found_rows' => true,
-    'update_post_meta_cache' => false,
-    'update_post_term_cache' => false,
+$count_cache_key = 'ss_hub_counts_' . md5(
+    wp_json_encode(
+        array(
+            'section' => $section_key,
+            'base' => $base_category_slug,
+            'topics' => array_keys($topics),
+            'supports_level' => $supports_level,
+            'v' => $perf_cache_version,
+        )
+    )
 );
 
-if ($base_term instanceof WP_Term) {
-    $count_query_args['category__and'] = array((int) $base_term->term_id);
-}
-
-$count_post_ids = get_posts($count_query_args);
+$count_cache = get_transient($count_cache_key);
 $post_category_slugs = array();
 $post_tag_slugs = array();
 
-if (! empty($count_post_ids)) {
-    $category_terms = wp_get_object_terms($count_post_ids, 'category', array('fields' => 'all_with_object_id'));
-    if (! is_wp_error($category_terms)) {
-        foreach ($category_terms as $term) {
-            $post_id = (int) $term->object_id;
-            if (! isset($post_category_slugs[$post_id])) {
-                $post_category_slugs[$post_id] = array();
-            }
-            $post_category_slugs[$post_id][] = $term->slug;
-        }
-    }
-
-    $tag_terms = wp_get_object_terms($count_post_ids, 'post_tag', array('fields' => 'all_with_object_id'));
-    if (! is_wp_error($tag_terms)) {
-        foreach ($tag_terms as $term) {
-            $post_id = (int) $term->object_id;
-            if (! isset($post_tag_slugs[$post_id])) {
-                $post_tag_slugs[$post_id] = array();
-            }
-            $post_tag_slugs[$post_id][] = $term->slug;
-        }
-    }
-}
-
-foreach ($count_post_ids as $post_id) {
-    $post_id = (int) $post_id;
-    $cats = $post_category_slugs[$post_id] ?? array();
-    $tags = $post_tag_slugs[$post_id] ?? array();
-
-    $matching_topics = array();
+if (
+    is_array($count_cache)
+    && isset($count_cache['count_index'], $count_cache['level_sources'], $count_cache['post_category_slugs'], $count_cache['post_tag_slugs'])
+) {
+    $count_index = is_array($count_cache['count_index']) ? $count_cache['count_index'] : array('all' => array('all' => 0));
+    $level_sources = is_array($count_cache['level_sources']) ? $count_cache['level_sources'] : array();
+    $post_category_slugs = is_array($count_cache['post_category_slugs']) ? $count_cache['post_category_slugs'] : array();
+    $post_tag_slugs = is_array($count_cache['post_tag_slugs']) ? $count_cache['post_tag_slugs'] : array();
+} else {
+    $count_index = array('all' => array('all' => 0));
     foreach (array_keys($topics) as $topic_slug) {
-        if (in_array($topic_slug, $cats, true)) {
-            $matching_topics[] = $topic_slug;
-            $count_index[$topic_slug]['all']++;
+        $count_index[$topic_slug] = array('all' => 0);
+    }
+
+    if ($supports_level) {
+        foreach (array_keys($level_items) as $level_slug) {
+            $count_index['all'][$level_slug] = 0;
+            foreach (array_keys($topics) as $topic_slug) {
+                $count_index[$topic_slug][$level_slug] = 0;
+            }
+
+            $level_sources[$level_slug] = null;
+            $level_tag = get_term_by('slug', $level_slug, 'post_tag');
+            if ($level_tag instanceof WP_Term) {
+                $level_sources[$level_slug] = 'tag';
+                continue;
+            }
+
+            $level_category = get_category_by_slug($level_slug);
+            if ($level_category instanceof WP_Term) {
+                $level_sources[$level_slug] = 'category';
+            }
         }
     }
 
-    $count_index['all']['all']++;
+    $count_query_args = array(
+        'post_type' => 'post',
+        'post_status' => 'publish',
+        'ignore_sticky_posts' => true,
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'no_found_rows' => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    );
 
-    if (! $supports_level) {
-        continue;
+    if ($base_term instanceof WP_Term) {
+        $count_query_args['category__and'] = array((int) $base_term->term_id);
     }
 
-    foreach (array_keys($level_items) as $level_slug) {
-        $source = $level_sources[$level_slug] ?? null;
-        if (! $source) {
+    $count_post_ids = get_posts($count_query_args);
+
+    if (! empty($count_post_ids)) {
+        $category_terms = wp_get_object_terms($count_post_ids, 'category', array('fields' => 'all_with_object_id'));
+        if (! is_wp_error($category_terms)) {
+            foreach ($category_terms as $term) {
+                $post_id = (int) $term->object_id;
+                if (! isset($post_category_slugs[$post_id])) {
+                    $post_category_slugs[$post_id] = array();
+                }
+                $post_category_slugs[$post_id][] = $term->slug;
+            }
+        }
+
+        $tag_terms = wp_get_object_terms($count_post_ids, 'post_tag', array('fields' => 'all_with_object_id'));
+        if (! is_wp_error($tag_terms)) {
+            foreach ($tag_terms as $term) {
+                $post_id = (int) $term->object_id;
+                if (! isset($post_tag_slugs[$post_id])) {
+                    $post_tag_slugs[$post_id] = array();
+                }
+                $post_tag_slugs[$post_id][] = $term->slug;
+            }
+        }
+    }
+
+    foreach ($count_post_ids as $post_id) {
+        $post_id = (int) $post_id;
+        $cats = $post_category_slugs[$post_id] ?? array();
+        $tags = $post_tag_slugs[$post_id] ?? array();
+
+        $matching_topics = array();
+        foreach (array_keys($topics) as $topic_slug) {
+            if (in_array($topic_slug, $cats, true)) {
+                $matching_topics[] = $topic_slug;
+                $count_index[$topic_slug]['all']++;
+            }
+        }
+
+        $count_index['all']['all']++;
+
+        if (! $supports_level) {
             continue;
         }
 
-        $matches_level = ('tag' === $source && in_array($level_slug, $tags, true))
-            || ('category' === $source && in_array($level_slug, $cats, true));
+        foreach (array_keys($level_items) as $level_slug) {
+            $source = $level_sources[$level_slug] ?? null;
+            if (! $source) {
+                continue;
+            }
 
-        if (! $matches_level) {
-            continue;
-        }
+            $matches_level = ('tag' === $source && in_array($level_slug, $tags, true))
+                || ('category' === $source && in_array($level_slug, $cats, true));
 
-        $count_index['all'][$level_slug]++;
-        foreach ($matching_topics as $topic_slug) {
-            $count_index[$topic_slug][$level_slug]++;
+            if (! $matches_level) {
+                continue;
+            }
+
+            $count_index['all'][$level_slug]++;
+            foreach ($matching_topics as $topic_slug) {
+                $count_index[$topic_slug][$level_slug]++;
+            }
         }
     }
+
+    set_transient(
+        $count_cache_key,
+        array(
+            'count_index' => $count_index,
+            'level_sources' => $level_sources,
+            'post_category_slugs' => $post_category_slugs,
+            'post_tag_slugs' => $post_tag_slugs,
+        ),
+        10 * MINUTE_IN_SECONDS
+    );
 }
 
 $count_posts = static function ($topic_slug = '', $level_slug = '') use ($count_index) {
