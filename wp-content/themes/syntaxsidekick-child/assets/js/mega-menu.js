@@ -244,6 +244,33 @@
     });
   }
 
+  function applyMobileNavStyles() {
+    if (!nav) {
+      return;
+    }
+
+    if (isDesktop()) {
+      nav.style.removeProperty("transform");
+      nav.style.removeProperty("opacity");
+      nav.style.removeProperty("visibility");
+      nav.style.removeProperty("pointer-events");
+      return;
+    }
+
+    if (mobileOpen) {
+      nav.style.setProperty("transform", "none", "important");
+      nav.style.setProperty("opacity", "1", "important");
+      nav.style.setProperty("visibility", "visible", "important");
+      nav.style.setProperty("pointer-events", "auto", "important");
+      return;
+    }
+
+    nav.style.setProperty("transform", "none", "important");
+    nav.style.setProperty("opacity", "0", "important");
+    nav.style.setProperty("visibility", "hidden", "important");
+    nav.style.setProperty("pointer-events", "none", "important");
+  }
+
   function setMobileOpenState(shouldOpen, restoreFocus) {
     if (!nav) {
       return;
@@ -259,6 +286,7 @@
 
     nav.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
     nav.classList.toggle("is-open", mobileOpen);
+    applyMobileNavStyles();
 
     if (overlay) {
       overlay.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
@@ -382,6 +410,7 @@
 
     if (!isDesktop()) {
       nav.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
+      applyMobileNavStyles();
       return;
     }
 
@@ -664,10 +693,14 @@
   }
 
   if (isDesktop()) {
+    mobileOpen = false;
     nav.removeAttribute("aria-hidden");
     nav.classList.remove("is-open");
+    applyMobileNavStyles();
   } else {
+    mobileOpen = false;
     nav.setAttribute("aria-hidden", "true");
     nav.classList.remove("is-open");
+    applyMobileNavStyles();
   }
 })();

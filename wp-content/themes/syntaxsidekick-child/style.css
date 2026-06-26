@@ -3542,11 +3542,11 @@ body.ss-floaters-suppressed .grecaptcha-badge {
     block-size: 100dvh;
     min-block-size: 100dvh;
     background: var(--ss-color-surface);
-    transform: translate3d(100%, 0, 0);
+    transform: none !important;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: transform .26s ease, opacity .2s ease, visibility .2s ease;
+    transition: opacity .2s ease, visibility .2s ease;
     z-index: calc(var(--ss-z-dropdown) + 25);
     padding: clamp(.85rem, 2.5vw, 1rem);
     overflow-y: auto;
@@ -3556,7 +3556,7 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   }
 
   .ss-primary-nav.is-open {
-    transform: translate3d(0, 0, 0);
+    transform: none !important;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -3658,6 +3658,10 @@ body.ss-floaters-suppressed .grecaptcha-badge {
 
   .ss-nav-item.is-open > .ss-mega-panel {
     max-block-size: 1200px;
+    transform: none !important;
+    inset-inline-start: auto;
+    inset-inline-end: auto;
+    inset-block-start: auto;
   }
 
   .ss-mega-pointer {
@@ -3871,6 +3875,34 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   color: var(--ss-color-muted);
 }
 
+:root[data-theme="dark"] .ss-tutorial-card,
+:root[data-theme="dark"] .ss-content-card {
+  background: var(--ss-color-surface);
+  border-color: var(--ss-color-border);
+}
+
+:root[data-theme="dark"] .ss-tutorial-card__badge {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .ss-sort-form select,
+:root[data-theme="dark"] .ss-newsletter-card input {
+  background: var(--ss-color-surface-alt);
+  border-color: var(--ss-color-border);
+  color: var(--ss-color-text);
+}
+
+:root[data-theme="dark"] .ss-newsletter-card button {
+  background: color-mix(in srgb, var(--ss-color-accent) 32%, #0a1222);
+  border-color: color-mix(in srgb, var(--ss-color-accent) 42%, var(--ss-color-border));
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .ss-sidebar-list a.is-active {
+  background: color-mix(in srgb, var(--ss-color-brand-dark) 28%, var(--ss-color-surface));
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .ss-mega-nav,
   :root:not([data-theme="light"]) .ss-site-footer,
@@ -3971,5 +4003,33 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   :root:not([data-theme="light"]) .ss-meta,
   :root:not([data-theme="light"]) .ss-card-meta {
     color: var(--ss-color-muted);
+  }
+
+  :root:not([data-theme="light"]) .ss-tutorial-card,
+  :root:not([data-theme="light"]) .ss-content-card {
+    background: var(--ss-color-surface);
+    border-color: var(--ss-color-border);
+  }
+
+  :root:not([data-theme="light"]) .ss-tutorial-card__badge {
+    background: #0f172a;
+    color: #f8fafc;
+  }
+
+  :root:not([data-theme="light"]) .ss-sort-form select,
+  :root:not([data-theme="light"]) .ss-newsletter-card input {
+    background: var(--ss-color-surface-alt);
+    border-color: var(--ss-color-border);
+    color: var(--ss-color-text);
+  }
+
+  :root:not([data-theme="light"]) .ss-newsletter-card button {
+    background: color-mix(in srgb, var(--ss-color-accent) 32%, #0a1222);
+    border-color: color-mix(in srgb, var(--ss-color-accent) 42%, var(--ss-color-border));
+    color: #f8fafc;
+  }
+
+  :root:not([data-theme="light"]) .ss-sidebar-list a.is-active {
+    background: color-mix(in srgb, var(--ss-color-brand-dark) 28%, var(--ss-color-surface));
   }
 }
