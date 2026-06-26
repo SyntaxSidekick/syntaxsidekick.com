@@ -1,0 +1,21 @@
+@layer themes {
+/* ===== Utilities ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  .theme-toggle,
+  .theme-toggle * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+}

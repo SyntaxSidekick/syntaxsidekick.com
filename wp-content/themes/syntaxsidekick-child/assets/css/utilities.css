@@ -1,0 +1,25 @@
+@layer utilities {
+.ss-nav-lock { overflow: hidden; }
+html.ss-mobile-nav-open,
+body.ss-mobile-nav-open { overscroll-behavior: none; }
+body.ss-mobile-nav-open { overflow: hidden; }
+
+body.ss-mobile-nav-open :is(.ss-single-sidebar, .ss-single-tutorial-sidebar) {
+	position: static !important;
+	top: auto !important;
+}
+
+body.ss-floaters-suppressed :is(
+	#scrollUp,
+	.scroll-to-top,
+	.back-to-top,
+	#back-to-top,
+	.wpfront-scroll-top-container,
+	.joinchat,
+	.grecaptcha-badge
+) {
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+}
+}

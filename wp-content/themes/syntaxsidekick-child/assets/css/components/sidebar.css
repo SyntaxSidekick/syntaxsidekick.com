@@ -1,0 +1,4 @@
+@layer components {
+.ss-sidebar { border-left: 1px solid var(--ss-color-border); padding-left: var(--ss-space-4); }
+.ss-sidebar-card { background: var(--ss-color-surface); border: 1px solid var(--ss-color-border); border-radius: var(--ss-radius-md); padding: 1.05rem; }
+}

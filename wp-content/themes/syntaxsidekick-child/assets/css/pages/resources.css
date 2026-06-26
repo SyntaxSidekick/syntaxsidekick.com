@@ -1,0 +1,3 @@
+@layer components {
+.ss-content-hub.ss-main { padding: 0 0 var(--ss-space-5); }
+}

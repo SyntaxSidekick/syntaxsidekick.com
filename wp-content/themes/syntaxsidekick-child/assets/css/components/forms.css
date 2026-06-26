@@ -1,0 +1,4 @@
+@layer components {
+.ss-form-note { margin: 0 0 .6rem; color: var(--ss-color-muted); font-size: .82rem; }
+.ss-form-status { min-height: 1.2rem; margin: 0 0 .6rem; color: var(--ss-color-muted); font-size: .82rem; }
+}

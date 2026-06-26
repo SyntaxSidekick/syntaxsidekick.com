@@ -83,6 +83,51 @@ function syntaxsidekick_child_enqueue_assets() {
         syntaxsidekick_get_asset_version('style.css')
     );
 
+    $css_modules = array(
+        'assets/css/layers.css',
+        'assets/css/tokens.css',
+        'assets/css/reset.css',
+        'assets/css/base.css',
+        'assets/css/typography.css',
+        'assets/css/layout.css',
+        'assets/css/components/navigation.css',
+        'assets/css/components/mega-menu.css',
+        'assets/css/components/hero.css',
+        'assets/css/components/buttons.css',
+        'assets/css/components/forms.css',
+        'assets/css/components/cards.css',
+        'assets/css/components/sidebar.css',
+        'assets/css/components/footer.css',
+        'assets/css/components/pagination.css',
+        'assets/css/components/toc.css',
+        'assets/css/pages/home.css',
+        'assets/css/pages/tutorials.css',
+        'assets/css/pages/articles.css',
+        'assets/css/pages/guides.css',
+        'assets/css/pages/resources.css',
+        'assets/css/pages/single.css',
+        'assets/css/pages/about.css',
+        'assets/css/pages/contact.css',
+        'assets/css/themes/dark.css',
+        'assets/css/themes/motion.css',
+        'assets/css/utilities.css',
+    );
+
+    $previous_style_handle = 'syntaxsidekick-child-style';
+
+    foreach ($css_modules as $css_relative_path) {
+        $style_handle = 'syntaxsidekick-' . sanitize_key(str_replace(array('/', '.css'), array('-', ''), $css_relative_path));
+
+        wp_enqueue_style(
+            $style_handle,
+            get_stylesheet_directory_uri() . '/' . $css_relative_path,
+            array($previous_style_handle),
+            syntaxsidekick_get_asset_version($css_relative_path)
+        );
+
+        $previous_style_handle = $style_handle;
+    }
+
     $nav_script_ver = syntaxsidekick_get_asset_version('assets/js/mega-menu.js');
 
     wp_enqueue_script(

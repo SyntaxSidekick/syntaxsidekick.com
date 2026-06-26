@@ -1,0 +1,102 @@
+@layer components {
+/* Reusable page hero */
+.ss-page-hero {
+  padding: clamp(2.25rem, 5vw, 4.5rem) 0;
+  border-bottom: 1px solid var(--ss-color-border);
+  background:
+    radial-gradient(circle at 78% 36%, rgb(168 212 124 / .17), transparent 34%),
+    linear-gradient(180deg, var(--ss-color-white), var(--ss-color-bg));
+}
+
+.ss-page-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+
+.ss-page-hero__content h1 {
+  margin: .5rem 0 1rem;
+  font-size: clamp(2rem, 2.4vw + 1.1rem, 4rem);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+}
+
+.ss-page-hero__content p {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--ss-color-muted);
+  font-size: var(--ss-step-1);
+}
+
+.ss-page-hero__visual {
+  display: grid;
+  justify-items: end;
+}
+
+.ss-page-hero__code-card {
+  inline-size: min(100%, 510px);
+  border: 1px solid var(--ss-color-border);
+  border-radius: var(--ss-radius-md);
+  background: var(--ss-color-white);
+  box-shadow: var(--ss-shadow-panel);
+  padding: 1.2rem;
+}
+
+.ss-page-hero__dots {
+  display: flex;
+  gap: .42rem;
+  margin-bottom: .95rem;
+}
+
+.ss-page-hero__dots span {
+  inline-size: .46rem;
+  block-size: .46rem;
+  border-radius: var(--ss-radius-pill);
+  background: #d9e1ed;
+}
+
+.ss-page-hero__code-body {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: .95rem;
+  align-items: center;
+}
+
+.ss-page-hero__glyph {
+  color: var(--ss-color-brand-dark);
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 1;
+  text-align: center;
+  font-weight: 500;
+}
+
+.ss-page-hero__lines {
+  display: grid;
+  gap: .52rem;
+}
+
+.ss-page-hero__lines span {
+  display: block;
+  block-size: .52rem;
+  border-radius: var(--ss-radius-pill);
+  background: linear-gradient(90deg, #eef3fa, #e4ebf5);
+}
+
+.ss-page-hero__checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .52rem;
+}
+
+.ss-page-hero__checks li {
+  inline-size: .52rem;
+  block-size: .52rem;
+  border-radius: var(--ss-radius-pill);
+  background: var(--ss-color-brand);
+}
+
+
+}

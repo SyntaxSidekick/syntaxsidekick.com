@@ -1,0 +1,7 @@
+@layer base {
+.ss-eyebrow { color: var(--ss-color-accent); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; }
+.ss-section-title { margin: 0 0 1.2rem; font-size: .95rem; text-transform: uppercase; letter-spacing: .06em; }
+.section-eyebrow { margin: 0 0 .45rem; color: var(--ss-color-brand-dark); font-size: .76rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.section-title { margin: 0; color: var(--ss-color-text); font-size: clamp(1.7rem, 1.4vw + 1.2rem, 2.8rem); line-height: 1.15; letter-spacing: -.03em; }
+.section-copy { margin: 0; color: var(--ss-color-muted); font-size: .98rem; line-height: 1.72; }
+}

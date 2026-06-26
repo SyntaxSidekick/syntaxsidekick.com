@@ -1,0 +1,4 @@
+@layer components {
+.ss-single-tutorial-page.ss-main { padding-top: clamp(1rem, 2vw, 1.5rem); }
+.ss-single-content-page.ss-main { padding-top: clamp(1rem, 2vw, 1.5rem); }
+}
