@@ -3846,6 +3846,58 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   color: color-mix(in srgb, var(--ss-color-accent) 78%, var(--ss-color-white)) !important;
 }
 
+:root[data-theme="dark"] .ss-single-tutorial-body blockquote {
+  background: color-mix(in srgb, var(--ss-color-brand-dark) 30%, var(--ss-color-surface)) !important;
+  border-inline-start-color: color-mix(in srgb, var(--ss-color-accent) 58%, var(--ss-color-brand-dark));
+  color: var(--ss-color-text);
+}
+
+:root[data-theme="dark"] .ss-single-toc__content #ez-toc-container,
+:root[data-theme="dark"] .ss-single-toc__content .ez-toc-widget-container,
+:root[data-theme="dark"] .ss-single-toc__content .toc_container,
+:root[data-theme="dark"] .ss-single-toc__content .lwptoc {
+  background: var(--ss-color-surface-alt) !important;
+  border-color: var(--ss-color-border) !important;
+  color: var(--ss-color-text) !important;
+}
+
+:root[data-theme="dark"] .ss-single-toc__content a {
+  color: var(--ss-color-muted) !important;
+}
+
+:root[data-theme="dark"] .ss-single-toc__content a:hover,
+:root[data-theme="dark"] .ss-single-toc__content a:focus-visible,
+:root[data-theme="dark"] .ss-single-toc__content .active > a,
+:root[data-theme="dark"] .ss-single-toc__content .ez-toc-active a {
+  color: color-mix(in srgb, var(--ss-color-accent) 74%, var(--ss-color-white)) !important;
+}
+
+:root[data-theme="dark"] #ez-toc-container,
+:root[data-theme="dark"] #ez-toc-container.ez-toc-grey,
+:root[data-theme="dark"] .ez-toc-widget-container,
+:root[data-theme="dark"] .toc_container,
+:root[data-theme="dark"] .lwptoc {
+  background: var(--ss-color-surface-alt) !important;
+  border-color: var(--ss-color-border) !important;
+  color: var(--ss-color-text) !important;
+}
+
+:root[data-theme="dark"] #ez-toc-container a,
+:root[data-theme="dark"] #ez-toc-container .ez-toc-link,
+:root[data-theme="dark"] .toc_container a,
+:root[data-theme="dark"] .lwptoc a {
+  color: var(--ss-color-muted) !important;
+}
+
+:root[data-theme="dark"] #ez-toc-container a:hover,
+:root[data-theme="dark"] #ez-toc-container a:focus-visible,
+:root[data-theme="dark"] #ez-toc-container .ez-toc-link:hover,
+:root[data-theme="dark"] #ez-toc-container .ez-toc-link:focus-visible,
+:root[data-theme="dark"] #ez-toc-container .active > a,
+:root[data-theme="dark"] #ez-toc-container .ez-toc-active a {
+  color: color-mix(in srgb, var(--ss-color-accent) 74%, var(--ss-color-white)) !important;
+}
+
 :root[data-theme="dark"] .ss-count,
 :root[data-theme="dark"] .ss-panel-cta small {
   color: var(--ss-color-muted);
@@ -4049,6 +4101,58 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   :root:not([data-theme="light"]) .ss-single-tutorial-body .has-background a,
   :root:not([data-theme="light"]) .ss-content .has-background a {
     color: color-mix(in srgb, var(--ss-color-accent) 78%, var(--ss-color-white)) !important;
+  }
+
+  :root:not([data-theme="light"]) .ss-single-tutorial-body blockquote {
+    background: color-mix(in srgb, var(--ss-color-brand-dark) 30%, var(--ss-color-surface)) !important;
+    border-inline-start-color: color-mix(in srgb, var(--ss-color-accent) 58%, var(--ss-color-brand-dark));
+    color: var(--ss-color-text);
+  }
+
+  :root:not([data-theme="light"]) .ss-single-toc__content #ez-toc-container,
+  :root:not([data-theme="light"]) .ss-single-toc__content .ez-toc-widget-container,
+  :root:not([data-theme="light"]) .ss-single-toc__content .toc_container,
+  :root:not([data-theme="light"]) .ss-single-toc__content .lwptoc {
+    background: var(--ss-color-surface-alt) !important;
+    border-color: var(--ss-color-border) !important;
+    color: var(--ss-color-text) !important;
+  }
+
+  :root:not([data-theme="light"]) .ss-single-toc__content a {
+    color: var(--ss-color-muted) !important;
+  }
+
+  :root:not([data-theme="light"]) .ss-single-toc__content a:hover,
+  :root:not([data-theme="light"]) .ss-single-toc__content a:focus-visible,
+  :root:not([data-theme="light"]) .ss-single-toc__content .active > a,
+  :root:not([data-theme="light"]) .ss-single-toc__content .ez-toc-active a {
+    color: color-mix(in srgb, var(--ss-color-accent) 74%, var(--ss-color-white)) !important;
+  }
+
+  :root:not([data-theme="light"]) #ez-toc-container,
+  :root:not([data-theme="light"]) #ez-toc-container.ez-toc-grey,
+  :root:not([data-theme="light"]) .ez-toc-widget-container,
+  :root:not([data-theme="light"]) .toc_container,
+  :root:not([data-theme="light"]) .lwptoc {
+    background: var(--ss-color-surface-alt) !important;
+    border-color: var(--ss-color-border) !important;
+    color: var(--ss-color-text) !important;
+  }
+
+  :root:not([data-theme="light"]) #ez-toc-container a,
+  :root:not([data-theme="light"]) #ez-toc-container .ez-toc-link,
+  :root:not([data-theme="light"]) .toc_container a,
+  :root:not([data-theme="light"]) .lwptoc a {
+    color: var(--ss-color-muted) !important;
+  }
+
+  :root:not([data-theme="light"]) #ez-toc-container a:hover,
+  :root:not([data-theme="light"]) #ez-toc-container a:focus-visible,
+  :root:not([data-theme="light"]) #ez-toc-container .ez-toc-link:hover,
+  :root:not([data-theme="light"]) #ez-toc-container .ez-toc-link:focus-visible,
+  :root:not([data-theme="light"]) #ez-toc-container .active > a,
+  :root:not([data-theme="light"]) #ez-toc-container .ez-toc-active a {
+    color: color-mix(in srgb, var(--ss-color-accent) 74%, var(--ss-color-white)) !important;
   }
 
   :root:not([data-theme="light"]) .ss-count,
