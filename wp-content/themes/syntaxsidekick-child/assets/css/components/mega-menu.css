@@ -269,6 +269,15 @@
     gap: .82rem;
   }
 
+  .ss-primary-nav {
+    min-width: 0;
+    justify-self: stretch;
+  }
+
+  .ss-nav-list {
+    justify-content: flex-start;
+  }
+
   .ss-logo img {
     inline-size: clamp(142px, 15vw, 188px);
   }
