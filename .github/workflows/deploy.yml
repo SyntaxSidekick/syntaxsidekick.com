@@ -1,6 +1,7 @@
+---
 name: Deploy SyntaxSidekick Child Theme
 
-on:
+"on":
   push:
     branches:
       - main
@@ -20,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python for YAML validation
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.x"
 
@@ -81,7 +82,7 @@ jobs:
           find wp-content/themes/syntaxsidekick-child -type f | wc -l
 
       - name: Deploy changed child theme files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
