@@ -4,6 +4,11 @@
 # Keep repository metadata and docs
 !.gitignore
 !README.md
+!.github/
+.github/*
+!.github/workflows/
+.github/workflows/*
+!.github/workflows/deploy.yml
 
 # Keep only child theme
 !wp-content/
