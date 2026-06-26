@@ -26,16 +26,25 @@ $featured_query = new WP_Query(
 
 $featured_ids = wp_list_pluck($featured_query->posts, 'ID');
 
-$recent_query = new WP_Query(
-    array(
-        'post_type' => 'post',
-        'post_status' => 'publish',
-        'posts_per_page' => 5,
-        'ignore_sticky_posts' => true,
-        'post__not_in' => $featured_ids,
-        'no_found_rows' => true,
-    )
+$recent_query_args = array(
+    'post_type' => 'post',
+    'post_status' => 'publish',
+    'posts_per_page' => 5,
+    'ignore_sticky_posts' => true,
+    'no_found_rows' => true,
 );
+
+// When there are only a few posts, avoid an empty recent list by allowing overlap with featured.
+if (count($featured_ids) >= 3) {
+    $recent_query_args['post__not_in'] = $featured_ids;
+}
+
+$recent_query = new WP_Query($recent_query_args);
+
+if (! $recent_query->have_posts() && ! empty($featured_ids)) {
+    unset($recent_query_args['post__not_in']);
+    $recent_query = new WP_Query($recent_query_args);
+}
 
 $popular_query = new WP_Query(
     array(

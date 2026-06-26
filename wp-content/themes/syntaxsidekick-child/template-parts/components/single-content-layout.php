@@ -12,6 +12,16 @@ $singular_label = isset($args['singular_label']) ? (string) $args['singular_labe
 $base_category_slug = isset($args['base_category_slug']) ? sanitize_key((string) $args['base_category_slug']) : $section_key;
 $listing_url = isset($args['listing_url']) ? (string) $args['listing_url'] : home_url('/' . $base_category_slug . '/');
 
+$topic_slugs = array();
+if (isset($args['topic_slugs']) && is_array($args['topic_slugs'])) {
+    foreach ($args['topic_slugs'] as $slug) {
+        $sanitized_slug = sanitize_key((string) $slug);
+        if ('' !== $sanitized_slug) {
+            $topic_slugs[] = $sanitized_slug;
+        }
+    }
+}
+
 if ($post_id <= 0) {
     return;
 }
@@ -101,11 +111,61 @@ $categories = get_the_category($post_id);
 $base_term = get_category_by_slug($base_category_slug);
 $base_term_id = $base_term instanceof WP_Term ? (int) $base_term->term_id : 0;
 
+$section_base_slugs = array('articles', 'tutorials', 'resources', 'guides', 'uncategorized');
+
 $topic_term = null;
-foreach ($categories as $category) {
-    if ((int) $category->term_id !== $base_term_id) {
+
+// Prefer explicit section topic terms when provided (e.g. Guides topics).
+if (! empty($topic_slugs)) {
+    foreach ($topic_slugs as $topic_slug) {
+        foreach ($categories as $category) {
+            if ($category instanceof WP_Term && $category->slug === $topic_slug) {
+                $topic_term = $category;
+                break 2;
+            }
+        }
+    }
+}
+
+// Prefer terms that are direct children/descendants of the current section base term.
+if (! $topic_term && $base_term_id > 0) {
+    foreach ($categories as $category) {
+        $term_id = (int) $category->term_id;
+        if ($term_id === $base_term_id) {
+            continue;
+        }
+
+        if (cat_is_ancestor_of($base_term_id, $term_id)) {
+            $topic_term = $category;
+            break;
+        }
+    }
+}
+
+// Fall back to the first non-base, non-generic category.
+if (! $topic_term) {
+    foreach ($categories as $category) {
+        $term_id = (int) $category->term_id;
+        if ($term_id === $base_term_id) {
+            continue;
+        }
+
+        if (in_array($category->slug, $section_base_slugs, true)) {
+            continue;
+        }
+
         $topic_term = $category;
         break;
+    }
+}
+
+// Last-resort fallback to any non-base category.
+if (! $topic_term) {
+    foreach ($categories as $category) {
+        if ((int) $category->term_id !== $base_term_id) {
+            $topic_term = $category;
+            break;
+        }
     }
 }
 

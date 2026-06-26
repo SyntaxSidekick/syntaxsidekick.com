@@ -5,14 +5,12 @@
 !.gitignore
 !README.md
 
-# Keep only owned themes
+# Keep only child theme
 !wp-content/
 wp-content/*
 !wp-content/themes/
 wp-content/themes/*
-!wp-content/themes/syntax-sidekick/
 !wp-content/themes/syntaxsidekick-child/
-!wp-content/themes/syntax-sidekick/**
 !wp-content/themes/syntaxsidekick-child/**
 
 # Ignore build/dependency and environment noise inside tracked themes

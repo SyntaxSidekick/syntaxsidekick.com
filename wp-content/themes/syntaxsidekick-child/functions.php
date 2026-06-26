@@ -94,6 +94,15 @@ function syntaxsidekick_child_enqueue_assets() {
     );
     wp_script_add_data('syntaxsidekick-mega-menu', 'strategy', 'defer');
 
+    wp_enqueue_script(
+        'syntaxsidekick-theme-toggle',
+        get_stylesheet_directory_uri() . '/assets/js/theme-toggle.js',
+        array(),
+        syntaxsidekick_get_asset_version('assets/js/theme-toggle.js'),
+        true
+    );
+    wp_script_add_data('syntaxsidekick-theme-toggle', 'strategy', 'defer');
+
     if (function_exists('syntaxsidekick_get_mega_menu_js_payload')) {
         $payload = syntaxsidekick_get_mega_menu_js_payload();
         if (is_array($payload)) {
@@ -106,6 +115,62 @@ function syntaxsidekick_child_enqueue_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'syntaxsidekick_child_enqueue_assets', 30);
+
+/**
+ * Detect whether current singular content uses block markup.
+ *
+ * @return bool
+ */
+function syntaxsidekick_current_view_uses_blocks() {
+    if (! is_singular()) {
+        return false;
+    }
+
+    $object = get_queried_object();
+    if (! ($object instanceof WP_Post)) {
+        return false;
+    }
+
+    return has_blocks((string) $object->post_content);
+}
+
+/**
+ * Dequeue non-essential global assets where we provide custom equivalents.
+ *
+ * @return void
+ */
+function syntaxsidekick_optimize_frontend_assets() {
+    if (is_admin()) {
+        return;
+    }
+
+    wp_dequeue_script('wp-embed');
+    wp_deregister_script('wp-embed');
+
+    if (is_user_logged_in() || is_customize_preview() || syntaxsidekick_current_view_uses_blocks()) {
+        return;
+    }
+
+    wp_dequeue_style('wp-block-library');
+    wp_dequeue_style('wp-block-library-theme');
+    wp_dequeue_style('classic-theme-styles');
+    wp_dequeue_style('global-styles');
+}
+add_action('wp_enqueue_scripts', 'syntaxsidekick_optimize_frontend_assets', 100);
+
+/**
+ * Remove dashicons for anonymous visitors.
+ *
+ * @return void
+ */
+function syntaxsidekick_dequeue_dashicons_for_guests() {
+    if (is_admin() || is_user_logged_in()) {
+        return;
+    }
+
+    wp_dequeue_style('dashicons');
+}
+add_action('wp_enqueue_scripts', 'syntaxsidekick_dequeue_dashicons_for_guests', 100);
 
 /**
  * Restrict Easy TOC frontend assets to singular post pages.
@@ -183,6 +248,80 @@ function syntaxsidekick_optimize_frontend_bootstrap() {
     wp_dequeue_script('wp-embed');
 }
 add_action('init', 'syntaxsidekick_optimize_frontend_bootstrap');
+
+/**
+ * Apply lightweight iframe defaults for performance and accessibility.
+ *
+ * @param string $content Post content HTML.
+ *
+ * @return string
+ */
+function syntaxsidekick_optimize_content_iframes($content) {
+    if (is_admin() || ! is_string($content) || '' === trim($content) || false === stripos($content, '<iframe')) {
+        return $content;
+    }
+
+    if (! class_exists('DOMDocument')) {
+        return $content;
+    }
+
+    $internal_errors = libxml_use_internal_errors(true);
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $html = '<div id="ss-iframe-opt-root">' . mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8') . '</div>';
+
+    if (! $document->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
+        libxml_clear_errors();
+        libxml_use_internal_errors($internal_errors);
+        return $content;
+    }
+
+    $iframes = $document->getElementsByTagName('iframe');
+    foreach ($iframes as $iframe) {
+        if (! $iframe instanceof DOMElement) {
+            continue;
+        }
+
+        if (! $iframe->hasAttribute('loading')) {
+            $iframe->setAttribute('loading', 'lazy');
+        }
+
+        if (! $iframe->hasAttribute('referrerpolicy')) {
+            $iframe->setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        }
+
+        if (! $iframe->hasAttribute('title')) {
+            $iframe->setAttribute('title', __('Embedded content', 'syntaxsidekick-child'));
+        }
+    }
+
+    $root = $document->getElementById('ss-iframe-opt-root');
+    $output = '';
+    if ($root instanceof DOMElement) {
+        foreach ($root->childNodes as $child_node) {
+            $output .= $document->saveHTML($child_node);
+        }
+    }
+
+    libxml_clear_errors();
+    libxml_use_internal_errors($internal_errors);
+
+    return '' !== $output ? $output : $content;
+}
+add_filter('the_content', 'syntaxsidekick_optimize_content_iframes', 12);
+
+/**
+ * Apply persisted theme preference before first paint.
+ *
+ * @return void
+ */
+function syntaxsidekick_output_theme_bootstrap_script() {
+    if (is_admin()) {
+        return;
+    }
+
+    echo "<script>(function(){try{var d=document.documentElement;var k='syntaxsidekick-theme';var l='ss-theme';var t=localStorage.getItem(k);if(t!=='dark'&&t!=='light'){var legacy=localStorage.getItem(l);if(legacy==='dark'||legacy==='light'){t=legacy;localStorage.setItem(k,legacy);}else{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}}d.setAttribute('data-theme',t);}catch(e){if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}}})();</script>\n";
+}
+add_action('wp_head', 'syntaxsidekick_output_theme_bootstrap_script', 1);
 
 /**
  * Remove jQuery Migrate from frontend payload while keeping jQuery.

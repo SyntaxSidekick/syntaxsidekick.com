@@ -35,6 +35,13 @@ $section_configs = array(
         'singular_label' => 'Guide',
         'base_category_slug' => 'guides',
         'listing_url' => home_url('/guides/'),
+        'topic_slugs' => array(
+            'architecture',
+            'design-systems',
+            'accessibility',
+            'performance',
+            'modern-workflows',
+        ),
     ),
 );
 
