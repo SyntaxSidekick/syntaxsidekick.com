@@ -280,6 +280,36 @@
   scrollbar-gutter: stable both-edges;
 }
 
+.ss-single-sidebar,
+.ss-single-tutorial-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ss-color-brand-dark) 82%, var(--ss-color-brand)) color-mix(in srgb, var(--ss-color-brand) 18%, var(--ss-color-sidebar-bg));
+}
+
+.ss-single-sidebar::-webkit-scrollbar,
+.ss-single-tutorial-sidebar::-webkit-scrollbar {
+  inline-size: 11px;
+  block-size: 11px;
+}
+
+.ss-single-sidebar::-webkit-scrollbar-track,
+.ss-single-tutorial-sidebar::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--ss-color-brand) 18%, var(--ss-color-sidebar-bg));
+  border-radius: 999px;
+}
+
+.ss-single-sidebar::-webkit-scrollbar-thumb,
+.ss-single-tutorial-sidebar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ss-color-brand-dark) 80%, var(--ss-color-brand));
+  border: 2px solid color-mix(in srgb, var(--ss-color-brand) 18%, var(--ss-color-sidebar-bg));
+  border-radius: 999px;
+}
+
+.ss-single-sidebar::-webkit-scrollbar-thumb:hover,
+.ss-single-tutorial-sidebar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--ss-color-brand-dark) 92%, var(--ss-color-brand));
+}
+
 .ss-single-sidebar > * {
   height: fit-content;
 }
