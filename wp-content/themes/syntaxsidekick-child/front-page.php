@@ -71,6 +71,8 @@ $live_video_data = syntaxsidekick_get_live_video_data();
             'features' => syntaxsidekick_get_home_feature_highlights(),
         )
     );
+
+    get_template_part('components/developer-bulletin');
     ?>
 
     <section class="ss-home-section ss-featured" aria-labelledby="ss-featured-heading">
