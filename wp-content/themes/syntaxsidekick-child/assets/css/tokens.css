@@ -40,7 +40,7 @@
   --ss-color-accent: var(--ss-color-link);
   --ss-color-code-bg: #0b1220;
   --ss-color-code-text: #e5edf7;
-  --ss-color-white: var(--ss-color-surface-primary);
+  --ss-color-white: #ffffff;
   --ss-color-header-bg: var(--ss-color-surface-primary);
   --ss-color-header-border: var(--ss-color-border-strong);
   --ss-color-header-nav-text: var(--ss-color-text);
