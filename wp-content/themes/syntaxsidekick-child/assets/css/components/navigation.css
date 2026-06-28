@@ -39,7 +39,7 @@
 
 .ss-logo img {
   display: block;
-  inline-size: clamp(150px, 16vw, 212px);
+  inline-size: clamp(150px, 16vw, 175px);
   block-size: auto;
 }
 
@@ -52,6 +52,11 @@
   align-items: center;
   justify-content: center;
   gap: clamp(.32rem, 1vw, 1rem);
+}
+
+/* Hide WP fallback child menus; mega panels are injected by JS templates. */
+.ss-primary-nav .sub-menu {
+  display: none;
 }
 
 .ss-nav-item {

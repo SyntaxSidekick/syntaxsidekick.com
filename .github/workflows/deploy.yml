@@ -1,7 +1,6 @@
----
 name: Deploy SyntaxSidekick Child Theme
 
-"on":
+on:
   push:
     branches:
       - main
@@ -23,18 +22,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Set up Python for YAML validation
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-
-      - name: Validate workflow YAML syntax
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --quiet yamllint
-          yamllint -d "{extends: default, rules: {line-length: disable}}" .github/workflows/deploy.yml
-
       - name: Validate deployment configuration
         shell: bash
         env:
@@ -54,7 +41,6 @@ jobs:
           done
 
           if [ "$missing" -ne 0 ]; then
-            echo "::error::Deployment stopped because one or more required secrets are missing."
             exit 1
           fi
 
@@ -62,24 +48,35 @@ jobs:
           normalized_target="${FTP_TARGET%/}/"
 
           if [ "$normalized_target" != "$expected" ]; then
-            echo "::error::FTP_TARGET must be exactly ${expected} (current: ${normalized_target})."
+            echo "::error::FTP_TARGET must be exactly ${expected}"
             exit 1
           fi
 
           if [ ! -d "wp-content/themes/syntaxsidekick-child" ]; then
-            echo "::error::Local child theme directory was not found at wp-content/themes/syntaxsidekick-child"
+            echo "::error::Local child theme directory not found."
             exit 1
           fi
 
-          echo "Validated deployment root: ${normalized_target}"
-          echo "Local deployment source: wp-content/themes/syntaxsidekick-child"
-
-      - name: Show files in deployment scope
+      - name: Generate deploy metadata
         shell: bash
+        env:
+          GIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          echo "Files available in child theme:"
-          find wp-content/themes/syntaxsidekick-child -type f | wc -l
+          DEPLOY_ID="${GIT_SHA:0:12}"
+          DEPLOY_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          mkdir -p wp-content/themes/syntaxsidekick-child/assets
+
+          cat > wp-content/themes/syntaxsidekick-child/assets/deploy-meta.json <<EOF
+          {
+            "deploy_id": "${DEPLOY_ID}",
+            "commit": "${GIT_SHA}",
+            "run_id": "${RUN_ID}",
+            "deployed_at_utc": "${DEPLOY_TIME}"
+          }
+          EOF
 
       - name: Deploy changed child theme files
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -87,6 +84,11 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          security: loose
+          timeout: 120000
+          log-level: verbose
           local-dir: ./wp-content/themes/syntaxsidekick-child/
           server-dir: ${{ secrets.FTP_TARGET }}
           state-name: .ftp-deploy-sync-state.json

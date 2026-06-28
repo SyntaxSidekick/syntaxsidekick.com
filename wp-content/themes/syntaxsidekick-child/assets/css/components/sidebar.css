@@ -131,6 +131,7 @@
 
 .ss-newsletter-card input {
 	inline-size: 100%;
+	grid-column: 1 / -1;
 	min-height: 44px;
 	border: 1px solid var(--ss-color-sidebar-border);
 	border-radius: var(--ss-radius-sm);
@@ -143,6 +144,7 @@
 
 .ss-newsletter-card button {
 	inline-size: 100%;
+	grid-column: 1 / -1;
 	min-height: 44px;
 	border: 1px solid transparent;
 	border-radius: var(--ss-radius-sm);

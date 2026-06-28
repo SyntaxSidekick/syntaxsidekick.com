@@ -43,6 +43,88 @@ $topic_pills = array(
     'Performance',
     'AI & Development',
 );
+
+$collaboration_cards = array(
+    array(
+        'title' => 'Project Consulting',
+        'description' => 'From front-end architecture to UX engineering and performance optimization, I help teams build fast, accessible, and scalable web experiences.',
+        'items' => array(
+            'Front End Architecture',
+            'UX Engineering',
+            'Design Systems',
+            'Performance Optimization',
+            'Accessibility Audits',
+            'Enterprise Consulting',
+        ),
+        'link_label' => 'Learn more',
+        'link_url' => home_url('/contact/'),
+        'icon' => 'rocket',
+    ),
+    array(
+        'title' => 'Technical Audits & Code Reviews',
+        'description' => 'Get expert eyes on your code and in-depth recommendations to improve quality, performance, accessibility, and maintainability.',
+        'items' => array(
+            'Code Quality',
+            'Performance',
+            'Accessibility',
+            'SEO & Best Practices',
+            'Modern CSS',
+            'React Architecture',
+        ),
+        'link_label' => 'Learn more',
+        'link_url' => home_url('/contact/'),
+        'icon' => 'code',
+    ),
+    array(
+        'title' => 'One-on-One Mentoring',
+        'description' => 'Personalized mentoring for developers and designers who want to grow their skills, build confidence, and advance their career.',
+        'items' => array(
+            'Career Growth',
+            'Portfolio Reviews',
+            'Resume & LinkedIn Reviews',
+            'Interview Preparation',
+            'Technical Leadership',
+            'And more...',
+        ),
+        'link_label' => 'Learn more',
+        'link_url' => home_url('/contact/'),
+        'icon' => 'mentor',
+    ),
+    array(
+        'title' => 'Workshops & Speaking',
+        'description' => 'Available for workshops, team training, and technical talks on modern front-end development, UX engineering, and more.',
+        'items' => array(
+            'Team Training',
+            'Workshops',
+            'Conferences',
+            'Tech Talks',
+            'Custom Sessions',
+        ),
+        'link_label' => 'Learn more',
+        'link_url' => home_url('/contact/'),
+        'icon' => 'calendar',
+    ),
+);
+
+$creator_user = get_user_by('slug', 'riadkilani');
+
+if (! $creator_user) {
+    $creator_user = get_user_by('login', 'riadkilani');
+}
+
+if (! $creator_user) {
+    $creator_user = get_user_by('email', 'hello@syntaxsidekick.com');
+}
+
+$creator_user_id = $creator_user instanceof WP_User ? (int) $creator_user->ID : 0;
+$creator_image_relative_path = '/assets/images/riad-kilani-profile-pic.png';
+$creator_image_absolute_path = get_stylesheet_directory() . $creator_image_relative_path;
+
+$creator_avatar_url = file_exists($creator_image_absolute_path)
+    ? (string) get_stylesheet_directory_uri() . $creator_image_relative_path
+    : ($creator_user_id > 0
+        ? (string) get_avatar_url($creator_user_id, array('size' => 216))
+        : '');
 ?>
 
 <main id="main-content" class="ss-main ss-about-page">
@@ -124,7 +206,13 @@ $topic_pills = array(
                 </div>
 
                 <aside class="creator-card" aria-label="Riad Kilani profile">
-                    <div class="creator-card__media" role="img" aria-label="Portrait placeholder for Riad Kilani">RK</div>
+                    <div class="creator-card__media" role="img" aria-label="Portrait of Riad Kilani">
+                        <?php if ('' !== $creator_avatar_url) : ?>
+                            <img src="<?php echo esc_url($creator_avatar_url); ?>" alt="Riad Kilani" width="108" height="108" loading="lazy" decoding="async">
+                        <?php else : ?>
+                            RK
+                        <?php endif; ?>
+                    </div>
                     <div class="creator-card__body">
                         <h3>Riad Kilani</h3>
                         <p class="creator-card__role">Founder &amp; Content Creator</p>
@@ -156,6 +244,24 @@ $topic_pills = array(
             </article>
         </div>
     </section>
+
+    <?php
+    get_template_part(
+        'template-parts/components/about-collaboration',
+        null,
+        array(
+            'eyebrow' => 'WORK WITH ME',
+            'heading_prefix' => 'Let\'s Build Something Great',
+            'heading_accent' => 'Together',
+            'description' => 'Whether you need help with a project, want to improve your codebase, or are looking to level up your skills, I\'m here to help you succeed.',
+            'cards' => $collaboration_cards,
+            'cta_title' => 'Not sure if I\'m the right fit?',
+            'cta_copy' => 'Reach out anyway. Whether it\'s a quick question, architecture advice, mentoring, or a full project, I\'m always happy to have a conversation.',
+            'cta_button_label' => 'Let\'s Talk',
+            'cta_button_url' => home_url('/contact/'),
+        )
+    );
+    ?>
 
     <section class="ss-home-section ss-about-section site-section" aria-labelledby="ss-about-topics-heading">
         <div class="ss-container">
