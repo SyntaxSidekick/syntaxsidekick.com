@@ -3,7 +3,7 @@
 	border-top: 1px solid var(--ss-color-border);
 	padding: clamp(2rem, 3vw, 2.6rem) 0;
 	color: var(--ss-color-muted);
-	background: var(--ss-color-white);
+	background: var(--ss-color-surface);
 
 	.ss-site-footer__grid {
 		display: grid;
