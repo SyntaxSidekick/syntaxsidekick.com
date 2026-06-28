@@ -279,7 +279,7 @@
   }
 
   .ss-logo img {
-    inline-size: clamp(142px, 15vw, 188px);
+    inline-size: clamp(150px, 16vw, 175px);
   }
 
   .ss-nav-list {

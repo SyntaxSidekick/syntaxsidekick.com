@@ -39,7 +39,7 @@
 
 .ss-logo img {
   display: block;
-  inline-size: clamp(150px, 16vw, 212px);
+  inline-size: clamp(150px, 16vw, 175px);
   block-size: auto;
 }
 
