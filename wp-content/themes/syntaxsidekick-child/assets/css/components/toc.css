@@ -137,6 +137,10 @@
 	}
 }
 
+.ss-single-toc.ss-sidebar-card {
+	border: 0;
+}
+
 .ss-sidebar,
 .widget-area {
 	> * {
