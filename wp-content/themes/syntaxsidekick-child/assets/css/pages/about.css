@@ -75,7 +75,7 @@
   inline-size: min(100%, 520px);
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-md);
-  background: linear-gradient(180deg, var(--ss-color-white), #fbfdf8);
+  background: var(--ss-color-surface);
   box-shadow: var(--ss-shadow-panel);
   padding: 1.15rem;
 }
@@ -90,7 +90,7 @@
   inline-size: .46rem;
   block-size: .46rem;
   border-radius: var(--ss-radius-pill);
-  background: #d9e1ed;
+  background: var(--ss-hero-dot-bg);
 }
 
 .ss-about-hero-illustration__body {
@@ -116,7 +116,7 @@
   display: block;
   block-size: .5rem;
   border-radius: var(--ss-radius-pill);
-  background: linear-gradient(90deg, #eef3fa, #e4ebf5);
+  background: var(--ss-hero-line-bg);
 }
 
 .ss-about-hero-illustration__checks {
@@ -195,7 +195,7 @@
 
 .story-panel {
   border: 1px solid color-mix(in srgb, var(--ss-color-brand) 22%, var(--ss-color-border));
-  background: linear-gradient(180deg, #f9fdf6, #f5faf1);
+  background: var(--ss-color-callout-bg);
   border-radius: var(--ss-radius-lg);
   padding: clamp(1rem, 2vw, 1.5rem);
   display: grid;
@@ -216,7 +216,7 @@
   place-items: center;
   border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--ss-color-brand-dark) 28%, var(--ss-color-border));
-  background: linear-gradient(140deg, #0b1220, #1c2d47);
+  background: linear-gradient(140deg, var(--ss-color-code-bg), color-mix(in srgb, var(--ss-color-code-bg) 72%, var(--ss-color-bg)));
   color: var(--ss-color-white);
   font-size: 1.28rem;
   font-weight: 800;

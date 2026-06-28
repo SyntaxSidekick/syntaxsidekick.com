@@ -196,7 +196,7 @@
   border-radius: 50%;
   background: var(--ss-color-surface);
   border: 1px solid color-mix(in srgb, var(--ss-color-brand-dark) 20%, var(--ss-color-border));
-  box-shadow: 0 2px 6px rgb(15 23 42 / .2);
+  box-shadow: var(--ss-shadow-soft);
   color: var(--ss-color-brand-dark);
   display: inline-grid;
   place-items: center;
