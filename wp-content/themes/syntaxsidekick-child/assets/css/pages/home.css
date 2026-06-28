@@ -452,6 +452,10 @@
   color: #f8fbff;
 }
 
+:root[data-theme="dark"] .ss-homepage {
+  --ss-color-text: #f8fbff;
+}
+
 :root[data-theme="dark"] .ss-section-link {
   color: color-mix(in srgb, var(--ss-color-brand) 78%, var(--ss-color-text));
 }
