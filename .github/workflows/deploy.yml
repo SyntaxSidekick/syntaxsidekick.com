@@ -137,8 +137,8 @@ jobs:
           set -euo pipefail
 
           if [ -z "${PROD_SITE_URL:-}" ]; then
-            echo "::error::Missing required repository secret: PROD_SITE_URL"
-            exit 1
+            PROD_SITE_URL="https://syntaxsidekick.com"
+            echo "::warning::PROD_SITE_URL secret is missing. Falling back to ${PROD_SITE_URL}."
           fi
 
           DEPLOY_ID="${GIT_SHA:0:12}"

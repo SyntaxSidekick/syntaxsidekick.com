@@ -38,7 +38,10 @@ Add the following secrets in GitHub:
 - `FTP_USERNAME`
 - `FTP_PASSWORD`
 - `FTP_TARGET`
-- `PROD_SITE_URL`
+
+### Optional Repository Secret
+
+- `PROD_SITE_URL` (defaults to `https://syntaxsidekick.com` when omitted)
 
 Set `FTP_TARGET` to:
 
@@ -46,7 +49,7 @@ Set `FTP_TARGET` to:
 
 The workflow validates this path before deployment and fails if it does not match.
 
-Set `PROD_SITE_URL` to your production origin, for example:
+If you use a different production origin, set `PROD_SITE_URL` to that URL, for example:
 
 `https://syntaxsidekick.com`
 
