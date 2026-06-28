@@ -1,0 +1,240 @@
+@layer components {
+.ss-home-section--bulletin {
+  padding-block: clamp(1rem, 2.2vw, 1.6rem) var(--ss-space-3);
+}
+
+.ss-dev-bulletin {
+  --bulletin-accent: #6fa64a;
+  --bulletin-background: color-mix(in srgb, var(--bulletin-accent) 8%, var(--ss-color-surface));
+  --bulletin-border: color-mix(in srgb, var(--bulletin-accent) 38%, var(--ss-color-border));
+  --bulletin-glow: color-mix(in srgb, var(--bulletin-accent) 20%, transparent);
+
+  position: relative;
+  border: 1px solid var(--bulletin-border);
+  border-radius: var(--ss-radius-md);
+  background:
+    radial-gradient(circle at 85% 12%, var(--bulletin-glow), transparent 42%),
+    linear-gradient(180deg, var(--bulletin-background), color-mix(in srgb, var(--bulletin-background) 70%, var(--ss-color-surface)));
+  box-shadow: var(--ss-shadow-soft);
+  container-type: inline-size;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .24s var(--ss-ease-standard), transform .24s var(--ss-ease-standard);
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.is-dismissed {
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+  }
+}
+
+.ss-dev-bulletin.is-accent-green {
+  --bulletin-accent: #6fa64a;
+}
+
+.ss-dev-bulletin.is-accent-blue {
+  --bulletin-accent: #2563eb;
+}
+
+.ss-dev-bulletin.is-accent-yellow {
+  --bulletin-accent: #c99713;
+}
+
+.ss-dev-bulletin.is-accent-purple {
+  --bulletin-accent: #7c3aed;
+}
+
+.ss-dev-bulletin.is-accent-red {
+  --bulletin-accent: #dc2626;
+}
+
+.ss-dev-bulletin__track {
+  padding: clamp(1rem, 1.6vw, 1.5rem);
+}
+
+.ss-dev-bulletin__item {
+  display: grid;
+  gap: var(--ss-space-2);
+}
+
+.ss-dev-bulletin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ss-space-1);
+}
+
+.ss-dev-bulletin__eyebrow {
+  margin: 0;
+  color: color-mix(in srgb, var(--bulletin-accent) 80%, var(--ss-color-text));
+  font-size: .8rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.ss-dev-bulletin__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-block-size: 2.15rem;
+  border: 1px solid color-mix(in srgb, var(--bulletin-accent) 34%, var(--ss-color-border));
+  border-radius: var(--ss-radius-pill);
+  padding-inline: .72rem;
+  background: color-mix(in srgb, var(--ss-color-surface) 86%, var(--bulletin-accent));
+  color: color-mix(in srgb, var(--ss-color-text) 84%, var(--bulletin-accent));
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--ss-motion-base) var(--ss-ease-standard), background var(--ss-motion-base) var(--ss-ease-standard), color var(--ss-motion-base) var(--ss-ease-standard);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--bulletin-accent) 58%, var(--ss-color-border));
+    background: color-mix(in srgb, var(--bulletin-accent) 18%, var(--ss-color-surface));
+  }
+
+  &:focus-visible {
+    outline-color: color-mix(in srgb, var(--bulletin-accent) 52%, var(--ss-color-focus-ring));
+  }
+}
+
+.ss-dev-bulletin__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+  align-items: end;
+  gap: clamp(1rem, 2.8vw, 2.2rem);
+}
+
+.ss-dev-bulletin__content {
+  display: grid;
+  gap: .62rem;
+
+  .ss-card-kicker {
+    inline-size: fit-content;
+    color: color-mix(in srgb, var(--bulletin-accent) 82%, var(--ss-color-text));
+  }
+}
+
+.ss-dev-bulletin__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 1.1rem + 1.35vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+
+  a {
+    color: var(--ss-color-text);
+    text-decoration: none;
+  }
+}
+
+.ss-dev-bulletin__excerpt {
+  margin: 0;
+  max-inline-size: 66ch;
+  color: var(--ss-color-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ss-dev-bulletin__meta {
+  margin: 0;
+  font-size: .88rem;
+  color: color-mix(in srgb, var(--ss-color-muted) 90%, var(--bulletin-accent));
+}
+
+.ss-dev-bulletin__actions {
+  margin-block-start: .2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+
+  .ss-button {
+    border-color: color-mix(in srgb, var(--bulletin-accent) 42%, var(--ss-color-link));
+  }
+
+  .ss-button-primary {
+    background: color-mix(in srgb, var(--bulletin-accent) 74%, var(--ss-color-link));
+  }
+
+  .ss-button-secondary {
+    color: color-mix(in srgb, var(--bulletin-accent) 75%, var(--ss-color-link));
+    background: color-mix(in srgb, var(--ss-color-surface) 92%, var(--bulletin-accent));
+  }
+}
+
+.ss-dev-bulletin__visual {
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--bulletin-accent) 24%, var(--ss-color-border));
+  border-radius: var(--ss-radius-md);
+  overflow: clip;
+  min-block-size: clamp(140px, 18vw, 220px);
+  block-size: 100%;
+  background:
+    radial-gradient(circle at 16% 10%, color-mix(in srgb, var(--bulletin-accent) 24%, transparent), transparent 45%),
+    linear-gradient(160deg, color-mix(in srgb, var(--ss-color-surface) 62%, var(--bulletin-accent)), color-mix(in srgb, var(--ss-color-surface) 90%, var(--ss-color-bg)));
+}
+
+.ss-dev-bulletin__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.ss-dev-bulletin:has(.ss-dev-bulletin__visual) .ss-dev-bulletin__content {
+  padding-inline-end: clamp(.2rem, .6vw, .45rem);
+}
+
+@container (max-width: 760px) {
+  .ss-dev-bulletin__body {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .ss-dev-bulletin__visual {
+    order: 2;
+    min-block-size: clamp(130px, 42cqw, 200px);
+  }
+
+  .ss-dev-bulletin__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    .ss-button {
+      inline-size: 100%;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .ss-dev-bulletin__header {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-dev-bulletin {
+    transition: none;
+    transform: none;
+  }
+}
+
+:root[data-theme="dark"] .ss-dev-bulletin {
+  --bulletin-background: color-mix(in srgb, var(--bulletin-accent) 18%, var(--ss-color-surface-raised));
+  --bulletin-border: color-mix(in srgb, var(--bulletin-accent) 45%, var(--ss-color-border-strong));
+  --bulletin-glow: color-mix(in srgb, var(--bulletin-accent) 30%, transparent);
+}
+
+:root[data-theme="dark"] .ss-dev-bulletin__excerpt,
+:root[data-theme="dark"] .ss-dev-bulletin__meta {
+  color: var(--ss-color-text);
+}
+}

@@ -109,6 +109,7 @@ function syntaxsidekick_child_enqueue_assets() {
 
     if (is_front_page() || is_home()) {
         $page_css_modules[] = 'assets/css/pages/home.css';
+        $page_css_modules[] = 'assets/css/developer-bulletin.css';
     }
 
     if (is_page('tutorials')) {
@@ -175,6 +176,17 @@ function syntaxsidekick_child_enqueue_assets() {
         true
     );
     wp_script_add_data('syntaxsidekick-theme-toggle', 'strategy', 'defer');
+
+    if (is_front_page() || is_home()) {
+        wp_enqueue_script(
+            'syntaxsidekick-developer-bulletin',
+            get_stylesheet_directory_uri() . '/assets/js/developer-bulletin.js',
+            array(),
+            syntaxsidekick_get_asset_version('assets/js/developer-bulletin.js'),
+            true
+        );
+        wp_script_add_data('syntaxsidekick-developer-bulletin', 'strategy', 'defer');
+    }
 
     if (function_exists('syntaxsidekick_get_mega_menu_js_payload')) {
         $payload = syntaxsidekick_get_mega_menu_js_payload();
@@ -871,4 +883,164 @@ function syntaxsidekick_get_live_video_data() {
     );
 
     return apply_filters('syntaxsidekick_live_video_data', $default);
+}
+
+/**
+ * Return the dedicated News Bulletins category term when available.
+ *
+ * @return WP_Term|null
+ */
+function syntaxsidekick_get_news_bulletins_term() {
+    $term = get_term_by('slug', 'news-bulletins', 'category');
+
+    if (! ($term instanceof WP_Term)) {
+        $term = get_term_by('name', 'News Bulletins', 'category');
+    }
+
+    if (! ($term instanceof WP_Term)) {
+        return null;
+    }
+
+    return $term;
+}
+
+/**
+ * Resolve bulletin accent variant from category and tag metadata.
+ *
+ * @param int $post_id Post ID.
+ * @param int $news_bulletins_term_id Dedicated category ID.
+ *
+ * @return string
+ */
+function syntaxsidekick_get_bulletin_accent_variant($post_id, $news_bulletins_term_id = 0) {
+    $post_id = (int) $post_id;
+
+    if ($post_id <= 0) {
+        return 'green';
+    }
+
+    $variant_keywords = array(
+        'green' => array('general-announcement', 'soft-launch', 'feature-release'),
+        'blue' => array('new-guide', 'new-tutorial'),
+        'yellow' => array('live-stream', 'upcoming-event'),
+        'purple' => array('new-resource'),
+        'red' => array('scheduled-maintenance', 'known-issue'),
+    );
+
+    $terms = wp_get_post_terms($post_id, array('category', 'post_tag'));
+    if (is_wp_error($terms) || empty($terms)) {
+        return 'green';
+    }
+
+    foreach ($terms as $term) {
+        if (! ($term instanceof WP_Term)) {
+            continue;
+        }
+
+        if (
+            (int) $news_bulletins_term_id > 0
+            && 'category' === $term->taxonomy
+            && (int) $term->term_id === (int) $news_bulletins_term_id
+        ) {
+            continue;
+        }
+
+        $needle = strtolower(trim($term->slug . ' ' . $term->name));
+
+        foreach ($variant_keywords as $variant => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (false !== strpos($needle, $keyword)) {
+                    return $variant;
+                }
+            }
+        }
+    }
+
+    return 'green';
+}
+
+/**
+ * Resolve bulletin CTA URL and label from custom fields with fallbacks.
+ *
+ * @param int    $post_id Bulletin post ID.
+ * @param string $slot CTA slot name.
+ * @param string $fallback_label Fallback label.
+ * @param string $fallback_url Fallback URL.
+ *
+ * @return array{label:string,url:string}
+ */
+function syntaxsidekick_get_bulletin_cta($post_id, $slot, $fallback_label, $fallback_url) {
+    $post_id = (int) $post_id;
+    $slot = sanitize_key((string) $slot);
+
+    $label = (string) $fallback_label;
+    $url = (string) $fallback_url;
+
+    $link_fields = array(
+        'bulletin_' . $slot . '_cta',
+        $slot . '_cta',
+        'bulletin_' . $slot . '_button',
+    );
+
+    if (function_exists('get_field')) {
+        foreach ($link_fields as $field_key) {
+            $field_value = get_field($field_key, $post_id);
+
+            if (is_array($field_value)) {
+                if (! empty($field_value['title'])) {
+                    $label = (string) $field_value['title'];
+                }
+
+                if (! empty($field_value['url'])) {
+                    $url = (string) $field_value['url'];
+                }
+            } elseif (is_string($field_value) && '' !== trim($field_value) && wp_http_validate_url($field_value)) {
+                $url = $field_value;
+            }
+        }
+    }
+
+    $label_meta_keys = array(
+        'syntaxsidekick_bulletin_' . $slot . '_label',
+        'bulletin_' . $slot . '_label',
+        $slot . '_cta_label',
+    );
+
+    foreach ($label_meta_keys as $meta_key) {
+        $meta_value = get_post_meta($post_id, $meta_key, true);
+
+        if (is_string($meta_value) && '' !== trim($meta_value)) {
+            $label = $meta_value;
+            break;
+        }
+    }
+
+    $url_meta_keys = array(
+        'syntaxsidekick_bulletin_' . $slot . '_url',
+        'bulletin_' . $slot . '_url',
+        $slot . '_cta_url',
+    );
+
+    foreach ($url_meta_keys as $meta_key) {
+        $meta_value = get_post_meta($post_id, $meta_key, true);
+
+        if (is_string($meta_value) && '' !== trim($meta_value)) {
+            $url = $meta_value;
+            break;
+        }
+    }
+
+    $label = trim(wp_strip_all_tags($label));
+    if ('' === $label) {
+        $label = (string) $fallback_label;
+    }
+
+    if ('' === trim($url)) {
+        $url = (string) $fallback_url;
+    }
+
+    return array(
+        'label' => $label,
+        'url' => $url,
+    );
 }
