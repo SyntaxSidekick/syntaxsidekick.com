@@ -231,6 +231,90 @@ $faq_items = array(
 
     <section class="ss-home-section ss-contact-section ss-contact-newsletter" aria-label="Newsletter sign up">
         <div class="ss-container">
+            <style>
+                .ss-contact-page .ss-newsletter-cta {
+                    border: 1px solid color-mix(in srgb, var(--ss-color-white) 15%, transparent);
+                    border-radius: var(--ss-radius-md);
+                    background:
+                        radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--ss-color-brand) 22%, transparent), transparent 32%),
+                        linear-gradient(170deg, var(--ss-color-code-bg), color-mix(in srgb, var(--ss-color-code-bg) 78%, var(--ss-color-bg)));
+                    color: var(--ss-color-white);
+                    padding: var(--ss-space-3);
+                    display: grid;
+                    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr);
+                    gap: var(--ss-space-3);
+                    align-items: center;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__intro--feature {
+                    display: grid;
+                    grid-template-columns: auto minmax(0, 1fr);
+                    gap: .95rem;
+                    align-items: center;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__icon {
+                    inline-size: 2.9rem;
+                    block-size: 2.9rem;
+                    display: inline-grid;
+                    place-items: center;
+                    border: 1px solid color-mix(in srgb, var(--ss-color-brand) 50%, transparent);
+                    border-radius: .7rem;
+                    background: color-mix(in srgb, var(--ss-color-brand-dark) 18%, transparent);
+                    color: var(--ss-color-brand);
+                }
+
+                .ss-contact-page .ss-newsletter-cta__icon svg {
+                    inline-size: 1.3rem;
+                    block-size: 1.3rem;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__form {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) auto;
+                    gap: .65rem;
+                    align-items: start;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__form input {
+                    min-block-size: 44px;
+                    border: 1px solid color-mix(in srgb, var(--ss-color-white) 35%, transparent);
+                    border-radius: var(--ss-radius-sm);
+                    background: color-mix(in srgb, var(--ss-color-white) 10%, transparent);
+                    color: var(--ss-color-white);
+                    padding: .65rem .8rem;
+                    font: inherit;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__form input::placeholder {
+                    color: color-mix(in srgb, var(--ss-color-white) 68%, var(--ss-color-code-text));
+                }
+
+                .ss-contact-page .ss-newsletter-cta__form button {
+                    min-block-size: 44px;
+                    border: 1px solid transparent;
+                    border-radius: var(--ss-radius-sm);
+                    background: var(--ss-color-brand-dark);
+                    color: var(--ss-color-white);
+                    font-weight: 800;
+                    padding-inline: 1.1rem;
+                }
+
+                .ss-contact-page .ss-newsletter-cta__form .ss-form-note,
+                .ss-contact-page .ss-newsletter-cta__form .ss-form-status {
+                    grid-column: 1 / -1;
+                    color: color-mix(in srgb, var(--ss-color-white) 78%, var(--ss-color-code-text));
+                    margin: 0;
+                }
+
+                @media (max-width: 900px) {
+                    .ss-contact-page .ss-newsletter-cta,
+                    .ss-contact-page .ss-newsletter-cta__intro--feature,
+                    .ss-contact-page .ss-newsletter-cta__form {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
             <?php
             get_template_part(
                 'template-parts/components/newsletter-cta',
