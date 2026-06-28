@@ -36,17 +36,6 @@
   var megaItems = [];
   var mobileOpen = false;
   var restoreScrollY = 0;
-  var diagnostics = {
-    missingTemplateKeys: [],
-    missingLinkKeys: [],
-    hasMenuKeyAttributes: false,
-  };
-
-  function warnIssue(message, details) {
-    if (window.console && typeof window.console.warn === "function") {
-      window.console.warn("[SyntaxSidekick][MegaMenu] " + message, details || {});
-    }
-  }
 
   function isDesktop() {
     return desktopMq.matches;
@@ -469,58 +458,7 @@
       }
     }
 
-    var itemPath = getPathFromHref(item.url);
-    var allLinks = list.querySelectorAll(".ss-nav-link");
-    for (var j = 0; j < allLinks.length; j += 1) {
-      if (!allLinks[j]) {
-        continue;
-      }
-
-      var linkPath = getPathFromHref(allLinks[j].getAttribute("href"));
-      if (itemPath === linkPath) {
-        return allLinks[j];
-      }
-    }
-
     return null;
-  }
-
-  function diagnoseBindings(list) {
-    if (!list || !Array.isArray(megaMenuData)) {
-      return;
-    }
-
-    diagnostics.hasMenuKeyAttributes = list.querySelectorAll(".ss-nav-link[data-ss-menu-key]").length > 0;
-
-    megaMenuData.forEach(function (item) {
-      if (!item || !item.key || !item.hasMegaMenu) {
-        return;
-      }
-
-      var templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
-      var template = templateId ? document.getElementById(templateId) : null;
-      var hasTemplate = Boolean(template && template.innerHTML.trim());
-      if (!hasTemplate) {
-        diagnostics.missingTemplateKeys.push(item.key);
-      }
-
-      var hasLinkByKey = Boolean(list.querySelector('.ss-nav-link[data-ss-menu-key="' + item.key + '"]'));
-      if (!hasLinkByKey) {
-        diagnostics.missingLinkKeys.push(item.key);
-      }
-    });
-
-    window.syntaxsidekickMegaMenuDiagnostics = diagnostics;
-
-    if (!diagnostics.hasMenuKeyAttributes) {
-      warnIssue("No nav links include data-ss-menu-key attributes.", diagnostics);
-    }
-    if (diagnostics.missingTemplateKeys.length) {
-      warnIssue("Missing mega panel templates for keys.", diagnostics);
-    }
-    if (diagnostics.missingLinkKeys.length) {
-      warnIssue("Missing keyed nav links for mega menu items.", diagnostics);
-    }
   }
 
   function isItemActive(item) {
@@ -592,7 +530,6 @@
       return;
     }
 
-    diagnoseBindings(list);
     ensureMobileNavigationShell(list);
 
     if (Array.isArray(megaMenuData) && megaMenuData.length) {

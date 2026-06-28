@@ -13,7 +13,7 @@ $listing_url = isset($args['listing_url']) ? (string) $args['listing_url'] : hom
 
 $section_label_lower = strtolower($section_label);
 ?>
-<aside class="ss-sidebar ss-sidebar--hub ss-content-sidebar ss-tutorials-sidebar" aria-label="<?php echo esc_attr($section_label); ?> filters and newsletter">
+<aside class="ss-content-sidebar ss-tutorials-sidebar" aria-label="<?php echo esc_attr($section_label); ?> filters and newsletter">
     <?php
     get_template_part(
         'template-parts/components/content-category-list',

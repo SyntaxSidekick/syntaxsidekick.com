@@ -350,7 +350,7 @@ if ($base_term_id > 0) {
                 <?php endif; ?>
             </article>
 
-            <aside class="ss-sidebar ss-sidebar--sticky ss-single-tutorial-sidebar ss-single-sidebar" aria-label="<?php echo esc_attr($singular_label); ?> sidebar">
+            <aside class="ss-single-tutorial-sidebar ss-single-sidebar" aria-label="<?php echo esc_attr($singular_label); ?> sidebar">
                 <?php get_template_part('template-parts/components/single-toc'); ?>
 
                 <?php

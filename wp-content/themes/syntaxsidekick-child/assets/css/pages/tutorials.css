@@ -69,7 +69,7 @@
   min-inline-size: 140px;
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-card-bg);
+  background: var(--ss-color-white);
   padding: .55rem .9rem;
   color: var(--ss-color-text);
   font: inherit;
@@ -105,7 +105,7 @@
   flex-direction: column;
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-md);
-  background: var(--ss-color-card-bg);
+  background: var(--ss-color-white);
   overflow: hidden;
   box-shadow: 0 6px 16px rgb(15 23 42 / .03);
   transition: border-color var(--ss-motion-base) var(--ss-ease-standard), box-shadow var(--ss-motion-base) var(--ss-ease-standard), transform var(--ss-motion-base) var(--ss-ease-standard);
@@ -141,7 +141,7 @@
     padding: .35rem .5rem;
     border-radius: var(--ss-radius-pill);
     background: rgb(16 24 39 / .86);
-    color: var(--ss-color-text-inverse);
+    color: var(--ss-color-white);
     font-size: .62rem;
     line-height: 1;
   }
@@ -151,7 +151,7 @@
     inline-size: 100%;
     display: grid;
     place-items: center;
-    color: var(--ss-color-text-inverse);
+    color: var(--ss-color-white);
     font-weight: 800;
     text-align: center;
     padding: 1rem;
@@ -198,6 +198,15 @@
   }
 }
 
+.ss-tutorials-sidebar {
+  display: grid;
+  gap: 1rem;
+}
+
+.ss-content-sidebar {
+  display: grid;
+  gap: 1rem;
+}
 
 
 .ss-sidebar-topic {
@@ -207,13 +216,19 @@
   min-width: 0;
 }
 
+  border-radius: var(--ss-radius-sm);
+  padding: .65rem .8rem;
+  margin: 0 0 .65rem;
+  font: inherit;
+}
+
 .ss-newsletter-card button {
   inline-size: 100%;
   min-height: 44px;
   border: 1px solid transparent;
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-link);
-  color: var(--ss-color-text-inverse);
+  background: var(--ss-color-text);
+  color: var(--ss-color-white);
   font-weight: 800;
 }
 
@@ -259,7 +274,7 @@
   font-weight: 700;
 
   &.current {
-    background: var(--ss-color-accent-soft-bg);
+    background: color-mix(in srgb, var(--ss-color-brand) 32%, var(--ss-color-white));
     border-color: color-mix(in srgb, var(--ss-color-brand-dark) 40%, var(--ss-color-border));
   }
 

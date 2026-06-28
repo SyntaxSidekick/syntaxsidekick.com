@@ -446,7 +446,7 @@
 @media (max-width: 900px) {
   .ss-hero-grid, .ss-layout { grid-template-columns: 1fr; }
   .ss-card-grid { grid-template-columns: 1fr; }
-  .ss-sidebar { border-inline-start: 0; padding-inline-start: 0; }
+  .ss-sidebar { border-left: 0; padding-left: 0; }
 
   .ss-single-tutorial-layout {
     grid-template-columns: 1fr;
@@ -456,12 +456,12 @@
     grid-template-columns: 1fr;
   }
 
-  .ss-sidebar--sticky,
-  .ss-single-tutorial-sidebar,
+  .ss-single-tutorial-sidebar {
+    position: static;
+  }
+
   .ss-single-sidebar {
     position: static;
-    max-block-size: none;
-    overflow: visible;
   }
 
   .ss-single-tutorial-pagination {
