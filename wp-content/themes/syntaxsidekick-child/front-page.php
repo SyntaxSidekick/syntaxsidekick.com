@@ -61,67 +61,6 @@ $popular_query = new WP_Query(
 $live_video_data = syntaxsidekick_get_live_video_data();
 ?>
 
-<style id="ss-home-dark-fallback">
-    :root[data-theme="dark"] .ss-main.ss-homepage h1,
-    :root[data-theme="dark"] .ss-main.ss-homepage h2,
-    :root[data-theme="dark"] .ss-main.ss-homepage h3,
-    :root[data-theme="dark"] .ss-main.ss-homepage h3 a,
-    :root[data-theme="dark"] .ss-main.ss-homepage a:not(.ss-button-primary):not(.ss-button-secondary),
-    :root[data-theme="dark"] .ss-main.ss-homepage time,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-list-item__meta,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__meta {
-        color: #f8fbff !important;
-    }
-
-    :root[data-theme="dark"] .ss-main.ss-homepage p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-home-subtitle,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-list-item__body p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__body p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__meta,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-card p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-feature-item p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-description,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-platform,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-thumb__duration,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__intro p,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__form .ss-form-note,
-    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__form .ss-form-status {
-        color: #f8fbff !important;
-    }
-
-    :root[data-theme="dark"] .ss-homepage .ss-home-subtitle,
-    :root[data-theme="dark"] .ss-homepage .ss-list-item__body p,
-    :root[data-theme="dark"] .ss-homepage .ss-ranked-item__body p,
-    :root[data-theme="dark"] .ss-homepage .ss-ranked-item__meta,
-    :root[data-theme="dark"] .ss-homepage .ss-card p,
-    :root[data-theme="dark"] .ss-homepage .ss-home-hero__content > p:not(.ss-eyebrow) {
-        color: #f8fbff !important;
-    }
-
-    :root[data-theme="dark"] .ss-homepage .ss-section-link {
-        color: color-mix(in srgb, var(--ss-color-brand) 78%, var(--ss-color-text));
-    }
-
-    :root[data-theme="dark"] .ss-homepage .ss-home-panel {
-        background: var(--ss-color-surface-raised);
-        border-color: var(--ss-color-border-strong);
-    }
-
-    :root[data-theme="dark"] .ss-homepage .ss-ranked-item {
-        border-bottom-color: var(--ss-color-border-strong);
-    }
-
-    :root[data-theme="dark"] .ss-homepage .ss-feature-item p,
-    :root[data-theme="dark"] .ss-homepage .ss-live-description,
-    :root[data-theme="dark"] .ss-homepage .ss-live-platform,
-    :root[data-theme="dark"] .ss-homepage .ss-live-thumb__duration,
-    :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__intro p,
-    :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__form .ss-form-note,
-    :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__form .ss-form-status {
-        color: #f8fbff !important;
-    }
-</style>
-
 <main id="main-content" class="ss-main ss-homepage">
     <?php
     get_template_part(
