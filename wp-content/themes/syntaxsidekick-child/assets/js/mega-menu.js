@@ -1,11 +1,14 @@
 (function () {
   "use strict";
 
+  function initializeMegaMenu() {
+
   var root = document.querySelector("[data-ss-mega-nav]");
   if (!root || root.dataset.ssMegaMenuInit === "true") {
     return;
   }
   root.dataset.ssMegaMenuInit = "true";
+  root.classList.add("is-js-ready");
 
   var desktopMq = window.matchMedia("(min-width: 981px)");
   var focusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
@@ -421,124 +424,90 @@
     }
   }
 
-  function renderMegaMenu() {
-    if (!nav || !Array.isArray(megaMenuData) || !megaMenuData.length) {
+  function markActiveItem(item, link) {
+    if (!item || !link) {
       return;
     }
 
+    item.classList.add("is-active");
+    link.classList.add("is-active");
+  }
+
+  function getPathFromHref(href) {
+    if (!href) {
+      return "/";
+    }
+
+    try {
+      return normalizePath(new URL(href, window.location.origin).pathname);
+    } catch (error) {
+      return normalizePath(href);
+    }
+  }
+
+  function findMatchingMenuLink(list, item) {
+    if (!list || !item || !item.key) {
+      return null;
+    }
+
+    var keySelector = '.ss-nav-link[data-ss-menu-key="' + item.key + '"]';
+    var links = list.querySelectorAll(keySelector);
+    for (var i = 0; i < links.length; i += 1) {
+      if (links[i]) {
+        return links[i];
+      }
+    }
+
+    return null;
+  }
+
+  function isItemActive(item) {
+    if (!item) {
+      return false;
+    }
+
+    if (item.forceActive) {
+      return true;
+    }
+
     var currentPath = normalizePath(window.location.pathname);
-    megaMenuData.forEach(function (item) {
-      if (item.forceActive) {
-        item.active = true;
-        return;
+    var paths = item.activePaths || [item.url];
+
+    return paths.some(function (path) {
+      var matchPath = normalizePath(path);
+      if (matchPath === "/") {
+        return currentPath === "/";
       }
 
-      var paths = item.activePaths || [item.url];
-      item.active = paths.some(function (path) {
-        var matchPath = normalizePath(path);
-        if (matchPath === "/") {
-          return currentPath === "/";
-        }
-        return currentPath.indexOf(matchPath) === 0;
-      });
+      return currentPath === matchPath;
     });
+  }
 
-    nav.innerHTML = "";
+  function ensureMobileNavigationShell(list) {
+    if (!nav || !list) {
+      return;
+    }
 
-    var mobileHeader = createElement("div", "ss-mobile-nav-header");
-    mobileHeader.appendChild(createElement("p", null, "Browse SyntaxSidekick"));
-    mobileClose = createElement("button", "ss-mobile-close", "Close menu");
-    mobileClose.type = "button";
-    mobileClose.setAttribute("aria-label", "Close navigation");
-    mobileHeader.appendChild(mobileClose);
+    var mobileHeader = nav.querySelector(".ss-mobile-nav-header");
+    if (!mobileHeader) {
+      mobileHeader = createElement("div", "ss-mobile-nav-header");
+      mobileHeader.appendChild(createElement("p", null, "Browse SyntaxSidekick"));
+      mobileClose = createElement("button", "ss-mobile-close", "Close menu");
+      mobileClose.type = "button";
+      mobileClose.setAttribute("aria-label", "Close navigation");
+      mobileHeader.appendChild(mobileClose);
+      nav.insertBefore(mobileHeader, list);
+    } else {
+      mobileClose = mobileHeader.querySelector(".ss-mobile-close");
+    }
 
-    var list = createElement("ul", "ss-nav-list");
-    list.setAttribute("role", "list");
-
-    megaMenuData.forEach(function (item, index) {
-      var liClass = "ss-nav-item";
-      var templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
-      var panelTemplate = templateId ? document.getElementById(templateId) : null;
-      var hasPanelTemplate = Boolean(panelTemplate && panelTemplate.innerHTML.trim());
-      var hasMegaBehavior = Boolean(item.hasMegaMenu && hasPanelTemplate);
-      var useSplitLink = hasMegaBehavior && (item.key === "tutorials" || item.key === "articles");
-
-      if (hasMegaBehavior) {
-        liClass += " ss-nav-item-has-mega";
-      }
-      if (item.active) {
-        liClass += " is-active";
-      }
-
-      var li = createElement("li", liClass);
-
-      if (!hasMegaBehavior) {
-        var linkClass = "ss-nav-link";
-        if (item.active) {
-          linkClass += " is-active";
-        }
-
-        var link = createElement("a", linkClass, item.label);
-        link.href = toAbsoluteUrl(item.url);
-        li.appendChild(link);
-        list.appendChild(li);
-        return;
-      }
-
-      var slug = slugify(item.label);
-      var panelId = "ss-mega-" + slug + "-" + index;
-      li.setAttribute("data-ss-menu", slug);
-
-      var trigger = createElement("button", "ss-nav-trigger", item.label);
-      trigger.type = "button";
-      trigger.setAttribute("aria-expanded", "false");
-      trigger.setAttribute("aria-controls", panelId);
-      trigger.setAttribute("aria-haspopup", "true");
-
-      if (useSplitLink) {
-        trigger.textContent = "";
-        trigger.classList.add("ss-nav-trigger--icon");
-        trigger.setAttribute("aria-label", "Toggle " + item.label + " menu");
-      }
-
-      trigger.appendChild(createElement("span", "ss-trigger-caret"));
-
-      var panel = createElement("section", "ss-mega-panel");
-      panel.id = panelId;
-      panel.setAttribute("role", "region");
-      panel.setAttribute("aria-label", item.label + " menu");
-      panel.setAttribute("aria-hidden", "true");
-      panel.innerHTML = panelTemplate.innerHTML;
-
-      if (useSplitLink) {
-        var splitWrap = createElement("div", "ss-nav-split");
-        var splitLinkClass = "ss-nav-link";
-        if (item.active) {
-          splitLinkClass += " is-active";
-        }
-
-        var splitLink = createElement("a", splitLinkClass, item.label);
-        splitLink.href = toAbsoluteUrl(item.url);
-
-        splitWrap.appendChild(splitLink);
-        splitWrap.appendChild(trigger);
-        li.appendChild(splitWrap);
-      } else {
-        li.appendChild(trigger);
-      }
-
-      li.appendChild(panel);
-      list.appendChild(li);
-    });
-
-    var mobileSearchItem = createElement("li", "ss-nav-item ss-nav-search-mobile");
-    var mobileSearchLink = createElement("a", "ss-nav-link", "Search");
-    mobileSearchLink.href = searchButton ? searchButton.href : toAbsoluteUrl("/?s=");
-    mobileSearchItem.appendChild(mobileSearchLink);
-    list.appendChild(mobileSearchItem);
-
-    nav.appendChild(mobileHeader);
-    nav.appendChild(list);
+    if (!list.querySelector(".ss-nav-search-mobile")) {
+      var mobileSearchItem = createElement("li", "ss-nav-item ss-nav-search-mobile");
+      var mobileSearchLink = createElement("a", "ss-nav-link", "Search");
+      mobileSearchLink.href = searchButton ? searchButton.href : toAbsoluteUrl("/?s=");
+      mobileSearchItem.appendChild(mobileSearchLink);
+      list.appendChild(mobileSearchItem);
+    }
 
     overlay = root.querySelector(".ss-nav-overlay");
     if (!overlay) {
@@ -546,8 +515,96 @@
       overlay.type = "button";
       root.appendChild(overlay);
     }
+
     overlay.setAttribute("aria-hidden", "true");
     overlay.setAttribute("tabindex", "-1");
+  }
+
+  function enhanceExistingMenu() {
+    if (!nav) {
+      return;
+    }
+
+    var list = nav.querySelector(".ss-nav-list");
+    if (!list) {
+      return;
+    }
+
+    ensureMobileNavigationShell(list);
+
+    if (Array.isArray(megaMenuData) && megaMenuData.length) {
+      megaMenuData.forEach(function (item, index) {
+      var templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
+      var panelTemplate = templateId ? document.getElementById(templateId) : null;
+      var hasPanelTemplate = Boolean(panelTemplate && panelTemplate.innerHTML.trim());
+      var hasMegaBehavior = Boolean(item.hasMegaMenu && hasPanelTemplate);
+
+      if (!hasMegaBehavior) {
+        return;
+      }
+
+      var primaryLink = findMatchingMenuLink(list, item);
+      if (!primaryLink) {
+        return;
+      }
+
+      var li = primaryLink.closest(".ss-nav-item");
+      if (!li) {
+        return;
+      }
+
+      var slug = slugify(item.label || item.key || "menu");
+      var panelId = "ss-mega-" + slug + "-" + index;
+      var useSplitLink = item.key === "tutorials" || item.key === "articles";
+
+      li.classList.add("ss-nav-item-has-mega");
+      li.setAttribute("data-ss-menu", slug);
+
+      if (isItemActive(item)) {
+        markActiveItem(li, primaryLink);
+      }
+
+      var trigger = li.querySelector(".ss-nav-trigger");
+      if (!trigger) {
+        trigger = createElement("button", "ss-nav-trigger", "");
+        trigger.type = "button";
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.setAttribute("aria-controls", panelId);
+        trigger.setAttribute("aria-haspopup", "true");
+        trigger.classList.add("ss-nav-trigger--icon");
+        trigger.setAttribute("aria-label", "Toggle " + item.label + " menu");
+        trigger.appendChild(createElement("span", "ss-trigger-caret"));
+      }
+
+      if (useSplitLink) {
+        var splitWrap = li.querySelector(".ss-nav-split");
+        if (!splitWrap) {
+          splitWrap = createElement("div", "ss-nav-split");
+          primaryLink.parentNode.insertBefore(splitWrap, primaryLink);
+          splitWrap.appendChild(primaryLink);
+        }
+
+        if (!splitWrap.contains(trigger)) {
+          splitWrap.appendChild(trigger);
+        }
+      } else if (!li.contains(trigger)) {
+        li.insertBefore(trigger, li.firstChild);
+      }
+
+      var panel = getPanel(li);
+      if (!panel) {
+        panel = createElement("section", "ss-mega-panel");
+        panel.id = panelId;
+        panel.setAttribute("role", "region");
+        panel.setAttribute("aria-label", item.label + " menu");
+        panel.setAttribute("aria-hidden", "true");
+        panel.innerHTML = panelTemplate.innerHTML;
+        li.appendChild(panel);
+      } else if (!panel.id) {
+        panel.id = panelId;
+      }
+      });
+    }
 
     megaItems = Array.prototype.slice.call(root.querySelectorAll(".ss-nav-item-has-mega"));
 
@@ -643,7 +700,7 @@
     }
   }
 
-  renderMegaMenu();
+  enhanceExistingMenu();
 
   document.addEventListener("pointerdown", function (event) {
     if (!root.contains(event.target)) {
@@ -702,5 +759,13 @@
     nav.setAttribute("aria-hidden", "true");
     nav.classList.remove("is-open");
     applyMobileNavStyles();
+  }
+
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeMegaMenu, { once: true });
+  } else {
+    initializeMegaMenu();
   }
 })();

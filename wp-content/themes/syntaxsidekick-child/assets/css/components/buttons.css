@@ -1,5 +1,5 @@
 @layer components {
-.ss-button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: .75rem 1.1rem; border: 1px solid var(--ss-color-accent); border-radius: var(--ss-radius-sm); font-weight: 800; text-decoration: none; }
-.ss-button-primary { background: var(--ss-color-accent); color: var(--ss-color-white); }
-.ss-button-secondary { background: var(--ss-color-white); color: var(--ss-color-accent); }
+.ss-button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: .75rem 1.1rem; border: 1px solid var(--ss-color-link); border-radius: var(--ss-radius-sm); font-weight: 800; text-decoration: none; }
+.ss-button-primary { background: var(--ss-color-link); color: var(--ss-color-text-inverse); }
+.ss-button-secondary { background: var(--ss-color-surface-primary); color: var(--ss-color-link); }
 }

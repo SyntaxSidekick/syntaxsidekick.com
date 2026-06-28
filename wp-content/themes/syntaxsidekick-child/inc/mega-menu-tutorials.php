@@ -263,7 +263,7 @@ function syntaxsidekick_get_mega_menu_data() {
                 'url' => home_url('/articles/'),
             ),
             'has_mega_menu' => true,
-            'active_paths' => array('/articles/', '/category/'),
+            'active_paths' => array('/articles/'),
             'panel_template_id' => 'ss-articles-mega-template',
             'categories_heading' => 'Browse Categories',
             'tracks_heading' => 'Popular Topics',
@@ -388,32 +388,40 @@ function syntaxsidekick_get_tutorials_mega_menu_data() {
 function syntaxsidekick_is_mega_menu_section_active($section_key) {
     $section_key = sanitize_key((string) $section_key);
 
+    $current_path = function_exists('syntaxsidekick_get_relative_request_path')
+        ? syntaxsidekick_get_relative_request_path()
+        : '/';
+
+    $is_section_single = static function ($slug) {
+        return is_singular('post') && has_category((string) $slug);
+    };
+
     if ('home' === $section_key) {
-        return is_front_page() || is_home();
+        return '/' === $current_path;
     }
 
     if ('articles' === $section_key) {
-        return is_page('articles') || is_category('articles') || has_category('articles');
+        return '/articles/' === $current_path || is_page('articles') || is_category('articles') || $is_section_single('articles');
     }
 
     if ('tutorials' === $section_key) {
-        return is_page('tutorials') || has_category('tutorials') || is_category('tutorials');
+        return '/tutorials/' === $current_path || is_page('tutorials') || is_category('tutorials') || $is_section_single('tutorials');
     }
 
     if ('resources' === $section_key) {
-        return is_page('resources');
+        return '/resources/' === $current_path || is_page('resources') || is_category('resources') || $is_section_single('resources');
     }
 
     if ('guides' === $section_key) {
-        return is_page('guides');
+        return '/guides/' === $current_path || is_page('guides') || is_category('guides') || $is_section_single('guides');
     }
 
     if ('about' === $section_key) {
-        return is_page('about');
+        return '/about/' === $current_path || is_page('about');
     }
 
     if ('contact' === $section_key) {
-        return is_page('contact');
+        return '/contact/' === $current_path || is_page('contact');
     }
 
     return false;

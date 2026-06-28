@@ -1,4 +1,4 @@
 @layer components {
 .ss-pagination { margin-top: 1.3rem; }
-.ss-page-button { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 2.2rem; min-block-size: 2.2rem; padding: .2rem .72rem; border: 1px solid var(--ss-color-border); border-radius: .45rem; color: var(--ss-color-text); background: var(--ss-color-surface); text-decoration: none; font-size: .9rem; font-weight: 700; }
+.ss-page-button { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 2.2rem; min-block-size: 2.2rem; padding: .2rem .72rem; border: 1px solid var(--ss-color-card-border); border-radius: .45rem; color: var(--ss-color-text-primary); background: var(--ss-color-card-bg); text-decoration: none; font-size: .9rem; font-weight: 700; }
 }

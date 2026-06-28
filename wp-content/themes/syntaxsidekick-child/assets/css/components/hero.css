@@ -3,9 +3,7 @@
 .ss-page-hero {
   padding: clamp(2.25rem, 5vw, 4.5rem) 0;
   border-bottom: 1px solid var(--ss-color-border);
-  background:
-    radial-gradient(circle at 78% 36%, rgb(168 212 124 / .17), transparent 34%),
-    linear-gradient(180deg, var(--ss-color-white), var(--ss-color-bg));
+  background: var(--ss-hero-surface-bg);
 }
 
 .ss-page-hero__grid {
@@ -38,7 +36,7 @@
   inline-size: min(100%, 510px);
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-md);
-  background: var(--ss-color-white);
+  background: var(--ss-hero-code-bg);
   box-shadow: var(--ss-shadow-panel);
   padding: 1.2rem;
 }
@@ -53,7 +51,7 @@
   inline-size: .46rem;
   block-size: .46rem;
   border-radius: var(--ss-radius-pill);
-  background: #d9e1ed;
+  background: var(--ss-hero-dot-bg);
 }
 
 .ss-page-hero__code-body {
@@ -80,7 +78,7 @@
   display: block;
   block-size: .52rem;
   border-radius: var(--ss-radius-pill);
-  background: linear-gradient(90deg, #eef3fa, #e4ebf5);
+  background: var(--ss-hero-line-bg);
 }
 
 .ss-page-hero__checks {

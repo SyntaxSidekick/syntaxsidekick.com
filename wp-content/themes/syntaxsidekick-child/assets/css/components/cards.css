@@ -1,5 +1,5 @@
 @layer components {
-.ss-card { background: var(--ss-color-surface); border: 1px solid var(--ss-color-border); border-radius: var(--ss-radius-md); overflow: hidden; box-shadow: var(--ss-shadow-soft); }
+.ss-card { background: var(--ss-color-card-bg); border: 1px solid var(--ss-color-card-border); border-radius: var(--ss-radius-md); overflow: hidden; box-shadow: var(--ss-shadow-soft); }
 .ss-card-body { padding: 1.2rem; }
 .ss-card-meta { color: var(--ss-color-muted); font-size: .82rem; margin-top: 1rem; }
 }

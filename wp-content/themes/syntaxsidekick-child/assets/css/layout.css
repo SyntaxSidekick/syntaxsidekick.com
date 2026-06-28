@@ -40,12 +40,38 @@
 .ss-panel input { width: 100%; min-height: 44px; border: 1px solid var(--ss-color-border); border-radius: var(--ss-radius-sm); padding: .65rem .8rem; margin: .5rem 0; }
 .ss-panel button { width: 100%; min-height: 44px; border: 0; border-radius: var(--ss-radius-sm); background: var(--ss-color-accent); color: var(--ss-color-white); font-weight: 800; }
 
-.ss-content { max-width: 760px; margin-inline: auto; background: var(--ss-color-surface); border: 1px solid var(--ss-color-border); border-radius: var(--ss-radius-lg); padding: clamp(1.25rem, 4vw, 3rem); }
+.ss-content { max-width: 760px; margin-inline: auto; background: var(--ss-color-card-bg); border: 1px solid var(--ss-color-card-border); border-radius: var(--ss-radius-lg); padding: clamp(1.25rem, 4vw, 3rem); }
 .ss-content h1 { font-size: var(--ss-step-3); line-height: 1.05; letter-spacing: -.04em; }
 .ss-content h2 { margin-top: 2.4rem; font-size: var(--ss-step-2); line-height: 1.15; }
 .ss-content pre, .wp-block-code, code[class*="language-"] { background: var(--ss-color-code-bg); color: var(--ss-color-code-text); border-radius: var(--ss-radius-md); }
 .ss-content pre, .wp-block-code { padding: 1rem; overflow-x: auto; }
-.ss-content code { font-family: var(--ss-font-mono); font-size: .92em; }
+.ss-content code { font-family: var(--ss-font-mono); font-size: .92em; background: var(--ss-color-inline-code-bg); color: var(--ss-color-text-primary); border-radius: .35rem; padding-inline: .3rem; }
+.ss-content :is(p, li, blockquote, figcaption) a { color: var(--ss-color-link); }
+.ss-content :is(p, li, blockquote, figcaption) a:hover,
+.ss-content :is(p, li, blockquote, figcaption) a:focus-visible { color: var(--ss-color-link-hover); }
+
+.ss-content blockquote,
+.ss-single-tutorial-body blockquote {
+  margin: 1.4rem 0;
+  padding: .95rem 1.1rem;
+  border-inline-start: 4px solid var(--ss-color-blockquote-border);
+  border-radius: var(--ss-radius-sm);
+  background: var(--ss-color-blockquote-bg);
+  color: var(--ss-color-blockquote-text);
+}
+
+.ss-content .has-background,
+.ss-single-tutorial-body .has-background {
+  background: var(--ss-color-callout-bg);
+  color: var(--ss-color-callout-text);
+  border: 1px solid var(--ss-color-callout-border);
+  border-radius: var(--ss-radius-sm);
+}
+
+.ss-content .has-background a,
+.ss-single-tutorial-body .has-background a {
+  color: var(--ss-color-link);
+}
 
 /* Single tutorial page */
 .ss-single-tutorial-page.ss-main {
@@ -147,7 +173,7 @@
   inline-size: .34rem;
   block-size: .34rem;
   border-radius: var(--ss-radius-pill);
-  background: color-mix(in srgb, var(--ss-color-brand-dark) 70%, var(--ss-color-white));
+  background: color-mix(in srgb, var(--ss-color-brand-dark) 70%, var(--ss-color-surface-primary));
 }
 
 .ss-single-tutorial-meta__item--author::before {
@@ -231,92 +257,26 @@
   padding-inline-start: 1.25rem;
 }
 
-.ss-single-tutorial-body blockquote {
-  margin: 1.4rem 0;
-  padding: .95rem 1.1rem;
-  border-inline-start: 4px solid var(--ss-color-brand-dark);
-  border-radius: var(--ss-radius-sm);
-  background: color-mix(in srgb, var(--ss-color-brand) 14%, var(--ss-color-white));
-}
-
 .ss-single-tutorial-sidebar {
   display: grid;
   gap: 1rem;
-  position: static;
+  position: sticky;
+  top: calc(98px + 1rem);
+  align-self: start;
+  max-block-size: calc(100dvh - 120px);
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 .ss-single-sidebar {
   display: grid;
   gap: 1rem;
-  position: static;
-}
-
-.ss-single-toc__content {
-  #ez-toc-container,
-  .ez-toc-widget-container,
-  .toc_container,
-  .lwptoc {
-    position: static !important;
-    top: auto !important;
-  }
-
-  > :first-child {
-    margin-top: 0;
-  }
-
-  > :last-child {
-    margin-bottom: 0;
-  }
-
-  .ez-toc-title-container,
-  .ez-toc-title {
-    display: none;
-  }
-
-  .ez-toc-list,
-  ul,
-  ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: .55rem;
-  }
-
-  li {
-    margin: 0;
-
-    ul,
-    ol,
-    &[class*='level-3'],
-    &[class*='h3'] {
-      margin-top: .45rem;
-      padding-inline-start: .9rem;
-    }
-  }
-
-  a {
-    color: var(--ss-color-muted);
-    text-decoration: none;
-    font-size: .9rem;
-    line-height: 1.4;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--ss-color-brand-dark);
-    }
-  }
-
-  .active > a,
-  .ez-toc-active a {
-    color: var(--ss-color-brand-dark);
-  }
-}
-
-.ss-sidebar-card__title {
-  margin: 0 0 .7rem;
-  color: var(--ss-color-muted);
-  font-size: .75rem;
+  position: sticky;
+  top: calc(98px + 1rem);
+  align-self: start;
+  max-block-size: calc(100dvh - 120px);
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 .ss-tutorial-details-list {
@@ -492,9 +452,9 @@
 }
 
 .comment-body {
-  border: 1px solid var(--ss-color-border);
+  border: 1px solid var(--ss-color-card-border);
   border-radius: var(--ss-radius-md);
-  background: var(--ss-color-white);
+  background: var(--ss-color-card-bg);
   padding: 1rem;
 }
 
@@ -540,8 +500,8 @@
   min-height: 44px;
   border: 1px solid transparent;
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-text);
-  color: var(--ss-color-white);
+  background: var(--ss-color-link);
+  color: var(--ss-color-text-inverse);
   font-weight: 800;
   padding-inline: 1rem;
 }

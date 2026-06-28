@@ -9,8 +9,8 @@
 
 .ss-mega-nav {
   inline-size: 100%;
-  background: #fff;
-  border-bottom: 1px solid #e7ebf2;
+  background: var(--ss-color-header-bg);
+  border-bottom: 1px solid var(--ss-color-header-border);
   backdrop-filter: none;
   overflow: visible;
 }
@@ -59,8 +59,8 @@
 
   &.is-active > .ss-nav-trigger,
   &.is-open > .ss-nav-trigger {
-    color: #1d3f17;
-    background: #ecf5e5;
+    color: var(--ss-color-header-nav-active-text);
+    background: var(--ss-color-header-nav-active-bg);
   }
 }
 
@@ -86,7 +86,7 @@
   border: 0;
   border-radius: 12px;
   background: transparent;
-  color: #151a22;
+  color: var(--ss-color-header-nav-text);
   font-size: 1.01rem;
   font-weight: 700;
   line-height: 1;
@@ -96,8 +96,8 @@
   &:hover,
   &:focus-visible,
   &.is-active {
-    color: #1d3f17;
-    background: #ecf5e5;
+    color: var(--ss-color-header-nav-hover-text);
+    background: var(--ss-color-header-nav-hover-bg);
   }
 }
 
@@ -119,14 +119,14 @@
   block-size: 44px;
   display: inline-grid;
   place-items: center;
-  color: #111827;
+  color: var(--ss-color-header-nav-text);
   border: 0;
   border-radius: 12px;
   transition: background-color .2s ease;
 
   &:hover,
   &:focus-visible {
-    background: #f3f6fb;
+    background: var(--ss-color-surface-soft);
   }
 
   svg {

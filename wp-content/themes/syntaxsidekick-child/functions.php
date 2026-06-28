@@ -83,7 +83,7 @@ function syntaxsidekick_child_enqueue_assets() {
         syntaxsidekick_get_asset_version('style.css')
     );
 
-    $css_modules = array(
+    $global_css_modules = array(
         'assets/css/layers.css',
         'assets/css/tokens.css',
         'assets/css/reset.css',
@@ -100,18 +100,46 @@ function syntaxsidekick_child_enqueue_assets() {
         'assets/css/components/footer.css',
         'assets/css/components/pagination.css',
         'assets/css/components/toc.css',
-        'assets/css/pages/home.css',
-        'assets/css/pages/tutorials.css',
-        'assets/css/pages/articles.css',
-        'assets/css/pages/guides.css',
-        'assets/css/pages/resources.css',
-        'assets/css/pages/single.css',
-        'assets/css/pages/about.css',
-        'assets/css/pages/contact.css',
         'assets/css/themes/dark.css',
         'assets/css/themes/motion.css',
         'assets/css/utilities.css',
     );
+
+    $page_css_modules = array();
+
+    if (is_front_page() || is_home()) {
+        $page_css_modules[] = 'assets/css/pages/home.css';
+    }
+
+    if (is_page('tutorials')) {
+        $page_css_modules[] = 'assets/css/pages/tutorials.css';
+    }
+
+    if (is_page('articles')) {
+        $page_css_modules[] = 'assets/css/pages/articles.css';
+    }
+
+    if (is_page('guides')) {
+        $page_css_modules[] = 'assets/css/pages/guides.css';
+    }
+
+    if (is_page('resources')) {
+        $page_css_modules[] = 'assets/css/pages/resources.css';
+    }
+
+    if (is_singular('post')) {
+        $page_css_modules[] = 'assets/css/pages/single.css';
+    }
+
+    if (is_page('about')) {
+        $page_css_modules[] = 'assets/css/pages/about.css';
+    }
+
+    if (is_page('contact')) {
+        $page_css_modules[] = 'assets/css/pages/contact.css';
+    }
+
+    $css_modules = array_merge($global_css_modules, $page_css_modules);
 
     $previous_style_handle = 'syntaxsidekick-child-style';
 
@@ -531,37 +559,37 @@ function syntaxsidekick_fallback_menu($args = array()) {
         array(
             'label' => 'Home',
             'url' => home_url('/'),
-            'active' => is_front_page() || is_home(),
+            'active' => syntaxsidekick_is_mega_menu_section_active('home'),
         ),
         array(
             'label' => 'Articles',
             'url' => home_url('/articles/'),
-            'active' => is_page('articles') || is_category('articles') || has_category('articles'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('articles'),
         ),
         array(
             'label' => 'Tutorials',
             'url' => home_url('/tutorials/'),
-            'active' => is_page('tutorials') || is_category('tutorials') || has_category('tutorials'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('tutorials'),
         ),
         array(
             'label' => 'Guides',
             'url' => home_url('/guides/'),
-            'active' => is_page('guides'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('guides'),
         ),
         array(
             'label' => 'Resources',
             'url' => home_url('/resources/'),
-            'active' => is_page('resources'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('resources'),
         ),
         array(
             'label' => 'About',
             'url' => home_url('/about/'),
-            'active' => is_page('about'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('about'),
         ),
         array(
             'label' => 'Contact',
             'url' => home_url('/contact/'),
-            'active' => is_page('contact'),
+            'active' => syntaxsidekick_is_mega_menu_section_active('contact'),
         ),
     );
 
@@ -570,16 +598,93 @@ function syntaxsidekick_fallback_menu($args = array()) {
     foreach ($links as $link) {
         $item_classes = 'ss-nav-item';
         $link_classes = 'ss-nav-link';
+        $section_key = syntaxsidekick_nav_section_from_url($link['url']);
+        $data_key_attr = '' !== $section_key ? ' data-ss-menu-key="' . esc_attr($section_key) . '"' : '';
 
         if ($link['active']) {
             $item_classes .= ' current-menu-item is-active';
             $link_classes .= ' is-active';
         }
 
-        echo '<li class="' . esc_attr($item_classes) . '"><a class="' . esc_attr($link_classes) . '" href="' . esc_url($link['url']) . '">' . esc_html($link['label']) . '</a></li>';
+        echo '<li class="' . esc_attr($item_classes) . '"><a class="' . esc_attr($link_classes) . '" href="' . esc_url($link['url']) . '"' . $data_key_attr . '>' . esc_html($link['label']) . '</a></li>';
     }
 
     echo '</ul>';
+}
+
+/**
+ * Normalize request path relative to site home path.
+ *
+ * @return string
+ */
+function syntaxsidekick_get_relative_request_path() {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+    $request_path = wp_parse_url($request_uri, PHP_URL_PATH);
+    $request_path = is_string($request_path) && '' !== $request_path ? $request_path : '/';
+
+    $home_path = wp_parse_url(home_url('/'), PHP_URL_PATH);
+    $home_path = is_string($home_path) && '' !== $home_path ? $home_path : '/';
+
+    $request_path = '/' . ltrim($request_path, '/');
+
+    if ('/' !== $home_path) {
+        $trimmed_home = rtrim($home_path, '/');
+        if ($request_path === $trimmed_home) {
+            $request_path = '/';
+        } elseif (0 === strpos($request_path, $trimmed_home . '/')) {
+            $request_path = substr($request_path, strlen($trimmed_home));
+            $request_path = '' === $request_path ? '/' : $request_path;
+        }
+    }
+
+    if ('/' !== $request_path && '/' !== substr($request_path, -1)) {
+        $request_path .= '/';
+    }
+
+    return $request_path;
+}
+
+/**
+ * Map navigation URL to its section key.
+ *
+ * @param string $url Menu URL.
+ *
+ * @return string
+ */
+function syntaxsidekick_nav_section_from_url($url) {
+    $path = wp_parse_url((string) $url, PHP_URL_PATH);
+    $path = is_string($path) && '' !== $path ? $path : '/';
+
+    $home_path = wp_parse_url(home_url('/'), PHP_URL_PATH);
+    $home_path = is_string($home_path) && '' !== $home_path ? $home_path : '/';
+
+    $path = '/' . ltrim($path, '/');
+
+    if ('/' !== $home_path) {
+        $trimmed_home = rtrim($home_path, '/');
+        if ($path === $trimmed_home) {
+            $path = '/';
+        } elseif (0 === strpos($path, $trimmed_home . '/')) {
+            $path = substr($path, strlen($trimmed_home));
+            $path = '' === $path ? '/' : $path;
+        }
+    }
+
+    if ('/' !== $path && '/' !== substr($path, -1)) {
+        $path .= '/';
+    }
+
+    $section_map = array(
+        '/' => 'home',
+        '/articles/' => 'articles',
+        '/tutorials/' => 'tutorials',
+        '/guides/' => 'guides',
+        '/resources/' => 'resources',
+        '/about/' => 'about',
+        '/contact/' => 'contact',
+    );
+
+    return isset($section_map[$path]) ? $section_map[$path] : '';
 }
 
 function syntaxsidekick_primary_nav_item_classes($classes, $menu_item, $args) {
@@ -589,12 +694,20 @@ function syntaxsidekick_primary_nav_item_classes($classes, $menu_item, $args) {
 
     $classes[] = 'ss-nav-item';
 
-    if (
-        in_array('current-menu-item', $classes, true)
-        || in_array('current-menu-parent', $classes, true)
-        || in_array('current-menu-ancestor', $classes, true)
-    ) {
+    $section_key = syntaxsidekick_nav_section_from_url(isset($menu_item->url) ? (string) $menu_item->url : '');
+
+    $classes = array_values(
+        array_filter(
+            $classes,
+            static function ($class_name) {
+                return ! in_array($class_name, array('is-active', 'current-menu-item', 'current-menu-parent', 'current-menu-ancestor'), true);
+            }
+        )
+    );
+
+    if ('' !== $section_key && syntaxsidekick_is_mega_menu_section_active($section_key)) {
         $classes[] = 'is-active';
+        $classes[] = 'current-menu-item';
     }
 
     return array_values(array_unique($classes));
@@ -611,12 +724,13 @@ function syntaxsidekick_primary_nav_link_attributes($atts, $menu_item, $args) {
     $class_arr = is_array($class_arr) ? array_filter($class_arr) : array();
     $class_arr[] = 'ss-nav-link';
 
-    if (
-        in_array('current-menu-item', $menu_item->classes, true)
-        || in_array('current-menu-parent', $menu_item->classes, true)
-        || in_array('current-menu-ancestor', $menu_item->classes, true)
-    ) {
+    $section_key = syntaxsidekick_nav_section_from_url(isset($menu_item->url) ? (string) $menu_item->url : '');
+    if ('' !== $section_key && syntaxsidekick_is_mega_menu_section_active($section_key)) {
         $class_arr[] = 'is-active';
+    }
+
+    if ('' !== $section_key) {
+        $atts['data-ss-menu-key'] = $section_key;
     }
 
     $atts['class'] = implode(' ', array_values(array_unique($class_arr)));

@@ -16,11 +16,11 @@ body {
   line-height: 1.7;
 }
 
-a { color: var(--ss-color-accent); text-decoration-thickness: .08em; text-underline-offset: .18em; }
-a:hover { color: var(--ss-color-accent); }
+a { color: var(--ss-color-link); text-decoration-thickness: .08em; text-underline-offset: .18em; }
+a:hover { color: var(--ss-color-link-hover); }
 
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--ss-color-accent) 55%, var(--ss-color-white));
+  outline: 3px solid var(--ss-color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -43,9 +43,9 @@ img { max-width: 100%; height: auto; }
   inset-block-start: -100%;
   inset-inline-start: var(--ss-space-2);
   z-index: calc(var(--ss-z-header) + 1);
-  background: #0b1220;
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / .22);
+  background: var(--ss-color-code-bg);
+  color: var(--ss-color-text-inverse);
+  border: 1px solid color-mix(in srgb, var(--ss-color-text-inverse) 22%, transparent);
   padding: .65rem .9rem;
   border-radius: var(--ss-radius-sm);
   text-decoration: none;

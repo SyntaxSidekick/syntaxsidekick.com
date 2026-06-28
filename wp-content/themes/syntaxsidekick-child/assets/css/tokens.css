@@ -1,18 +1,77 @@
 @layer tokens {
 /* ===== Tokens ===== */
 :root {
-  --ss-color-bg: #f8fafc;
-  --ss-color-surface: #ffffff;
-  --ss-color-surface-alt: #f1f5f9;
-  --ss-color-text: #0f172a;
-  --ss-color-muted: #475569;
-  --ss-color-border: #dbe3ef;
+  --ss-color-page-background: #f8fafc;
+  --ss-color-surface-primary: #ffffff;
+  --ss-color-surface-raised: #ffffff;
+  --ss-color-surface-muted: #f1f5f9;
+  --ss-color-text-primary: #0f172a;
+  --ss-color-text-muted: #475569;
+  --ss-color-text-inverse: #f8fafc;
+  --ss-color-border-default: #dbe3ef;
+  --ss-color-border-strong: #cfd8e6;
+  --ss-color-link: #2563eb;
+  --ss-color-link-hover: #1d4ed8;
+  --ss-color-focus-ring: color-mix(in srgb, #2563eb 55%, #ffffff);
+  --ss-color-accent-soft-bg: #ecf5e5;
+  --ss-color-blockquote-bg: color-mix(in srgb, #a8d47c 14%, #ffffff);
+  --ss-color-blockquote-text: #0f172a;
+  --ss-color-blockquote-border: #6fa64a;
+  --ss-color-callout-bg: #eef6e6;
+  --ss-color-callout-text: #205017;
+  --ss-color-callout-border: #e4edd9;
+  --ss-color-sidebar-bg: #ffffff;
+  --ss-color-sidebar-text: #0f172a;
+  --ss-color-sidebar-muted-text: #475569;
+  --ss-color-sidebar-border: #dbe3ef;
+  --ss-color-card-bg: #ffffff;
+  --ss-color-card-border: #dbe3ef;
+  --ss-color-inline-code-bg: color-mix(in srgb, #0b1220 10%, #ffffff);
+
+  --ss-color-bg: var(--ss-color-page-background);
+  --ss-color-surface: var(--ss-color-surface-primary);
+  --ss-color-surface-alt: var(--ss-color-surface-muted);
+  --ss-color-text: var(--ss-color-text-primary);
+  --ss-color-muted: var(--ss-color-text-muted);
+  --ss-color-border: var(--ss-color-border-default);
   --ss-color-brand: #a8d47c;
   --ss-color-brand-dark: #6fa64a;
-  --ss-color-accent: #2563eb;
+  --ss-color-brand-ink: #1d3f17;
+  --ss-color-accent: var(--ss-color-link);
   --ss-color-code-bg: #0b1220;
   --ss-color-code-text: #e5edf7;
-  --ss-color-white: #ffffff;
+  --ss-color-white: var(--ss-color-surface-primary);
+  --ss-color-header-bg: var(--ss-color-surface-primary);
+  --ss-color-header-border: var(--ss-color-border-strong);
+  --ss-color-header-nav-text: var(--ss-color-text);
+  --ss-color-header-nav-hover-text: var(--ss-color-text);
+  --ss-color-header-nav-hover-bg: var(--ss-color-hover-surface);
+  --ss-color-header-nav-active-text: var(--ss-color-text);
+  --ss-color-header-nav-active-bg: var(--ss-color-hover-surface);
+  --ss-color-mega-bg: var(--ss-color-surface-raised);
+  --ss-color-mega-text: var(--ss-color-text-primary);
+  --ss-color-mega-text-muted: var(--ss-color-text-muted);
+  --ss-color-mega-title: var(--ss-color-text-muted);
+  --ss-color-mega-border: var(--ss-color-border-strong);
+  --ss-color-mega-divider: var(--ss-color-border-default);
+  --ss-color-mega-link-text: var(--ss-color-text-primary);
+  --ss-color-mega-link-hover-bg: var(--ss-color-surface-muted);
+  --ss-color-mega-link-hover-text: var(--ss-color-text-primary);
+  --ss-color-mega-count: var(--ss-color-text-muted);
+  --ss-color-mega-cta-bg: var(--ss-color-callout-bg);
+  --ss-color-mega-cta-text: var(--ss-color-callout-text);
+  --ss-color-mega-cta-border: var(--ss-color-callout-border);
+  --ss-color-mega-cta-muted: var(--ss-color-text-muted);
+  --ss-color-panel-border: var(--ss-color-mega-border);
+  --ss-color-hover-surface: var(--ss-color-accent-soft-bg);
+  --ss-color-surface-soft: var(--ss-color-surface-muted);
+
+  --ss-hero-surface-bg:
+    radial-gradient(circle at 78% 36%, rgb(168 212 124 / .17), transparent 34%),
+    linear-gradient(180deg, #ffffff, #f8fafc);
+  --ss-hero-code-bg: #ffffff;
+  --ss-hero-dot-bg: #d9e1ed;
+  --ss-hero-line-bg: linear-gradient(90deg, #eef3fa, #e4ebf5);
 
   --ss-color-html5: #e34f26;
   --ss-color-css: #1572b6;
@@ -57,25 +116,101 @@
 }
 
 :root[data-theme="dark"] {
-  --ss-color-bg: #0c1320;
-  --ss-color-surface: #101a2b;
-  --ss-color-surface-alt: #172235;
-  --ss-color-text: #e6edf7;
-  --ss-color-muted: #b8c4d6;
-  --ss-color-border: #263248;
-  --ss-color-accent: #7db0ff;
+  --ss-color-page-background: #0c1320;
+  --ss-color-surface-primary: #101a2b;
+  --ss-color-surface-raised: #152136;
+  --ss-color-surface-muted: #172235;
+  --ss-color-text-primary: #e6edf7;
+  --ss-color-text-muted: #b8c4d6;
+  --ss-color-text-inverse: #0f172a;
+  --ss-color-border-default: #263248;
+  --ss-color-border-strong: #2f3e56;
+  --ss-color-link: #7db0ff;
+  --ss-color-link-hover: #a8c9ff;
+  --ss-color-focus-ring: color-mix(in srgb, #7db0ff 60%, #f8fafc);
+  --ss-color-accent-soft-bg: color-mix(in srgb, #6fa64a 24%, transparent);
+  --ss-color-blockquote-bg: color-mix(in srgb, #6fa64a 30%, #101a2b);
+  --ss-color-blockquote-text: #e6edf7;
+  --ss-color-blockquote-border: color-mix(in srgb, #7db0ff 58%, #6fa64a);
+  --ss-color-callout-bg: color-mix(in srgb, #6fa64a 22%, #101a2b);
+  --ss-color-callout-text: #e6edf7;
+  --ss-color-callout-border: color-mix(in srgb, #6fa64a 52%, #263248);
+  --ss-color-sidebar-bg: #101a2b;
+  --ss-color-sidebar-text: #e6edf7;
+  --ss-color-sidebar-muted-text: #b8c4d6;
+  --ss-color-sidebar-border: #263248;
+  --ss-color-card-bg: #101a2b;
+  --ss-color-card-border: #263248;
+  --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
+  --ss-color-header-nav-text: #e6edf7;
+  --ss-color-header-nav-hover-text: #f8fbff;
+  --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);
+  --ss-color-header-nav-active-text: #f8fbff;
+  --ss-color-header-nav-active-bg: color-mix(in srgb, #7db0ff 24%, #172235);
+  --ss-color-mega-bg: #101a2b;
+  --ss-color-mega-text: #e6edf7;
+  --ss-color-mega-text-muted: #b8c4d6;
+  --ss-color-mega-title: #d7e2f3;
+  --ss-color-mega-border: #2f3e56;
+  --ss-color-mega-divider: #52627a;
+  --ss-color-mega-link-text: #e6edf7;
+  --ss-color-mega-link-hover-bg: color-mix(in srgb, #7db0ff 18%, #172235);
+  --ss-color-mega-link-hover-text: #f8fbff;
+  --ss-color-mega-count: #d7e2f3;
+  --ss-color-mega-cta-bg: color-mix(in srgb, #a8d47c 86%, #101a2b);
+  --ss-color-mega-cta-text: #10220d;
+  --ss-color-mega-cta-border: color-mix(in srgb, #a8d47c 70%, #2f3e56);
+  --ss-color-mega-cta-muted: #2b4128;
+
+  --ss-hero-surface-bg:
+    radial-gradient(circle at 78% 36%, rgb(111 166 74 / .22), transparent 36%),
+    linear-gradient(180deg, #0f1728, #0c1320);
+  --ss-hero-code-bg: color-mix(in srgb, #172235 72%, #0b1426);
+  --ss-hero-dot-bg: #45566f;
+  --ss-hero-line-bg: linear-gradient(90deg, #2f405a, #3b4f6d);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ss-color-bg: #0c1320;
-    --ss-color-surface: #101a2b;
-    --ss-color-surface-alt: #172235;
-    --ss-color-text: #e6edf7;
-    --ss-color-muted: #b8c4d6;
-    --ss-color-border: #263248;
-    --ss-color-accent: #7db0ff;
+    --ss-color-page-background: #0c1320;
+    --ss-color-surface-primary: #101a2b;
+    --ss-color-surface-raised: #152136;
+    --ss-color-surface-muted: #172235;
+    --ss-color-text-primary: #e6edf7;
+    --ss-color-text-muted: #b8c4d6;
+    --ss-color-text-inverse: #0f172a;
+    --ss-color-border-default: #263248;
+    --ss-color-border-strong: #2f3e56;
+    --ss-color-link: #7db0ff;
+    --ss-color-link-hover: #a8c9ff;
+    --ss-color-focus-ring: color-mix(in srgb, #7db0ff 60%, #f8fafc);
+    --ss-color-accent-soft-bg: color-mix(in srgb, #6fa64a 24%, transparent);
+    --ss-color-blockquote-bg: color-mix(in srgb, #6fa64a 30%, #101a2b);
+    --ss-color-blockquote-text: #e6edf7;
+    --ss-color-blockquote-border: color-mix(in srgb, #7db0ff 58%, #6fa64a);
+    --ss-color-callout-bg: color-mix(in srgb, #6fa64a 22%, #101a2b);
+    --ss-color-callout-text: #e6edf7;
+    --ss-color-callout-border: color-mix(in srgb, #6fa64a 52%, #263248);
+    --ss-color-sidebar-bg: #101a2b;
+    --ss-color-sidebar-text: #e6edf7;
+    --ss-color-sidebar-muted-text: #b8c4d6;
+    --ss-color-sidebar-border: #263248;
+    --ss-color-card-bg: #101a2b;
+    --ss-color-card-border: #263248;
+    --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
+    --ss-color-header-nav-text: #e6edf7;
+    --ss-color-header-nav-hover-text: #f8fbff;
+    --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);
+    --ss-color-header-nav-active-text: #f8fbff;
+    --ss-color-header-nav-active-bg: color-mix(in srgb, #7db0ff 24%, #172235);
+
+    --ss-hero-surface-bg:
+      radial-gradient(circle at 78% 36%, rgb(111 166 74 / .22), transparent 36%),
+      linear-gradient(180deg, #0f1728, #0c1320);
+    --ss-hero-code-bg: color-mix(in srgb, #172235 72%, #0b1426);
+    --ss-hero-dot-bg: #45566f;
+    --ss-hero-line-bg: linear-gradient(90deg, #2f405a, #3b4f6d);
     color-scheme: dark;
   }
 }
