@@ -68,7 +68,7 @@ $live_video_data = syntaxsidekick_get_live_video_data();
     :root[data-theme="dark"] .ss-homepage .ss-ranked-item__meta,
     :root[data-theme="dark"] .ss-homepage .ss-card p,
     :root[data-theme="dark"] .ss-homepage .ss-home-hero__content > p:not(.ss-eyebrow) {
-        color: var(--ss-color-muted);
+        color: var(--ss-color-text) !important;
     }
 
     :root[data-theme="dark"] .ss-homepage .ss-section-link {
@@ -91,7 +91,7 @@ $live_video_data = syntaxsidekick_get_live_video_data();
     :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__intro p,
     :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__form .ss-form-note,
     :root[data-theme="dark"] .ss-homepage .ss-newsletter-cta__form .ss-form-status {
-        color: color-mix(in srgb, var(--ss-color-text) 88%, var(--ss-color-muted));
+        color: color-mix(in srgb, var(--ss-color-text) 92%, var(--ss-color-muted)) !important;
     }
 </style>
 
