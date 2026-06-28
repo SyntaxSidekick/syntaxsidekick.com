@@ -255,8 +255,8 @@
   min-height: 44px;
   border: 1px solid transparent;
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-text);
-  color: var(--ss-color-white);
+  background: var(--ss-color-link);
+  color: var(--ss-color-text-inverse);
   font-weight: 800;
 }
 
@@ -387,10 +387,6 @@
     grid-template-columns: minmax(0, 1.3fr) minmax(0, .85fr);
   }
 
-  .ss-content-hub .ss-site-footer__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.35rem 1.5rem;
-  }
 }
 
 @media (max-width: 900px) {
@@ -431,10 +427,6 @@
 
   .ss-contact-thanks {
     max-inline-size: 420px;
-  }
-
-  .ss-content-hub .ss-site-footer__grid {
-    grid-template-columns: 1fr 1fr;
   }
 
   .ss-tutorials-layout {
@@ -507,15 +499,6 @@
 
   .ss-contact-faq-item p {
     padding-inline-start: .9rem;
-  }
-
-  .ss-content-hub .ss-site-footer__grid {
-    grid-template-columns: 1fr;
-    gap: 1.15rem;
-  }
-
-  .ss-content-hub .ss-site-footer__social {
-    flex-wrap: wrap;
   }
 
   .ss-tutorials-toolbar {
