@@ -449,7 +449,7 @@
 :root[data-theme="dark"] .ss-ranked-item__meta,
 :root[data-theme="dark"] .ss-card p,
 :root[data-theme="dark"] .ss-home-hero__content > p:not(.ss-eyebrow) {
-  color: var(--ss-color-text);
+  color: #f8fbff;
 }
 
 :root[data-theme="dark"] .ss-section-link {
