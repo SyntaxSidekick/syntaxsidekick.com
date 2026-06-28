@@ -4,8 +4,12 @@
   function initializeMegaMenu() {
 
   var root = document.querySelector("[data-ss-mega-nav]");
-  if (!root || root.dataset.ssMegaMenuInit === "true") {
-    return;
+  if (!root) {
+    return false;
+  }
+
+  if (root.dataset.ssMegaMenuInit === "true") {
+    return true;
   }
   root.dataset.ssMegaMenuInit = "true";
   root.classList.add("is-js-ready");
@@ -761,11 +765,33 @@
     applyMobileNavStyles();
   }
 
+  return true;
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeMegaMenu, { once: true });
-  } else {
-    initializeMegaMenu();
+  var initAttempts = 0;
+  var maxInitAttempts = 30;
+  var isInitScheduled = false;
+
+  function scheduleInit() {
+    if (isInitScheduled) {
+      return;
+    }
+
+    isInitScheduled = true;
+
+    window.setTimeout(function () {
+      isInitScheduled = false;
+      var initialized = initializeMegaMenu();
+
+      if (!initialized && initAttempts < maxInitAttempts) {
+        initAttempts += 1;
+        scheduleInit();
+      }
+    }, 0);
   }
+
+  scheduleInit();
+  document.addEventListener("DOMContentLoaded", scheduleInit, { once: true });
+  document.addEventListener("DOMContentLiteSpeedLoaded", scheduleInit, { once: true });
+  window.addEventListener("load", scheduleInit, { once: true });
 })();
