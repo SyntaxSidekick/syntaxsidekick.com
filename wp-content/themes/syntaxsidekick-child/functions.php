@@ -943,10 +943,20 @@ function syntaxsidekick_get_live_video_data() {
  * @return WP_Term|null
  */
 function syntaxsidekick_get_news_bulletins_term() {
-    $term = get_term_by('slug', 'news-bulletins', 'category');
+    $candidates = array(
+        array('field' => 'slug', 'value' => 'news-bulletins'),
+        array('field' => 'slug', 'value' => 'news-bulletin'),
+        array('field' => 'name', 'value' => 'News Bulletins'),
+        array('field' => 'name', 'value' => 'News Bulletin'),
+    );
 
-    if (! ($term instanceof WP_Term)) {
-        $term = get_term_by('name', 'News Bulletins', 'category');
+    $term = null;
+    foreach ($candidates as $candidate) {
+        $candidate_term = get_term_by($candidate['field'], $candidate['value'], 'category');
+        if ($candidate_term instanceof WP_Term) {
+            $term = $candidate_term;
+            break;
+        }
     }
 
     if (! ($term instanceof WP_Term)) {
