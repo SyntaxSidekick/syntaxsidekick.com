@@ -2947,7 +2947,7 @@ img { max-width: 100%; height: auto; }
 
 .ss-logo img {
   display: block;
-  inline-size: clamp(150px, 16vw, 212px);
+  inline-size: clamp(150px, 16vw, 175px);
   block-size: auto;
 }
 
@@ -3449,7 +3449,7 @@ body.ss-floaters-suppressed .grecaptcha-badge {
   }
 
   .ss-logo img {
-    inline-size: clamp(142px, 15vw, 188px);
+    inline-size: clamp(150px, 16vw, 175px);
   }
 
   .ss-nav-list {
