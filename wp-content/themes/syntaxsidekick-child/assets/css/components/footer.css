@@ -98,10 +98,34 @@
 			min-height: 42px;
 			border: 1px solid transparent;
 			border-radius: var(--ss-radius-sm);
-			background: var(--ss-color-text);
-			color: var(--ss-color-white);
+			background: var(--ss-color-link);
+			color: var(--ss-color-text-inverse);
 			font-weight: 800;
 		}
+	}
+}
+
+@media (max-width: 1024px) {
+	.ss-site-footer .ss-site-footer__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.35rem 1.5rem;
+	}
+}
+
+@media (max-width: 900px) {
+	.ss-site-footer .ss-site-footer__grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.ss-site-footer .ss-site-footer__grid {
+		grid-template-columns: 1fr;
+		gap: 1.15rem;
+	}
+
+	.ss-site-footer .ss-site-footer__social {
+		flex-wrap: wrap;
 	}
 }
 }
