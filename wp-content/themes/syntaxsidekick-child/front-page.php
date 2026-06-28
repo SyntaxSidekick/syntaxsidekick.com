@@ -62,6 +62,17 @@ $live_video_data = syntaxsidekick_get_live_video_data();
 ?>
 
 <style id="ss-home-dark-fallback">
+    :root[data-theme="dark"] .ss-main.ss-homepage h1,
+    :root[data-theme="dark"] .ss-main.ss-homepage h2,
+    :root[data-theme="dark"] .ss-main.ss-homepage h3,
+    :root[data-theme="dark"] .ss-main.ss-homepage h3 a,
+    :root[data-theme="dark"] .ss-main.ss-homepage a:not(.ss-button-primary):not(.ss-button-secondary),
+    :root[data-theme="dark"] .ss-main.ss-homepage time,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-list-item__meta,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__meta {
+        color: #f8fbff !important;
+    }
+
     :root[data-theme="dark"] .ss-main.ss-homepage p,
     :root[data-theme="dark"] .ss-main.ss-homepage .ss-home-subtitle,
     :root[data-theme="dark"] .ss-main.ss-homepage .ss-list-item__body p,
