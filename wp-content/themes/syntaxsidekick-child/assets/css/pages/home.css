@@ -77,6 +77,7 @@
   background: linear-gradient(160deg, color-mix(in srgb, var(--ss-color-code-bg) 82%, var(--ss-color-bg)), color-mix(in srgb, var(--ss-color-code-bg) 72%, var(--ss-color-bg)));
   box-shadow: var(--ss-shadow-card);
   padding: var(--ss-space-3);
+  overflow: hidden;
 }
 
 .ss-home-visual-card pre {
@@ -85,7 +86,14 @@
   font-family: var(--ss-font-mono);
   font-size: .88rem;
   line-height: 1.6;
+  max-inline-size: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ss-home-visual-card pre code {
+  display: block;
+  min-inline-size: max-content;
 }
 
 .ss-tech-stack {
@@ -525,6 +533,17 @@
   .ss-list-item__thumb {
     inline-size: 68px;
     block-size: 68px;
+  }
+
+  .ss-home-visual-card pre {
+    overflow-x: hidden;
+    font-size: .82rem;
+  }
+
+  .ss-home-visual-card pre code {
+    min-inline-size: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
 
