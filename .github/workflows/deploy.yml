@@ -42,6 +42,10 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_TARGET: ${{ secrets.FTP_TARGET }}
+          FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
+          FTP_SECURITY: ${{ secrets.FTP_SECURITY }}
+          FTP_TIMEOUT: ${{ secrets.FTP_TIMEOUT }}
         run: |
           set -euo pipefail
 
@@ -71,8 +75,64 @@ jobs:
             exit 1
           fi
 
+          protocol="${FTP_PROTOCOL:-ftps}"
+          if [[ "$protocol" != "ftp" && "$protocol" != "ftps" && "$protocol" != "ftps-legacy" ]]; then
+            echo "::error::FTP_PROTOCOL must be ftp, ftps, or ftps-legacy (current: ${protocol})."
+            exit 1
+          fi
+
+          port="${FTP_PORT:-21}"
+          if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+            echo "::error::FTP_PORT must be a numeric value (current: ${port})."
+            exit 1
+          fi
+
+          security="${FTP_SECURITY:-loose}"
+          if [[ "$security" != "strict" && "$security" != "loose" ]]; then
+            echo "::error::FTP_SECURITY must be strict or loose (current: ${security})."
+            exit 1
+          fi
+
+          timeout="${FTP_TIMEOUT:-60000}"
+          if ! [[ "$timeout" =~ ^[0-9]+$ ]]; then
+            echo "::error::FTP_TIMEOUT must be milliseconds as a numeric value (current: ${timeout})."
+            exit 1
+          fi
+
           echo "Validated deployment root: ${normalized_target}"
           echo "Local deployment source: wp-content/themes/syntaxsidekick-child"
+          echo "Connection settings: protocol=${protocol}, port=${port}, security=${security}, timeout=${timeout}ms"
+
+      - name: Resolve FTP transport settings
+        id: ftp_config
+        shell: bash
+        env:
+          FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
+          FTP_SECURITY: ${{ secrets.FTP_SECURITY }}
+          FTP_TIMEOUT: ${{ secrets.FTP_TIMEOUT }}
+        run: |
+          set -euo pipefail
+          echo "protocol=${FTP_PROTOCOL:-ftps}" >> "$GITHUB_OUTPUT"
+          echo "port=${FTP_PORT:-21}" >> "$GITHUB_OUTPUT"
+          echo "security=${FTP_SECURITY:-loose}" >> "$GITHUB_OUTPUT"
+          echo "timeout=${FTP_TIMEOUT:-60000}" >> "$GITHUB_OUTPUT"
+
+      - name: Preflight FTP control connection
+        shell: bash
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_PORT: ${{ steps.ftp_config.outputs.port }}
+        run: |
+          set -euo pipefail
+          echo "Checking TCP connectivity to ${FTP_HOST}:${FTP_PORT}"
+          if timeout 15 bash -c "</dev/tcp/${FTP_HOST}/${FTP_PORT}"; then
+            echo "TCP connectivity OK: ${FTP_HOST}:${FTP_PORT}"
+          else
+            echo "::error::Cannot open TCP connection to ${FTP_HOST}:${FTP_PORT}"
+            echo "::error::Likely causes: wrong host/port, FTP blocked by provider firewall, or server requires SFTP."
+            exit 1
+          fi
 
       - name: Show files in deployment scope
         shell: bash
@@ -108,6 +168,11 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ${{ steps.ftp_config.outputs.protocol }}
+          port: ${{ steps.ftp_config.outputs.port }}
+          security: ${{ steps.ftp_config.outputs.security }}
+          timeout: ${{ steps.ftp_config.outputs.timeout }}
+          log-level: verbose
           local-dir: ./wp-content/themes/syntaxsidekick-child/
           server-dir: ${{ secrets.FTP_TARGET }}
           state-name: .ftp-deploy-sync-state.json
