@@ -387,7 +387,7 @@
     grid-template-columns: minmax(0, 1.3fr) minmax(0, .85fr);
   }
 
-  .ss-site-footer__grid {
+  .ss-content-hub .ss-site-footer__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.35rem 1.5rem;
   }
@@ -433,7 +433,7 @@
     max-inline-size: 420px;
   }
 
-  .ss-site-footer__grid {
+  .ss-content-hub .ss-site-footer__grid {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -509,12 +509,12 @@
     padding-inline-start: .9rem;
   }
 
-  .ss-site-footer__grid {
+  .ss-content-hub .ss-site-footer__grid {
     grid-template-columns: 1fr;
     gap: 1.15rem;
   }
 
-  .ss-site-footer__social {
+  .ss-content-hub .ss-site-footer__social {
     flex-wrap: wrap;
   }
 
