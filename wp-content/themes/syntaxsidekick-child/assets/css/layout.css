@@ -115,15 +115,15 @@
 
 .ss-single-tutorial-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: start;
 }
 
 .ss-single-content-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: start;
 }
 
@@ -274,9 +274,67 @@
   position: sticky;
   top: calc(98px + 1rem);
   align-self: start;
+  align-content: start;
   max-block-size: calc(100dvh - 120px);
   overflow: auto;
   scrollbar-gutter: stable both-edges;
+}
+
+.ss-single-sidebar > * {
+  height: fit-content;
+}
+
+@media (max-width: 900px) {
+  .ss-single-tutorial-layout,
+  .ss-single-content-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ss-main,
+  .ss-single-tutorial,
+  .ss-single-content,
+  .ss-single-sidebar,
+  .ss-single-tutorial-sidebar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .ss-single-sidebar,
+  .ss-single-tutorial-sidebar {
+    position: static;
+    top: auto;
+    inset: auto;
+    max-block-size: none;
+    overflow: visible;
+    align-self: start;
+  }
+}
+
+.ss-single-tutorial,
+.ss-single-content,
+.ss-single-tutorial-body {
+  overflow-wrap: anywhere;
+}
+
+.ss-single-tutorial-body img,
+.ss-single-tutorial-body video,
+.ss-single-tutorial-body iframe,
+.ss-single-tutorial-body table,
+.ss-single-content img,
+.ss-single-content video,
+.ss-single-content iframe,
+.ss-single-content table {
+  max-width: 100%;
+  height: auto;
+}
+
+.ss-single-tutorial-body pre,
+.ss-single-tutorial-body table,
+.ss-single-content pre,
+.ss-single-content table {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .ss-tutorial-details-list {

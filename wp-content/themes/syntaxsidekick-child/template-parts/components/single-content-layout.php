@@ -311,6 +311,8 @@ if ($base_term_id > 0) {
                     <?php endif; ?>
                 </header>
 
+                <div class="ss-mobile-toc-mount" aria-live="polite"></div>
+
                 <div class="ss-content ss-single-tutorial-body">
                     <?php echo $rendered_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 </div>
@@ -351,7 +353,9 @@ if ($base_term_id > 0) {
             </article>
 
             <aside class="ss-single-tutorial-sidebar ss-single-sidebar" aria-label="<?php echo esc_attr($singular_label); ?> sidebar">
-                <?php get_template_part('template-parts/components/single-toc'); ?>
+                <div class="ss-sidebar-toc-mount">
+                    <?php get_template_part('template-parts/components/single-toc'); ?>
+                </div>
 
                 <?php
                 get_template_part(

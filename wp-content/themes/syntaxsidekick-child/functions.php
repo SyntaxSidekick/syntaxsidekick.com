@@ -254,6 +254,34 @@ function syntaxsidekick_child_enqueue_assets() {
 add_action('wp_enqueue_scripts', 'syntaxsidekick_child_enqueue_assets', 30);
 
 /**
+ * Enqueue responsive TOC relocation logic on single content layouts.
+ *
+ * @return void
+ */
+function syntaxsidekick_enqueue_toc_responsive() {
+    $supported_types = array('post');
+
+    foreach (array('guide', 'tutorial', 'resource') as $candidate_type) {
+        if (post_type_exists($candidate_type)) {
+            $supported_types[] = $candidate_type;
+        }
+    }
+
+    if (! is_singular($supported_types)) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'syntaxsidekick-toc-responsive',
+        get_stylesheet_directory_uri() . '/assets/js/toc-responsive.js',
+        array(),
+        syntaxsidekick_get_asset_version('assets/js/toc-responsive.js'),
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'syntaxsidekick_enqueue_toc_responsive', 35);
+
+/**
  * Detect whether current singular content uses block markup.
  *
  * @return bool
