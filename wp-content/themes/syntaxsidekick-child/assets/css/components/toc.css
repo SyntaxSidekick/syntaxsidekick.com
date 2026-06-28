@@ -23,9 +23,44 @@
 		margin-bottom: 0;
 	}
 
-	.ez-toc-title-container,
 	.ez-toc-title {
 		display: none;
+	}
+
+	.ez-toc-title-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin: 0 0 .45rem;
+		min-block-size: 1.5rem;
+	}
+
+	:is(.ez-toc-title-toggle, .ez-toc-toggle, .ez-toc-btn) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1;
+	}
+
+	:is(.ez-toc-title-toggle a, .ez-toc-toggle a, .ez-toc-btn) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 1.65rem;
+		block-size: 1.65rem;
+		border: 1px solid var(--ss-color-sidebar-border);
+		border-radius: var(--ss-radius-pill);
+		background: var(--ss-color-sidebar-bg);
+		color: var(--ss-color-sidebar-muted-text);
+		text-decoration: none;
+		font-size: .85rem;
+		font-weight: 700;
+	}
+
+	:is(.ez-toc-title-toggle a, .ez-toc-toggle a, .ez-toc-btn):hover,
+	:is(.ez-toc-title-toggle a, .ez-toc-toggle a, .ez-toc-btn):focus-visible {
+		color: var(--ss-color-link-hover);
+		border-color: color-mix(in srgb, var(--ss-color-link) 45%, var(--ss-color-sidebar-border));
 	}
 
 	.ez-toc-list,
