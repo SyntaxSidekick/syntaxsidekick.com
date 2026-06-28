@@ -38,12 +38,17 @@ Add the following secrets in GitHub:
 - `FTP_USERNAME`
 - `FTP_PASSWORD`
 - `FTP_TARGET`
+- `PROD_SITE_URL`
 
 Set `FTP_TARGET` to:
 
 `/public_html/wp-content/themes/syntaxsidekick-child/`
 
 The workflow validates this path before deployment and fails if it does not match.
+
+Set `PROD_SITE_URL` to your production origin, for example:
+
+`https://syntaxsidekick.com`
 
 ### How Deployment Works
 
@@ -53,12 +58,15 @@ The workflow validates this path before deployment and fails if it does not matc
 - Deployment method: FTP via `SamKirkland/FTP-Deploy-Action`
 - Incremental sync: uploads changed files whenever possible using action state tracking
 - Safety: `dangerous-clean-slate` is disabled
+- Deploy metadata: each run writes `wp-content/themes/syntaxsidekick-child/assets/deploy-meta.json` with the current commit/run
+- Live verification: workflow fails if production HTML does not include the expected deploy marker for the pushed commit
 
 ### Safety Guarantees
 
 - Only files under the child theme directory are uploaded.
 - No uploads, plugins, database content, or WordPress core files are touched.
 - No files outside the configured theme destination are targeted.
+- Deploy verification catches stale production responses before the workflow reports success.
 
 ### Excluded From Deployment
 
@@ -83,3 +91,4 @@ Use one of these options:
 - FTP target path error: ensure `FTP_TARGET` is exactly `/public_html/wp-content/themes/syntaxsidekick-child/`.
 - Authentication failure: verify FTP credentials and host.
 - No files uploaded: this can be expected when no theme files changed.
+- Deploy verification failed: production is serving stale content. Purge LiteSpeed page cache and CSS/JS optimization cache, then re-run the workflow.

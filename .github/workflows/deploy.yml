@@ -81,6 +81,27 @@ jobs:
           echo "Files available in child theme:"
           find wp-content/themes/syntaxsidekick-child -type f | wc -l
 
+      - name: Generate deploy metadata
+        shell: bash
+        env:
+          GIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          DEPLOY_ID="${GIT_SHA:0:12}"
+          DEPLOY_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          cat > wp-content/themes/syntaxsidekick-child/assets/deploy-meta.json <<EOF
+          {
+            "deploy_id": "${DEPLOY_ID}",
+            "commit": "${GIT_SHA}",
+            "run_id": "${RUN_ID}",
+            "deployed_at_utc": "${DEPLOY_TIME}"
+          }
+          EOF
+
+          echo "Generated deploy metadata with deploy_id=${DEPLOY_ID}"
+
       - name: Deploy changed child theme files
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -106,3 +127,31 @@ jobs:
             **/.DS_Store
             **/Thumbs.db
             **/*.log
+
+      - name: Verify production serves latest deploy marker
+        shell: bash
+        env:
+          PROD_SITE_URL: ${{ secrets.PROD_SITE_URL }}
+          GIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PROD_SITE_URL:-}" ]; then
+            echo "::error::Missing required repository secret: PROD_SITE_URL"
+            exit 1
+          fi
+
+          DEPLOY_ID="${GIT_SHA:0:12}"
+          VERIFY_URL="${PROD_SITE_URL%/}/?deploy_verify=${DEPLOY_ID}"
+
+          echo "Checking deploy marker at ${VERIFY_URL}"
+
+          html="$(curl -sS -L --max-time 45 "$VERIFY_URL")"
+
+          if ! echo "$html" | grep -q "syntaxsidekick-deploy:${DEPLOY_ID}"; then
+            echo "::error::Production does not yet serve deploy marker syntaxsidekick-deploy:${DEPLOY_ID}"
+            echo "::error::Likely causes: stale server deploy, stale page cache, or stale optimization cache."
+            exit 1
+          fi
+
+          echo "Verified production marker syntaxsidekick-deploy:${DEPLOY_ID}"
