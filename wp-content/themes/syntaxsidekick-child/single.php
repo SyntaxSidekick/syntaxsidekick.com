@@ -3,7 +3,6 @@
  * Single post template.
  *
  * @package SyntaxSidekick_Child
- * 
  */
 
 get_header();

@@ -15,11 +15,12 @@
 
 .ss-sidebar--sticky,
 :where(.ss-single-sidebar, .ss-single-tutorial-sidebar) {
-  position: static;
-  inset-block-start: auto;
+  position: sticky;
+  inset-block-start: calc(98px + 1rem);
   align-self: start;
-  overflow: visible;
-  max-block-size: none;
+  max-block-size: calc(100dvh - 120px);
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 .ss-sidebar-card {
