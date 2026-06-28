@@ -111,7 +111,7 @@ function syntaxsidekick_child_enqueue_assets() {
         $page_css_modules[] = 'assets/css/pages/home.css';
     }
 
-    if (is_page('tutorials')) {
+    if (is_page(array('tutorials', 'articles', 'guides', 'resources'))) {
         $page_css_modules[] = 'assets/css/pages/tutorials.css';
     }
 
