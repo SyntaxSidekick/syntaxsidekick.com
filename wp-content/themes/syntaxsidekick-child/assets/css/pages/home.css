@@ -12,8 +12,8 @@
   padding: clamp(3rem, 6vw, 5.5rem) 0;
   border-bottom: 1px solid var(--ss-color-border);
   background:
-    radial-gradient(circle at 82% 12%, rgb(168 212 124 / .2), transparent 26%),
-    linear-gradient(160deg, var(--ss-color-code-bg) 18%, #050b15 60%, #081423 100%);
+    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--ss-color-brand) 20%, transparent), transparent 26%),
+    linear-gradient(160deg, var(--ss-color-code-bg) 18%, color-mix(in srgb, var(--ss-color-code-bg) 84%, var(--ss-color-bg)) 60%, color-mix(in srgb, var(--ss-color-code-bg) 68%, var(--ss-color-bg)) 100%);
   color: var(--ss-color-white);
 }
 
@@ -65,7 +65,7 @@
 .ss-home-visual-card {
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 20%, transparent);
   border-radius: var(--ss-radius-lg);
-  background: linear-gradient(160deg, #121d31, #0d1627);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--ss-color-code-bg) 82%, var(--ss-color-bg)), color-mix(in srgb, var(--ss-color-code-bg) 72%, var(--ss-color-bg)));
   box-shadow: var(--ss-shadow-card);
   padding: var(--ss-space-3);
 }
@@ -93,7 +93,7 @@
   padding-inline: .8rem;
   border-radius: var(--ss-radius-sm);
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 24%, transparent);
-  background: color-mix(in srgb, var(--ss-color-code-bg) 72%, #15253d);
+  background: color-mix(in srgb, var(--ss-color-code-bg) 72%, var(--ss-color-surface-raised));
   color: var(--ss-color-white);
   font-weight: 700;
   font-size: .85rem;
@@ -111,7 +111,7 @@
 .ss-feature-item {
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 18%, transparent);
   border-radius: var(--ss-radius-md);
-  background: color-mix(in srgb, #091325 76%, transparent);
+  background: color-mix(in srgb, var(--ss-color-code-bg) 76%, transparent);
   padding: .75rem;
 }
 
@@ -175,7 +175,7 @@
 }
 
 .ss-live-card {
-  background: linear-gradient(160deg, var(--ss-color-code-bg), #111e33);
+  background: linear-gradient(160deg, var(--ss-color-code-bg), color-mix(in srgb, var(--ss-color-code-bg) 74%, var(--ss-color-bg)));
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 18%, transparent);
   border-radius: var(--ss-radius-md);
   color: var(--ss-color-white);
@@ -187,7 +187,7 @@
   margin: 0;
   padding: .2rem .55rem;
   border-radius: var(--ss-radius-pill);
-  background: #ff3b30;
+  background: var(--ss-color-brand-dark);
   color: var(--ss-color-white);
   font-size: .72rem;
   font-weight: 700;
@@ -233,7 +233,7 @@
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 18%, transparent);
   border-radius: var(--ss-radius-sm);
   padding: .7rem;
-  background: color-mix(in srgb, #0d172a 72%, transparent);
+  background: color-mix(in srgb, var(--ss-color-code-bg) 72%, transparent);
 }
 
 .ss-live-thumb img,
@@ -249,7 +249,7 @@
 
 .ss-live-thumb__preview {
   display: block;
-  background: linear-gradient(140deg, #1a2a45, #0c1524);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--ss-color-code-bg) 70%, var(--ss-color-bg)), color-mix(in srgb, var(--ss-color-code-bg) 84%, var(--ss-color-bg)));
 }
 
 .ss-live-thumb__title {
@@ -295,7 +295,7 @@
   block-size: 80px;
   border-radius: var(--ss-radius-sm);
   overflow: hidden;
-  background: linear-gradient(140deg, #0e1d33, #1b2d4b);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--ss-color-code-bg) 78%, var(--ss-color-bg)), color-mix(in srgb, var(--ss-color-code-bg) 66%, var(--ss-color-bg)));
   color: var(--ss-color-white);
   text-decoration: none;
 }
@@ -385,8 +385,8 @@
   border: 1px solid color-mix(in srgb, var(--ss-color-white) 15%, transparent);
   border-radius: var(--ss-radius-md);
   background:
-    radial-gradient(circle at 88% 12%, rgb(168 212 124 / .22), transparent 32%),
-    linear-gradient(170deg, var(--ss-color-code-bg), #0d1626);
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--ss-color-brand) 22%, transparent), transparent 32%),
+    linear-gradient(170deg, var(--ss-color-code-bg), color-mix(in srgb, var(--ss-color-code-bg) 78%, var(--ss-color-bg)));
   color: var(--ss-color-white);
   padding: var(--ss-space-3);
   display: grid;

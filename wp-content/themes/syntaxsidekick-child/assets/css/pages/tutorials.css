@@ -74,7 +74,7 @@
   color: var(--ss-color-text);
   font: inherit;
   font-weight: 600;
-  box-shadow: 0 1px 2px rgb(15 23 42 / .03);
+  box-shadow: var(--ss-shadow-soft);
 }
 
 .ss-sort-submit {
@@ -107,12 +107,12 @@
   border-radius: var(--ss-radius-md);
   background: var(--ss-color-white);
   overflow: hidden;
-  box-shadow: 0 6px 16px rgb(15 23 42 / .03);
+  box-shadow: var(--ss-shadow-soft);
   transition: border-color var(--ss-motion-base) var(--ss-ease-standard), box-shadow var(--ss-motion-base) var(--ss-ease-standard), transform var(--ss-motion-base) var(--ss-ease-standard);
 
   &:hover {
     border-color: color-mix(in srgb, var(--ss-color-brand-dark) 30%, var(--ss-color-border));
-    box-shadow: 0 12px 24px rgb(15 23 42 / .08);
+    box-shadow: var(--ss-shadow-card);
     transform: translateY(-1px);
   }
 
@@ -123,7 +123,7 @@
   .ss-tutorial-card__thumb {
     display: block;
     aspect-ratio: 1.44 / 1;
-    background: linear-gradient(135deg, #0b1220, #111827 55%, #1e293b);
+    background: linear-gradient(135deg, var(--ss-color-code-bg), color-mix(in srgb, var(--ss-color-code-bg) 80%, var(--ss-color-bg)) 55%, color-mix(in srgb, var(--ss-color-code-bg) 66%, var(--ss-color-bg)));
 
     img {
       display: block;
@@ -140,7 +140,7 @@
     margin: 0;
     padding: .35rem .5rem;
     border-radius: var(--ss-radius-pill);
-    background: rgb(16 24 39 / .86);
+    background: color-mix(in srgb, var(--ss-color-code-bg) 86%, transparent);
     color: var(--ss-color-white);
     font-size: .62rem;
     line-height: 1;
