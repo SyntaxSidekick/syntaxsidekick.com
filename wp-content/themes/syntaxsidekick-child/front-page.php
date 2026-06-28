@@ -62,6 +62,22 @@ $live_video_data = syntaxsidekick_get_live_video_data();
 ?>
 
 <style id="ss-home-dark-fallback">
+    :root[data-theme="dark"] .ss-main.ss-homepage p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-home-subtitle,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-list-item__body p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__body p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-ranked-item__meta,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-card p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-feature-item p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-description,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-platform,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-live-thumb__duration,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__intro p,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__form .ss-form-note,
+    :root[data-theme="dark"] .ss-main.ss-homepage .ss-newsletter-cta__form .ss-form-status {
+        color: #f8fbff !important;
+    }
+
     :root[data-theme="dark"] .ss-homepage .ss-home-subtitle,
     :root[data-theme="dark"] .ss-homepage .ss-list-item__body p,
     :root[data-theme="dark"] .ss-homepage .ss-ranked-item__body p,
