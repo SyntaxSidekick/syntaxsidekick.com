@@ -112,20 +112,12 @@ function syntaxsidekick_child_enqueue_assets() {
         $page_css_modules[] = 'assets/css/developer-bulletin.css';
     }
 
-    if (is_page('tutorials')) {
-        $page_css_modules[] = 'assets/css/pages/tutorials.css';
-    }
 
-    if (is_page('articles')) {
-        $page_css_modules[] = 'assets/css/pages/articles.css';
-    }
 
-    if (is_page('guides')) {
-        $page_css_modules[] = 'assets/css/pages/guides.css';
-    }
 
-    if (is_page('resources')) {
-        $page_css_modules[] = 'assets/css/pages/resources.css';
+        // Shared listing/content-hub styles for tutorials, articles, guides, and resources.
+        if (is_page(array('tutorials', 'articles', 'guides', 'resources'))) {
+            $page_css_modules[] = 'assets/css/pages/listings.css';
     }
 
     if (is_singular('post')) {
