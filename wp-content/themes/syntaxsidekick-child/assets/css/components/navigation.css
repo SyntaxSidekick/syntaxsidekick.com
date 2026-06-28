@@ -54,6 +54,11 @@
   gap: clamp(.32rem, 1vw, 1rem);
 }
 
+/* Hide WP fallback child menus; mega panels are injected by JS templates. */
+.ss-primary-nav .sub-menu {
+  display: none;
+}
+
 .ss-nav-item {
   position: relative;
 
