@@ -27,8 +27,6 @@
   --ss-color-card-bg: #ffffff;
   --ss-color-card-border: #dbe3ef;
   --ss-color-inline-code-bg: color-mix(in srgb, #0b1220 10%, #ffffff);
-  --ss-color-form-bg: #ffffff;
-  --ss-color-form-border: var(--ss-color-border-default);
 
   --ss-color-bg: var(--ss-color-page-background);
   --ss-color-surface: var(--ss-color-surface-primary);
@@ -50,21 +48,7 @@
   --ss-color-header-nav-hover-bg: var(--ss-color-hover-surface);
   --ss-color-header-nav-active-text: var(--ss-color-text);
   --ss-color-header-nav-active-bg: var(--ss-color-hover-surface);
-  --ss-color-mega-bg: var(--ss-color-surface-raised);
-  --ss-color-mega-text: var(--ss-color-text-primary);
-  --ss-color-mega-text-muted: var(--ss-color-text-muted);
-  --ss-color-mega-title: var(--ss-color-text-muted);
-  --ss-color-mega-border: var(--ss-color-border-strong);
-  --ss-color-mega-divider: var(--ss-color-border-default);
-  --ss-color-mega-link-text: var(--ss-color-text-primary);
-  --ss-color-mega-link-hover-bg: var(--ss-color-surface-muted);
-  --ss-color-mega-link-hover-text: var(--ss-color-text-primary);
-  --ss-color-mega-count: var(--ss-color-text-muted);
-  --ss-color-mega-cta-bg: var(--ss-color-callout-bg);
-  --ss-color-mega-cta-text: var(--ss-color-callout-text);
-  --ss-color-mega-cta-border: var(--ss-color-callout-border);
-  --ss-color-mega-cta-muted: var(--ss-color-text-muted);
-  --ss-color-panel-border: var(--ss-color-mega-border);
+  --ss-color-panel-border: var(--ss-color-border-strong);
   --ss-color-hover-surface: var(--ss-color-accent-soft-bg);
   --ss-color-surface-soft: var(--ss-color-surface-muted);
 
@@ -144,27 +128,11 @@
   --ss-color-card-bg: #101a2b;
   --ss-color-card-border: #263248;
   --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
-  --ss-color-form-bg: #101a2b;
-  --ss-color-form-border: var(--ss-color-border-default);
   --ss-color-header-nav-text: #e6edf7;
   --ss-color-header-nav-hover-text: #f8fbff;
   --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);
   --ss-color-header-nav-active-text: #f8fbff;
   --ss-color-header-nav-active-bg: color-mix(in srgb, #7db0ff 24%, #172235);
-  --ss-color-mega-bg: #101a2b;
-  --ss-color-mega-text: #e6edf7;
-  --ss-color-mega-text-muted: #b8c4d6;
-  --ss-color-mega-title: #d7e2f3;
-  --ss-color-mega-border: #2f3e56;
-  --ss-color-mega-divider: #52627a;
-  --ss-color-mega-link-text: #e6edf7;
-  --ss-color-mega-link-hover-bg: color-mix(in srgb, #7db0ff 18%, #172235);
-  --ss-color-mega-link-hover-text: #f8fbff;
-  --ss-color-mega-count: #d7e2f3;
-  --ss-color-mega-cta-bg: color-mix(in srgb, #a8d47c 86%, #101a2b);
-  --ss-color-mega-cta-text: #10220d;
-  --ss-color-mega-cta-border: color-mix(in srgb, #a8d47c 70%, #2f3e56);
-  --ss-color-mega-cta-muted: #2b4128;
 
   --ss-hero-surface-bg:
     radial-gradient(circle at 78% 36%, rgb(111 166 74 / .22), transparent 36%),
@@ -203,8 +171,6 @@
     --ss-color-card-bg: #101a2b;
     --ss-color-card-border: #263248;
     --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
-    --ss-color-form-bg: #101a2b;
-    --ss-color-form-border: var(--ss-color-border-default);
     --ss-color-header-nav-text: #e6edf7;
     --ss-color-header-nav-hover-text: #f8fbff;
     --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);

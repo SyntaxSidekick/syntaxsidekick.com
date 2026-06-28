@@ -7,7 +7,7 @@
 
 $browse_items = isset($args['browse_items']) && is_array($args['browse_items']) ? $args['browse_items'] : array();
 ?>
-<aside class="ss-sidebar ss-sidebar--hub ss-tutorials-sidebar" aria-label="Tutorial filters and newsletter">
+<aside class="ss-tutorials-sidebar" aria-label="Tutorial filters and newsletter">
     <?php
     get_template_part(
         'template-parts/components/tutorial-category-list',
