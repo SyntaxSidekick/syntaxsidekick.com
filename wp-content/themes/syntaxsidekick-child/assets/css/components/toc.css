@@ -42,7 +42,7 @@
 		position: static !important;
 		top: auto !important;
 		background: var(--ss-color-sidebar-bg) !important;
-		border: 1px solid var(--ss-color-sidebar-border) !important;
+		border: none;
 		color: var(--ss-color-sidebar-text) !important;
 	}
 
@@ -60,4 +60,12 @@
 		color: var(--ss-color-link-hover) !important;
 	}
 }
+}
+.ss-sidebar #ez-toc-container,
+.ss-single-toc__content {
+    border: none !important;
+    padding-top: 10px;
+    padding-right: 0;;
+    padding-bottom: 10px;
+    padding-left: 0;
 }

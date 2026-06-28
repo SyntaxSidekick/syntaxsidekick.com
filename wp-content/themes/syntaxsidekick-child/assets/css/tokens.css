@@ -27,6 +27,8 @@
   --ss-color-card-bg: #ffffff;
   --ss-color-card-border: #dbe3ef;
   --ss-color-inline-code-bg: color-mix(in srgb, #0b1220 10%, #ffffff);
+  --ss-color-form-bg: #ffffff;
+  --ss-color-form-border: var(--ss-color-border-default);
 
   --ss-color-bg: var(--ss-color-page-background);
   --ss-color-surface: var(--ss-color-surface-primary);
@@ -142,6 +144,8 @@
   --ss-color-card-bg: #101a2b;
   --ss-color-card-border: #263248;
   --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
+  --ss-color-form-bg: #101a2b;
+  --ss-color-form-border: var(--ss-color-border-default);
   --ss-color-header-nav-text: #e6edf7;
   --ss-color-header-nav-hover-text: #f8fbff;
   --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);
@@ -199,6 +203,8 @@
     --ss-color-card-bg: #101a2b;
     --ss-color-card-border: #263248;
     --ss-color-inline-code-bg: color-mix(in srgb, #172235 72%, #101a2b);
+    --ss-color-form-bg: #101a2b;
+    --ss-color-form-border: var(--ss-color-border-default);
     --ss-color-header-nav-text: #e6edf7;
     --ss-color-header-nav-hover-text: #f8fbff;
     --ss-color-header-nav-hover-bg: color-mix(in srgb, #2f3e56 56%, transparent);

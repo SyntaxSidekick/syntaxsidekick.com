@@ -155,7 +155,7 @@
 }
 
 .value-card {
-  background: var(--ss-color-white);
+  background: var(--ss-color-card-bg);
 }
 
 .value-card .ss-card-body {
@@ -170,7 +170,7 @@
   display: inline-grid;
   place-items: center;
   border-radius: var(--ss-radius-pill);
-  background: color-mix(in srgb, var(--ss-color-brand) 26%, var(--ss-color-white));
+  background: var(--ss-color-accent-soft-bg);
   color: var(--ss-color-brand-dark);
 }
 
@@ -226,7 +226,7 @@
 .creator-card {
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-md);
-  background: var(--ss-color-white);
+  background: var(--ss-color-card-bg);
   display: grid;
   grid-template-columns: 118px minmax(0, 1fr);
   gap: 1rem;
@@ -306,7 +306,7 @@
   margin: 0;
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-white);
+  background: var(--ss-color-card-bg);
   color: var(--ss-color-text);
   font-size: .88rem;
   font-weight: 700;

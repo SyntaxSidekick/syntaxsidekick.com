@@ -4,7 +4,7 @@ html.ss-mobile-nav-open,
 body.ss-mobile-nav-open { overscroll-behavior: none; }
 body.ss-mobile-nav-open { overflow: hidden; }
 
-body.ss-mobile-nav-open :is(.ss-single-sidebar, .ss-single-tutorial-sidebar) {
+body.ss-mobile-nav-open :is(.ss-sidebar--sticky, .ss-single-sidebar, .ss-single-tutorial-sidebar) {
 	position: static !important;
 	top: auto !important;
 }

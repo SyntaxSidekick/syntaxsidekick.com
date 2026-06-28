@@ -149,8 +149,8 @@ $faq_items = array(
                 </div>
             </article>
 
-            <aside class="ss-contact-sidebar" aria-label="Contact information">
-                <section class="ss-panel ss-contact-panel" aria-labelledby="ss-contact-info-title">
+            <aside class="ss-sidebar ss-sidebar--contact ss-contact-sidebar" aria-label="Contact information">
+                <section class="ss-sidebar-card ss-contact-panel" aria-labelledby="ss-contact-info-title">
                     <h2 id="ss-contact-info-title" class="ss-section-title">GET IN TOUCH</h2>
                     <ul class="ss-contact-sidebar-list" role="list">
                         <?php foreach ($contact_channels as $channel) : ?>
@@ -174,7 +174,7 @@ $faq_items = array(
                     </ul>
                 </section>
 
-                <section class="ss-panel ss-contact-panel" aria-labelledby="ss-contact-before-title">
+                <section class="ss-sidebar-card ss-contact-panel" aria-labelledby="ss-contact-before-title">
                     <h2 id="ss-contact-before-title" class="ss-section-title">BEFORE YOU SEND</h2>
                     <p class="ss-contact-before-copy">You might find what you're looking for in these sections:</p>
                     <ul class="ss-contact-links" role="list">
