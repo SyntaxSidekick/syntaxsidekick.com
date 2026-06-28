@@ -63,6 +63,38 @@
 		border-color: color-mix(in srgb, var(--ss-color-link) 45%, var(--ss-color-sidebar-border));
 	}
 
+	.ez-toc-toggle .ez-toc-glyphicon,
+	.ez-toc-toggle .ez-toc-icon-toggle-span > svg {
+		display: none;
+	}
+
+	.ez-toc-toggle .ez-toc-js-icon-con,
+	.ez-toc-toggle .ez-toc-icon-toggle-span,
+	.ez-toc-toggle .eztoc-toggle-hide-by-default {
+		display: inline-grid;
+		place-items: center;
+		inline-size: 1rem;
+		block-size: 1rem;
+		line-height: 1;
+	}
+
+	.ez-toc-toggle .ez-toc-js-icon-con::before,
+	.ez-toc-toggle .ez-toc-icon-toggle-span::before,
+	.ez-toc-toggle .eztoc-toggle-hide-by-default::before,
+	.ez-toc-toggle::before {
+		content: '−';
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	:is(#ez-toc-container, .ez-toc-container, .toc_container, .lwptoc):has(input[type='checkbox']:checked) .ez-toc-toggle .ez-toc-js-icon-con::before,
+	:is(#ez-toc-container, .ez-toc-container, .toc_container, .lwptoc):has(input[type='checkbox']:checked) .ez-toc-toggle .ez-toc-icon-toggle-span::before,
+	:is(#ez-toc-container, .ez-toc-container, .toc_container, .lwptoc):has(input[type='checkbox']:checked) .ez-toc-toggle .eztoc-toggle-hide-by-default::before,
+	:is(#ez-toc-container, .ez-toc-container, .toc_container, .lwptoc):has(input[type='checkbox']:checked) .ez-toc-toggle::before {
+		content: '+';
+	}
+
 	.ez-toc-list,
 	ul,
 	ol {
