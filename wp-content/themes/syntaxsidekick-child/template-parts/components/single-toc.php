@@ -25,7 +25,7 @@ if ('' === trim(wp_strip_all_tags($toc_output))) {
     return;
 }
 ?>
-<section class="ss-sidebar-card ss-single-toc" aria-labelledby="<?php echo esc_attr($title_id); ?>">
+<section class="ss-sidebar-card ss-single-toc ss-toc" aria-labelledby="<?php echo esc_attr($title_id); ?>">
     <h2 id="<?php echo esc_attr($title_id); ?>" class="ss-sidebar-card__title ss-section-title"><?php echo esc_html($heading); ?></h2>
     <div class="ss-single-toc__content">
         <?php echo wp_kses_post($toc_output); ?>

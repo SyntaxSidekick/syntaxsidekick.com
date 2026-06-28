@@ -1,4 +1,16 @@
 @layer components {
+.ss-mobile-toc-mount:empty {
+	display: none;
+}
+
+.ss-mobile-toc-mount:not(:empty) {
+	margin-block: clamp(1rem, 4vw, 1.5rem);
+}
+
+.ss-sidebar-toc-mount:empty {
+	display: none;
+}
+
 .ss-single-toc__content {
 	position: static;
 	color: var(--ss-color-sidebar-text);
@@ -58,6 +70,21 @@
 	#ez-toc-container .active > a,
 	#ez-toc-container .ez-toc-active a {
 		color: var(--ss-color-link-hover) !important;
+	}
+}
+
+.ss-sidebar,
+.widget-area {
+	> * {
+		align-self: start;
+	}
+}
+
+@media (max-width: 900px) {
+	.ss-sidebar .ss-toc,
+	.ss-sidebar .ez-toc-container,
+	.ss-sidebar #ez-toc-container {
+		position: static;
 	}
 }
 }
