@@ -64,7 +64,7 @@
   block-size: 2rem;
   border: 1px solid color-mix(in srgb, var(--ss-color-brand-dark) 38%, var(--ss-color-border));
   border-radius: .58rem;
-  background: color-mix(in srgb, var(--ss-color-brand) 26%, var(--ss-color-white));
+  background: color-mix(in srgb, var(--ss-color-brand) 26%, var(--ss-color-surface));
   display: inline-grid;
   place-items: center;
   color: var(--ss-color-brand-dark);
@@ -76,7 +76,7 @@
 }
 
 .ss-contact-icon--soft {
-  background: color-mix(in srgb, var(--ss-color-brand) 18%, var(--ss-color-white));
+  background: color-mix(in srgb, var(--ss-color-brand) 18%, var(--ss-color-surface));
 }
 
 .ss-contact-hero__visual {
@@ -133,7 +133,7 @@
   block-size: 2.8rem;
   border-radius: .62rem;
   border: 1px solid color-mix(in srgb, var(--ss-color-brand-dark) 45%, var(--ss-color-border));
-  background: color-mix(in srgb, var(--ss-color-brand) 30%, var(--ss-color-white));
+  background: color-mix(in srgb, var(--ss-color-brand) 30%, var(--ss-color-surface));
   display: inline-grid;
   place-items: center;
   color: var(--ss-color-brand-dark);
@@ -232,7 +232,7 @@
     width: 100%;
     border: 1px solid var(--ss-color-border);
     border-radius: var(--ss-radius-sm);
-    background: var(--ss-color-white);
+    background: var(--ss-color-surface);
     color: var(--ss-color-text);
     padding: .7rem .78rem;
     font: inherit;
@@ -402,7 +402,7 @@
 .ss-contact-faq-item {
   border: 1px solid var(--ss-color-border);
   border-radius: var(--ss-radius-sm);
-  background: var(--ss-color-white);
+  background: var(--ss-color-card-bg);
 }
 
 .ss-contact-faq-item summary {
