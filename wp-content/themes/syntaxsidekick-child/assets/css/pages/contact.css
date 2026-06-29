@@ -455,5 +455,67 @@
   color: var(--ss-color-muted);
 }
 
+@media (max-width: 1024px) {
+  .ss-contact-highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ss-contact-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, .9fr);
+  }
+
+  .ss-contact-faq-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, .85fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .ss-contact-hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ss-contact-hero__visual {
+    justify-self: start;
+  }
+
+  .ss-contact-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .ss-contact-grid,
+  .ss-contact-faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ss-contact-thanks {
+    max-inline-size: 420px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ss-contact-hero {
+    padding: clamp(2.2rem, 5vw, 3rem) 0;
+  }
+
+  .ss-contact-form-card .ss-card-body,
+  .ss-contact-panel,
+  .ss-contact-thanks {
+    padding: .95rem;
+  }
+
+  .ss-contact-illustration::after {
+    display: none;
+  }
+
+  .ss-contact-illustration__body {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .ss-contact-faq-item p {
+    padding-inline-start: .9rem;
+  }
+}
+
 
 }
