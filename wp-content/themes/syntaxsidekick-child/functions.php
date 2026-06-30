@@ -135,68 +135,12 @@ function syntaxsidekick_child_enqueue_assets() {
         syntaxsidekick_get_asset_version('style.css')
     );
 
-    $global_css_modules = array(
-        'assets/css/layers.css',
-        'assets/css/tokens.css',
-        'assets/css/reset.css',
-        'assets/css/base.css',
-        'assets/css/typography.css',
-        'assets/css/layout.css',
-        'assets/css/components/navigation.css',
-        'assets/css/components/mega-menu.css',
-        'assets/css/components/hero.css',
-        'assets/css/components/buttons.css',
-        'assets/css/components/forms.css',
-        'assets/css/components/cards.css',
-        'assets/css/components/sidebar.css',
-        'assets/css/components/footer.css',
-        'assets/css/components/pagination.css',
-        'assets/css/components/toc.css',
-        'assets/css/themes/dark.css',
-        'assets/css/themes/motion.css',
-        'assets/css/utilities.css',
+    wp_enqueue_style(
+        'syntaxsidekick-app',
+        get_stylesheet_directory_uri() . '/assets/css/app.css',
+        array('syntaxsidekick-child-style'),
+        syntaxsidekick_get_asset_version('assets/css/app.css')
     );
-
-    $page_css_modules = array();
-
-    if (is_front_page() || is_home()) {
-        $page_css_modules[] = 'assets/css/pages/home.css';
-        $page_css_modules[] = 'assets/css/developer-bulletin.css';
-    }
-
-    // Shared listing/content-hub styles for tutorials, articles, guides, and resources.
-    if (is_page(array('tutorials', 'articles', 'guides', 'resources'))) {
-        $page_css_modules[] = 'assets/css/pages/listings.css';
-    }
-
-    if (is_singular('post')) {
-        $page_css_modules[] = 'assets/css/pages/single.css';
-    }
-
-    if (is_page('about')) {
-        $page_css_modules[] = 'assets/css/pages/about.css';
-    }
-
-    if (is_page('contact')) {
-        $page_css_modules[] = 'assets/css/pages/contact.css';
-    }
-
-    $css_modules = array_merge($global_css_modules, $page_css_modules);
-
-    $previous_style_handle = 'syntaxsidekick-child-style';
-
-    foreach ($css_modules as $css_relative_path) {
-        $style_handle = 'syntaxsidekick-' . sanitize_key(str_replace(array('/', '.css'), array('-', ''), $css_relative_path));
-
-        wp_enqueue_style(
-            $style_handle,
-            get_stylesheet_directory_uri() . '/' . $css_relative_path,
-            array($previous_style_handle),
-            syntaxsidekick_get_asset_version($css_relative_path)
-        );
-
-        $previous_style_handle = $style_handle;
-    }
 
     $nav_script_ver = syntaxsidekick_get_asset_version('assets/js/mega-menu.js');
 

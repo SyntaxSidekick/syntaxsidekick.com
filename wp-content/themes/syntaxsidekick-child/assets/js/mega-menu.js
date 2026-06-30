@@ -2,765 +2,795 @@
   "use strict";
 
   function initializeMegaMenu() {
-
-  var root = document.querySelector("[data-ss-mega-nav]");
-  if (!root || root.dataset.ssMegaMenuInit === "true") {
-    return;
-  }
-  root.dataset.ssMegaMenuInit = "true";
-  root.classList.add("is-js-ready");
-
-  var desktopMq = window.matchMedia("(min-width: 981px)");
-  var focusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
-  var floatingSelectors = [
-    "#scrollUp",
-    ".scroll-to-top",
-    ".back-to-top",
-    "#back-to-top",
-    ".wpfront-scroll-top-container",
-    ".joinchat",
-    ".grecaptcha-badge",
-  ].join(",");
-
-  var nav = root.querySelector(".ss-primary-nav");
-  var menuToggle = root.querySelector(".ss-menu-toggle");
-  var searchButton = root.querySelector(".ss-search-link");
-  var megaMenuData = Array.isArray(window.syntaxsidekickMegaMenuData)
-    ? window.syntaxsidekickMegaMenuData
-    : [];
-
-  var activeItem = null;
-  var closeTimer = null;
-  var overlay = null;
-  var mobileClose = null;
-  var megaItems = [];
-  var mobileOpen = false;
-  var restoreScrollY = 0;
-
-  function isDesktop() {
-    return desktopMq.matches;
-  }
-
-  function toAbsoluteUrl(path) {
-    try {
-      return new URL(path, window.location.origin).toString();
-    } catch (error) {
-      return path;
-    }
-  }
-
-  function normalizePath(path) {
-    if (!path) {
-      return "/";
-    }
-
-    var output = path;
-    if (output.charAt(0) !== "/") {
-      output = "/" + output;
-    }
-
-    if (output.length > 1 && output.charAt(output.length - 1) !== "/") {
-      output += "/";
-    }
-
-    return output;
-  }
-
-  function slugify(value) {
-    return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  }
-
-  function createElement(tagName, className, text) {
-    var element = document.createElement(tagName);
-    if (className) {
-      element.className = className;
-    }
-    if (typeof text === "string") {
-      element.textContent = text;
-    }
-    return element;
-  }
-
-  function getPanel(item) {
-    return item ? item.querySelector(".ss-mega-panel") : null;
-  }
-
-  function getFocusables(container) {
-    if (!container) {
-      return [];
-    }
-
-    return Array.prototype.slice.call(container.querySelectorAll(focusSelector)).filter(function (el) {
-      return !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true";
-    });
-  }
-
-  function setPanelInteractive(panel, expanded) {
-    if (!panel) {
+    const root = document.querySelector("[data-ss-mega-nav]");
+    if (!root || root.dataset.ssMegaMenuInit === "true") {
       return;
     }
 
-    panel.setAttribute("aria-hidden", expanded ? "false" : "true");
-    panel.classList.toggle("is-open", expanded);
-
-    if (!isDesktop()) {
-      panel.style.maxHeight = expanded ? panel.scrollHeight + "px" : "0px";
-    } else {
-      panel.style.maxHeight = "";
-    }
-
-    var panelFocusables = panel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]');
-    panelFocusables.forEach(function (el) {
-      if (expanded) {
-        if (el.hasAttribute("data-ss-prev-tabindex")) {
-          var previous = el.getAttribute("data-ss-prev-tabindex");
-          if (previous === "") {
-            el.removeAttribute("tabindex");
-          } else {
-            el.setAttribute("tabindex", previous);
-          }
-          el.removeAttribute("data-ss-prev-tabindex");
-        } else if (el.getAttribute("tabindex") === "-1") {
-          el.removeAttribute("tabindex");
-        }
-      } else {
-        if (!el.hasAttribute("data-ss-prev-tabindex")) {
-          el.setAttribute("data-ss-prev-tabindex", el.getAttribute("tabindex") || "");
-        }
-        el.setAttribute("tabindex", "-1");
-      }
-    });
-  }
-
-  function updatePanelPosition(panel) {
-    if (!panel || !isDesktop()) {
-      return;
-    }
-
-    var headerBottom = root.getBoundingClientRect().bottom;
-    panel.style.top = Math.round(headerBottom + 8) + "px";
-  }
-
-  function closeAllMenus(restoreFocus) {
-    var triggerToFocus = null;
-    if (restoreFocus && activeItem) {
-      triggerToFocus = activeItem.querySelector(".ss-nav-trigger");
-    }
-
-    megaItems.forEach(function (item) {
-      var trigger = item.querySelector(".ss-nav-trigger");
-      var panel = getPanel(item);
-
-      item.classList.remove("is-open");
-      if (trigger) {
-        trigger.setAttribute("aria-expanded", "false");
-      }
-      setPanelInteractive(panel, false);
-    });
-
-    activeItem = null;
-    root.classList.remove("has-open-mega");
-
-    if (restoreFocus && triggerToFocus) {
-      triggerToFocus.focus();
-    }
-  }
-
-  function openMenu(item, focusFirst) {
-    if (!item) {
-      return;
-    }
-
-    if (activeItem && activeItem !== item) {
-      closeAllMenus(false);
-    }
-
-    var trigger = item.querySelector(".ss-nav-trigger");
-    var panel = getPanel(item);
-    if (!trigger || !panel) {
-      return;
-    }
-
-    updatePanelPosition(panel);
-    item.classList.add("is-open");
-    trigger.setAttribute("aria-expanded", "true");
-    setPanelInteractive(panel, true);
-
-    activeItem = item;
-    root.classList.add("has-open-mega");
-
-    if (focusFirst) {
-      var firstFocusable = getFocusables(panel)[0];
-      if (firstFocusable) {
-        firstFocusable.focus();
-      }
-    }
-  }
-
-  function scheduleClose(item) {
-    clearTimeout(closeTimer);
-    closeTimer = window.setTimeout(function () {
-      if (activeItem === item) {
-        closeAllMenus(false);
-      }
-    }, 120);
-  }
-
-  function cancelScheduledClose() {
-    clearTimeout(closeTimer);
-  }
-
-  function lockBodyScroll() {
-    restoreScrollY = window.scrollY || window.pageYOffset || 0;
-    document.documentElement.classList.add("ss-mobile-nav-open");
-    document.body.classList.add("ss-nav-lock", "ss-mobile-nav-open", "ss-floaters-suppressed");
-    document.body.style.position = "fixed";
-    document.body.style.top = "-" + restoreScrollY + "px";
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
-  }
-
-  function unlockBodyScroll() {
-    document.documentElement.classList.remove("ss-mobile-nav-open");
-    document.body.classList.remove("ss-nav-lock", "ss-mobile-nav-open", "ss-floaters-suppressed");
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.left = "";
-    document.body.style.right = "";
-    document.body.style.width = "";
-    window.scrollTo(0, restoreScrollY);
-  }
-
-  function syncFloatingVisibility() {
-    if (!floatingSelectors) {
-      return;
-    }
-
-    var nodes = document.querySelectorAll(floatingSelectors);
-    nodes.forEach(function (node) {
-      if (mobileOpen) {
-        node.setAttribute("aria-hidden", "true");
-      } else {
-        node.removeAttribute("aria-hidden");
-      }
-    });
-  }
-
-  function applyMobileNavStyles() {
+    const nav = root.querySelector(".ss-primary-nav");
+    const menuToggle = root.querySelector(".ss-menu-toggle");
+    const searchButton = root.querySelector(".ss-search-link");
     if (!nav) {
       return;
     }
 
-    if (isDesktop()) {
+    root.dataset.ssMegaMenuInit = "true";
+    root.classList.add("is-js-ready");
+
+    const desktopMq = window.matchMedia("(min-width: 981px)");
+    const focusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+    const managedFocusSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]';
+    const floatingSelectors = [
+      "#scrollUp",
+      ".scroll-to-top",
+      ".back-to-top",
+      "#back-to-top",
+      ".wpfront-scroll-top-container",
+      ".joinchat",
+      ".grecaptcha-badge",
+    ].join(",");
+    const megaMenuData = Array.isArray(window.syntaxsidekickMegaMenuData)
+      ? window.syntaxsidekickMegaMenuData
+      : [];
+    const state = {
+      mode: null,
+      desktopItem: null,
+      mobileItem: null,
+      mobileOpen: false,
+      bodyLocked: false,
+      resizeFrame: null,
+      restoreScrollY: 0,
+    };
+
+    let overlay = null;
+    let mobileClose = null;
+    let megaItems = [];
+
+    function isDesktop() {
+      return desktopMq.matches;
+    }
+
+    function getMode() {
+      return isDesktop() ? "desktop" : "mobile";
+    }
+
+    function createElement(tagName, className, text) {
+      const element = document.createElement(tagName);
+      if (className) {
+        element.className = className;
+      }
+      if (typeof text === "string") {
+        element.textContent = text;
+      }
+      return element;
+    }
+
+    function toAbsoluteUrl(path) {
+      try {
+        return new URL(path, window.location.origin).toString();
+      } catch (error) {
+        return path;
+      }
+    }
+
+    function normalizePath(path) {
+      if (!path) {
+        return "/";
+      }
+
+      let output = path;
+      if (output.charAt(0) !== "/") {
+        output = "/" + output;
+      }
+
+      if (output.length > 1 && output.charAt(output.length - 1) !== "/") {
+        output += "/";
+      }
+
+      return output;
+    }
+
+    function slugify(value) {
+      return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    }
+
+    function getPanel(item) {
+      return item ? item.querySelector(".ss-mega-panel") : null;
+    }
+
+    function getTrigger(item) {
+      return item ? item.querySelector(".ss-nav-trigger") : null;
+    }
+
+    function closestElement(target, selector) {
+      if (!target || target === document || target === window) {
+        return null;
+      }
+
+      const element = target.nodeType === Node.ELEMENT_NODE ? target : target.parentElement;
+      return element && typeof element.closest === "function" ? element.closest(selector) : null;
+    }
+
+    function getFocusables(container) {
+      if (!container) {
+        return [];
+      }
+
+      return Array.from(container.querySelectorAll(focusSelector)).filter((element) => {
+        return element.offsetParent !== null || element === document.activeElement;
+      });
+    }
+
+    function getManagedFocusables(panel) {
+      if (!panel) {
+        return [];
+      }
+
+      return Array.from(panel.querySelectorAll(managedFocusSelector));
+    }
+
+    function setPanelFocus(panel, enabled) {
+      getManagedFocusables(panel).forEach((element) => {
+        if (enabled) {
+          if (!element.hasAttribute("data-ss-prev-tabindex")) {
+            return;
+          }
+
+          const previous = element.getAttribute("data-ss-prev-tabindex");
+          if (previous === "") {
+            element.removeAttribute("tabindex");
+          } else {
+            element.setAttribute("tabindex", previous);
+          }
+          element.removeAttribute("data-ss-prev-tabindex");
+          return;
+        }
+
+        if (!element.hasAttribute("data-ss-prev-tabindex")) {
+          element.setAttribute("data-ss-prev-tabindex", element.getAttribute("tabindex") || "");
+        }
+        element.setAttribute("tabindex", "-1");
+      });
+    }
+
+    function setPanelOpen(item, expanded) {
+      const trigger = getTrigger(item);
+      const panel = getPanel(item);
+      if (!item || !trigger || !panel) {
+        return;
+      }
+
+      item.classList.toggle("is-open", expanded);
+      panel.classList.toggle("is-open", expanded);
+      panel.setAttribute("aria-hidden", expanded ? "false" : "true");
+      trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
+      setPanelFocus(panel, expanded);
+    }
+
+    function clearPanelInlineState(panel, options) {
+      if (!panel) {
+        return;
+      }
+
+      panel.style.removeProperty("transform");
+      panel.style.removeProperty("opacity");
+      panel.style.removeProperty("visibility");
+      panel.style.removeProperty("pointer-events");
+      panel.style.removeProperty("max-height");
+      panel.style.removeProperty("max-block-size");
+
+      if (!options || options.keepDesktopPosition !== true) {
+        panel.style.removeProperty("top");
+      }
+    }
+
+    function clearNavInlineState() {
       nav.style.removeProperty("transform");
       nav.style.removeProperty("opacity");
       nav.style.removeProperty("visibility");
       nav.style.removeProperty("pointer-events");
-      return;
     }
 
-    if (mobileOpen) {
-      nav.style.setProperty("transform", "none", "important");
-      nav.style.setProperty("opacity", "1", "important");
-      nav.style.setProperty("visibility", "visible", "important");
-      nav.style.setProperty("pointer-events", "auto", "important");
-      return;
+    function clearAllPanelInlineState(options) {
+      megaItems.forEach((item) => clearPanelInlineState(getPanel(item), options));
     }
 
-    nav.style.setProperty("transform", "none", "important");
-    nav.style.setProperty("opacity", "0", "important");
-    nav.style.setProperty("visibility", "hidden", "important");
-    nav.style.setProperty("pointer-events", "none", "important");
-  }
+    function updatePanelPosition(panel) {
+      if (!panel || !isDesktop()) {
+        return;
+      }
 
-  function setMobileOpenState(shouldOpen, restoreFocus) {
-    if (!nav) {
-      return;
+      const headerBottom = root.getBoundingClientRect().bottom;
+      panel.style.top = `${Math.round(headerBottom + 8)}px`;
     }
 
-    mobileOpen = Boolean(shouldOpen);
-    root.classList.toggle("is-mobile-open", mobileOpen);
+    function closeDesktopMenu(restoreFocus) {
+      const triggerToFocus = restoreFocus && state.desktopItem ? getTrigger(state.desktopItem) : null;
 
-    if (menuToggle) {
-      menuToggle.setAttribute("aria-expanded", mobileOpen ? "true" : "false");
-      menuToggle.setAttribute("aria-label", mobileOpen ? "Close main menu" : "Open main menu");
+      if (state.desktopItem) {
+        setPanelOpen(state.desktopItem, false);
+      }
+
+      state.desktopItem = null;
+      root.classList.remove("has-open-mega");
+
+      if (triggerToFocus) {
+        triggerToFocus.focus();
+      }
     }
 
-    nav.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
-    nav.classList.toggle("is-open", mobileOpen);
-    applyMobileNavStyles();
-
-    if (overlay) {
-      overlay.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
-      overlay.tabIndex = mobileOpen ? 0 : -1;
+    function closeMobileSubmenu() {
+      if (state.mobileItem) {
+        setPanelOpen(state.mobileItem, false);
+      }
+      state.mobileItem = null;
+      if (!state.desktopItem) {
+        root.classList.remove("has-open-mega");
+      }
     }
 
-    if (mobileOpen) {
+    function closeAllSubmenus(restoreDesktopFocus) {
+      const triggerToFocus = restoreDesktopFocus && state.desktopItem ? getTrigger(state.desktopItem) : null;
+
+      megaItems.forEach((item) => setPanelOpen(item, false));
+      state.desktopItem = null;
+      state.mobileItem = null;
+      root.classList.remove("has-open-mega");
+
+      if (triggerToFocus) {
+        triggerToFocus.focus();
+      }
+    }
+
+    function openDesktopMenu(item, focusFirst) {
+      if (!item || !isDesktop()) {
+        return;
+      }
+
+      if (state.desktopItem && state.desktopItem !== item) {
+        setPanelOpen(state.desktopItem, false);
+      }
+
+      const panel = getPanel(item);
+      updatePanelPosition(panel);
+      setPanelOpen(item, true);
+      state.desktopItem = item;
+      state.mobileItem = null;
+      root.classList.add("has-open-mega");
+
+      if (focusFirst) {
+        const firstFocusable = getFocusables(panel)[0];
+        if (firstFocusable) {
+          firstFocusable.focus();
+        }
+      }
+    }
+
+    function isPointInsideRect(x, y, rect) {
+      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+
+    function isPointerInsideDesktopMenu(event) {
+      if (!state.desktopItem) {
+        return false;
+      }
+
+      const panel = getPanel(state.desktopItem);
+      const itemRect = state.desktopItem.getBoundingClientRect();
+      const panelRect = panel ? panel.getBoundingClientRect() : null;
+      const x = event.clientX;
+      const y = event.clientY;
+
+      if (isPointInsideRect(x, y, itemRect) || (panelRect && isPointInsideRect(x, y, panelRect))) {
+        return true;
+      }
+
+      if (!panelRect) {
+        return false;
+      }
+
+      const bridgeRect = {
+        left: Math.min(itemRect.left, panelRect.left),
+        right: Math.max(itemRect.right, panelRect.right),
+        top: Math.min(itemRect.bottom, panelRect.top),
+        bottom: Math.max(itemRect.bottom, panelRect.top),
+      };
+
+      return isPointInsideRect(x, y, bridgeRect);
+    }
+
+    function toggleMobileSubmenu(item) {
+      if (!item || isDesktop()) {
+        return;
+      }
+
+      const isExpanded = state.mobileItem === item;
+      if (state.mobileItem && state.mobileItem !== item) {
+        setPanelOpen(state.mobileItem, false);
+      }
+
+      if (isExpanded) {
+        setPanelOpen(item, false);
+        state.mobileItem = null;
+        root.classList.remove("has-open-mega");
+        return;
+      }
+
+      setPanelOpen(item, true);
+      state.mobileItem = item;
+      state.desktopItem = null;
+      root.classList.add("has-open-mega");
+    }
+
+    function syncFloatingVisibility() {
+      document.querySelectorAll(floatingSelectors).forEach((node) => {
+        if (state.mobileOpen) {
+          node.setAttribute("aria-hidden", "true");
+        } else {
+          node.removeAttribute("aria-hidden");
+        }
+      });
+    }
+
+    function lockBodyScroll() {
+      if (state.bodyLocked) {
+        return;
+      }
+
+      state.restoreScrollY = window.scrollY || window.pageYOffset || 0;
+      document.documentElement.classList.add("ss-mobile-nav-open");
+      document.body.classList.add("ss-nav-lock", "ss-mobile-nav-open", "ss-floaters-suppressed");
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${state.restoreScrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      state.bodyLocked = true;
+    }
+
+    function unlockBodyScroll() {
+      if (!state.bodyLocked) {
+        document.documentElement.classList.remove("ss-mobile-nav-open");
+        document.body.classList.remove("ss-nav-lock", "ss-mobile-nav-open", "ss-floaters-suppressed");
+        return;
+      }
+
+      document.documentElement.classList.remove("ss-mobile-nav-open");
+      document.body.classList.remove("ss-nav-lock", "ss-mobile-nav-open", "ss-floaters-suppressed");
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, state.restoreScrollY);
+      state.bodyLocked = false;
+    }
+
+    function setMobileControls(open) {
+      root.classList.toggle("is-mobile-open", open);
+      nav.classList.toggle("is-open", open);
+      nav.setAttribute("aria-hidden", open ? "false" : "true");
+
+      if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        menuToggle.setAttribute("aria-label", open ? "Close main menu" : "Open main menu");
+      }
+
+      if (overlay) {
+        overlay.setAttribute("aria-hidden", open ? "false" : "true");
+        overlay.tabIndex = open ? 0 : -1;
+      }
+    }
+
+    function openMobileNav() {
+      if (isDesktop()) {
+        return;
+      }
+
+      state.mobileOpen = true;
+      setMobileControls(true);
       lockBodyScroll();
       syncFloatingVisibility();
+
       if (mobileClose) {
         mobileClose.focus();
       }
-      return;
     }
 
-    closeAllMenus(false);
-    unlockBodyScroll();
-    syncFloatingVisibility();
-    if (restoreFocus !== false && menuToggle) {
-      menuToggle.focus();
-    }
-  }
+    function closeMobileNav(restoreFocus) {
+      state.mobileOpen = false;
+      closeMobileSubmenu();
+      setMobileControls(false);
+      unlockBodyScroll();
+      syncFloatingVisibility();
 
-  function toggleMobileNav(forceOpen, restoreFocus) {
-    var shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !mobileOpen;
-    setMobileOpenState(shouldOpen, restoreFocus);
-  }
-
-  function trapFocus(event) {
-    if (event.key !== "Tab") {
-      return;
+      if (restoreFocus && menuToggle && !isDesktop()) {
+        menuToggle.focus();
+      }
     }
 
-    if (mobileOpen) {
-      var mobileFocusables = getFocusables(nav);
+    function resetDesktopMode() {
+      closeAllSubmenus(false);
+      state.mobileOpen = false;
+      state.mode = "desktop";
+      root.classList.remove("is-mobile-open");
+      nav.classList.remove("is-open");
+      nav.removeAttribute("aria-hidden");
+      clearNavInlineState();
+      clearAllPanelInlineState();
+      unlockBodyScroll();
+      syncFloatingVisibility();
+
+      if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open main menu");
+      }
+
+      if (overlay) {
+        overlay.setAttribute("aria-hidden", "true");
+        overlay.tabIndex = -1;
+      }
+    }
+
+    function resetMobileMode() {
+      closeAllSubmenus(false);
+      state.mode = "mobile";
+      clearAllPanelInlineState();
+      setMobileControls(state.mobileOpen);
+
+      if (state.mobileOpen) {
+        lockBodyScroll();
+      } else {
+        unlockBodyScroll();
+      }
+
+      syncFloatingVisibility();
+    }
+
+    function syncMode(force) {
+      const nextMode = getMode();
+      if (!force && state.mode === nextMode) {
+        if (nextMode === "desktop" && state.desktopItem) {
+          updatePanelPosition(getPanel(state.desktopItem));
+        }
+        return;
+      }
+
+      if (nextMode === "desktop") {
+        resetDesktopMode();
+      } else {
+        resetMobileMode();
+      }
+    }
+
+    function requestModeSync() {
+      if (state.resizeFrame) {
+        return;
+      }
+
+      state.resizeFrame = window.requestAnimationFrame(() => {
+        state.resizeFrame = null;
+        syncMode(false);
+      });
+    }
+
+    function trapMobileFocus(event) {
+      if (event.key !== "Tab" || !state.mobileOpen || isDesktop()) {
+        return;
+      }
+
+      const mobileFocusables = getFocusables(nav);
       if (!mobileFocusables.length) {
         return;
       }
 
-      var firstMobile = mobileFocusables[0];
-      var lastMobile = mobileFocusables[mobileFocusables.length - 1];
+      const first = mobileFocusables[0];
+      const last = mobileFocusables[mobileFocusables.length - 1];
 
-      if (event.shiftKey && document.activeElement === firstMobile) {
+      if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
-        lastMobile.focus();
-      } else if (!event.shiftKey && document.activeElement === lastMobile) {
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
         event.preventDefault();
-        firstMobile.focus();
+        first.focus();
       }
-      return;
     }
 
-    if (!isDesktop() || !activeItem) {
-      return;
+    function markActiveItem(item, link) {
+      if (!item || !link) {
+        return;
+      }
+
+      item.classList.add("is-active");
+      link.classList.add("is-active");
     }
 
-    var trigger = activeItem.querySelector(".ss-nav-trigger");
-    var panel = getPanel(activeItem);
-    var panelFocusables = getFocusables(panel);
-    var activeLink = activeItem.querySelector(".ss-nav-link");
-    var focusables = [];
+    function isItemActive(item) {
+      if (!item) {
+        return false;
+      }
 
-    if (activeLink) {
-      focusables.push(activeLink);
-    }
-    if (trigger) {
-      focusables.push(trigger);
-    }
+      if (item.forceActive) {
+        return true;
+      }
 
-    focusables = focusables.concat(panelFocusables);
-    if (!focusables.length) {
-      return;
-    }
+      const currentPath = normalizePath(window.location.pathname);
+      const paths = item.activePaths || [item.url];
 
-    var first = focusables[0];
-    var last = focusables[focusables.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  function onTriggerActivate(event, item) {
-    var trigger = item.querySelector(".ss-nav-trigger");
-    if (!trigger) {
-      return;
+      return paths.some((path) => {
+        const matchPath = normalizePath(path);
+        return matchPath === "/" ? currentPath === "/" : currentPath === matchPath;
+      });
     }
 
-    var expanded = trigger.getAttribute("aria-expanded") === "true";
-    if (isDesktop()) {
-      if (expanded) {
-        closeAllMenus(true);
+    function findMatchingMenuLink(list, item) {
+      if (!list || !item || !item.key) {
+        return null;
+      }
+
+      return list.querySelector(`.ss-nav-link[data-ss-menu-key="${item.key}"]`);
+    }
+
+    function ensureMobileNavigationShell(list) {
+      let mobileHeader = nav.querySelector(".ss-mobile-nav-header");
+      if (!mobileHeader) {
+        mobileHeader = createElement("div", "ss-mobile-nav-header");
+        mobileHeader.appendChild(createElement("p", null, "Browse SyntaxSidekick"));
+        mobileClose = createElement("button", "ss-mobile-close", "Close menu");
+        mobileClose.type = "button";
+        mobileClose.setAttribute("aria-label", "Close navigation");
+        mobileHeader.appendChild(mobileClose);
+        nav.insertBefore(mobileHeader, list);
       } else {
-        openMenu(item, true);
-      }
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (expanded) {
-      item.classList.remove("is-open");
-      trigger.setAttribute("aria-expanded", "false");
-      setPanelInteractive(getPanel(item), false);
-      if (activeItem === item) {
-        activeItem = null;
-      }
-      return;
-    }
-
-    closeAllMenus(false);
-    openMenu(item, false);
-  }
-
-  function closeForDesktopChange() {
-    closeAllMenus(false);
-
-    if (!isDesktop()) {
-      nav.setAttribute("aria-hidden", mobileOpen ? "false" : "true");
-      applyMobileNavStyles();
-      return;
-    }
-
-    if (mobileOpen) {
-      setMobileOpenState(false, false);
-    } else {
-      nav.removeAttribute("aria-hidden");
-    }
-  }
-
-  function markActiveItem(item, link) {
-    if (!item || !link) {
-      return;
-    }
-
-    item.classList.add("is-active");
-    link.classList.add("is-active");
-  }
-
-  function getPathFromHref(href) {
-    if (!href) {
-      return "/";
-    }
-
-    try {
-      return normalizePath(new URL(href, window.location.origin).pathname);
-    } catch (error) {
-      return normalizePath(href);
-    }
-  }
-
-  function findMatchingMenuLink(list, item) {
-    if (!list || !item || !item.key) {
-      return null;
-    }
-
-    var keySelector = '.ss-nav-link[data-ss-menu-key="' + item.key + '"]';
-    var links = list.querySelectorAll(keySelector);
-    for (var i = 0; i < links.length; i += 1) {
-      if (links[i]) {
-        return links[i];
-      }
-    }
-
-    return null;
-  }
-
-  function isItemActive(item) {
-    if (!item) {
-      return false;
-    }
-
-    if (item.forceActive) {
-      return true;
-    }
-
-    var currentPath = normalizePath(window.location.pathname);
-    var paths = item.activePaths || [item.url];
-
-    return paths.some(function (path) {
-      var matchPath = normalizePath(path);
-      if (matchPath === "/") {
-        return currentPath === "/";
+        mobileClose = mobileHeader.querySelector(".ss-mobile-close");
       }
 
-      return currentPath === matchPath;
-    });
-  }
+      if (!list.querySelector(".ss-nav-search-mobile")) {
+        const mobileSearchItem = createElement("li", "ss-nav-item ss-nav-search-mobile");
+        const mobileSearchLink = createElement("a", "ss-nav-link", "Search");
+        mobileSearchLink.href = searchButton ? searchButton.href : toAbsoluteUrl("/?s=");
+        mobileSearchItem.appendChild(mobileSearchLink);
+        list.appendChild(mobileSearchItem);
+      }
 
-  function ensureMobileNavigationShell(list) {
-    if (!nav || !list) {
-      return;
+      overlay = root.querySelector(".ss-nav-overlay");
+      if (!overlay) {
+        overlay = createElement("button", "ss-nav-overlay");
+        overlay.type = "button";
+        root.appendChild(overlay);
+      }
+
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.tabIndex = -1;
     }
 
-    var mobileHeader = nav.querySelector(".ss-mobile-nav-header");
-    if (!mobileHeader) {
-      mobileHeader = createElement("div", "ss-mobile-nav-header");
-      mobileHeader.appendChild(createElement("p", null, "Browse SyntaxSidekick"));
-      mobileClose = createElement("button", "ss-mobile-close", "Close menu");
-      mobileClose.type = "button";
-      mobileClose.setAttribute("aria-label", "Close navigation");
-      mobileHeader.appendChild(mobileClose);
-      nav.insertBefore(mobileHeader, list);
-    } else {
-      mobileClose = mobileHeader.querySelector(".ss-mobile-close");
-    }
-
-    if (!list.querySelector(".ss-nav-search-mobile")) {
-      var mobileSearchItem = createElement("li", "ss-nav-item ss-nav-search-mobile");
-      var mobileSearchLink = createElement("a", "ss-nav-link", "Search");
-      mobileSearchLink.href = searchButton ? searchButton.href : toAbsoluteUrl("/?s=");
-      mobileSearchItem.appendChild(mobileSearchLink);
-      list.appendChild(mobileSearchItem);
-    }
-
-    overlay = root.querySelector(".ss-nav-overlay");
-    if (!overlay) {
-      overlay = createElement("button", "ss-nav-overlay");
-      overlay.type = "button";
-      root.appendChild(overlay);
-    }
-
-    overlay.setAttribute("aria-hidden", "true");
-    overlay.setAttribute("tabindex", "-1");
-  }
-
-  function enhanceExistingMenu() {
-    if (!nav) {
-      return;
-    }
-
-    var list = nav.querySelector(".ss-nav-list");
-    if (!list) {
-      return;
-    }
-
-    ensureMobileNavigationShell(list);
-
-    if (Array.isArray(megaMenuData) && megaMenuData.length) {
-      megaMenuData.forEach(function (item, index) {
-      var templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
-      var panelTemplate = templateId ? document.getElementById(templateId) : null;
-      var hasPanelTemplate = Boolean(panelTemplate && panelTemplate.innerHTML.trim());
-      var hasMegaBehavior = Boolean(item.hasMegaMenu && hasPanelTemplate);
-
-      if (!hasMegaBehavior) {
+    function enhanceExistingMenu() {
+      const list = nav.querySelector(".ss-nav-list");
+      if (!list) {
         return;
       }
 
-      var primaryLink = findMatchingMenuLink(list, item);
-      if (!primaryLink) {
-        return;
-      }
+      ensureMobileNavigationShell(list);
 
-      var li = primaryLink.closest(".ss-nav-item");
-      if (!li) {
-        return;
-      }
+      megaMenuData.forEach((item, index) => {
+        const templateId = typeof item.panelTemplateId === "string" ? item.panelTemplateId : "";
+        const panelTemplate = templateId ? document.getElementById(templateId) : null;
+        const hasPanelTemplate = Boolean(panelTemplate && panelTemplate.innerHTML.trim());
+        const hasMegaBehavior = Boolean(item.hasMegaMenu && hasPanelTemplate);
 
-      var slug = slugify(item.label || item.key || "menu");
-      var panelId = "ss-mega-" + slug + "-" + index;
-      var useSplitLink = item.key === "tutorials" || item.key === "articles";
+        if (!hasMegaBehavior) {
+          return;
+        }
 
-      li.classList.add("ss-nav-item-has-mega");
-      li.setAttribute("data-ss-menu", slug);
+        const primaryLink = findMatchingMenuLink(list, item);
+        const listItem = primaryLink ? primaryLink.closest(".ss-nav-item") : null;
+        if (!listItem) {
+          return;
+        }
 
-      if (isItemActive(item)) {
-        markActiveItem(li, primaryLink);
-      }
+        const slug = slugify(item.label || item.key || "menu");
+        const panelId = `ss-mega-${slug}-${index}`;
+        const useSplitLink = item.key === "tutorials" || item.key === "articles";
 
-      var trigger = li.querySelector(".ss-nav-trigger");
-      if (!trigger) {
-        trigger = createElement("button", "ss-nav-trigger", "");
-        trigger.type = "button";
+        listItem.classList.add("ss-nav-item-has-mega");
+        listItem.setAttribute("data-ss-menu", slug);
+
+        if (isItemActive(item)) {
+          markActiveItem(listItem, primaryLink);
+        }
+
+        let trigger = getTrigger(listItem);
+        if (!trigger) {
+          trigger = createElement("button", "ss-nav-trigger", "");
+          trigger.type = "button";
+          trigger.classList.add("ss-nav-trigger--icon");
+          trigger.setAttribute("aria-label", `Toggle ${item.label} menu`);
+          trigger.setAttribute("aria-haspopup", "true");
+          trigger.appendChild(createElement("span", "ss-trigger-caret"));
+        }
+
         trigger.setAttribute("aria-expanded", "false");
         trigger.setAttribute("aria-controls", panelId);
-        trigger.setAttribute("aria-haspopup", "true");
-        trigger.classList.add("ss-nav-trigger--icon");
-        trigger.setAttribute("aria-label", "Toggle " + item.label + " menu");
-        trigger.appendChild(createElement("span", "ss-trigger-caret"));
-      }
 
-      if (useSplitLink) {
-        var splitWrap = li.querySelector(".ss-nav-split");
-        if (!splitWrap) {
-          splitWrap = createElement("div", "ss-nav-split");
-          primaryLink.parentNode.insertBefore(splitWrap, primaryLink);
-          splitWrap.appendChild(primaryLink);
+        if (useSplitLink) {
+          let splitWrap = listItem.querySelector(".ss-nav-split");
+          if (!splitWrap) {
+            splitWrap = createElement("div", "ss-nav-split");
+            primaryLink.parentNode.insertBefore(splitWrap, primaryLink);
+            splitWrap.appendChild(primaryLink);
+          }
+
+          if (!splitWrap.contains(trigger)) {
+            splitWrap.appendChild(trigger);
+          }
+        } else if (!listItem.contains(trigger)) {
+          listItem.insertBefore(trigger, listItem.firstChild);
         }
 
-        if (!splitWrap.contains(trigger)) {
-          splitWrap.appendChild(trigger);
+        let panel = getPanel(listItem);
+        if (!panel) {
+          panel = createElement("section", "ss-mega-panel");
+          panel.innerHTML = panelTemplate.innerHTML;
+          listItem.appendChild(panel);
         }
-      } else if (!li.contains(trigger)) {
-        li.insertBefore(trigger, li.firstChild);
-      }
 
-      var panel = getPanel(li);
-      if (!panel) {
-        panel = createElement("section", "ss-mega-panel");
-        panel.id = panelId;
+        panel.id = panel.id || panelId;
         panel.setAttribute("role", "region");
-        panel.setAttribute("aria-label", item.label + " menu");
+        panel.setAttribute("aria-label", `${item.label} menu`);
         panel.setAttribute("aria-hidden", "true");
-        panel.innerHTML = panelTemplate.innerHTML;
-        li.appendChild(panel);
-      } else if (!panel.id) {
-        panel.id = panelId;
-      }
       });
+
+      megaItems = Array.from(root.querySelectorAll(".ss-nav-item-has-mega"));
+      megaItems.forEach((item) => setPanelOpen(item, false));
     }
 
-    megaItems = Array.prototype.slice.call(root.querySelectorAll(".ss-nav-item-has-mega"));
+    enhanceExistingMenu();
 
-    megaItems.forEach(function (item) {
-      var trigger = item.querySelector(".ss-nav-trigger");
-      var panel = getPanel(item);
-      setPanelInteractive(panel, false);
-
-      if (!trigger) {
+    nav.addEventListener("click", (event) => {
+      const trigger = closestElement(event.target, ".ss-nav-trigger");
+      if (!trigger || !nav.contains(trigger)) {
         return;
       }
 
-      trigger.addEventListener("click", function (event) {
-        onTriggerActivate(event, item);
-      });
-
-      trigger.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onTriggerActivate(event, item);
-        }
-      });
-
-      item.addEventListener("mouseenter", function () {
-        if (!isDesktop()) {
-          return;
-        }
-        cancelScheduledClose();
-        openMenu(item, false);
-      });
-
-      item.addEventListener("mouseleave", function () {
-        if (!isDesktop()) {
-          return;
-        }
-        scheduleClose(item);
-      });
-
-      item.addEventListener("focusin", function () {
-        if (!isDesktop()) {
-          return;
-        }
-        cancelScheduledClose();
-        openMenu(item, false);
-      });
-
-      item.addEventListener("focusout", function (event) {
-        if (!isDesktop()) {
-          return;
-        }
-
-        var nextTarget = event.relatedTarget;
-        if (nextTarget && item.contains(nextTarget)) {
-          return;
-        }
-
-        scheduleClose(item);
-      });
-
-      if (panel) {
-        panel.addEventListener("mouseenter", function () {
-          if (!isDesktop()) {
-            return;
-          }
-          cancelScheduledClose();
-        });
-
-        panel.addEventListener("mouseleave", function () {
-          if (!isDesktop()) {
-            return;
-          }
-          scheduleClose(item);
-        });
+      const item = trigger.closest(".ss-nav-item-has-mega");
+      if (!item) {
+        return;
       }
+
+      if (isDesktop()) {
+        if (state.desktopItem === item) {
+          closeDesktopMenu(true);
+        } else {
+          openDesktopMenu(item, true);
+        }
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      toggleMobileSubmenu(item);
+    });
+
+    nav.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+
+      const trigger = closestElement(event.target, ".ss-nav-trigger");
+      if (!trigger || !nav.contains(trigger)) {
+        return;
+      }
+
+      event.preventDefault();
+      trigger.click();
+    });
+
+    nav.addEventListener("mouseover", (event) => {
+      if (!isDesktop()) {
+        return;
+      }
+
+      const item = closestElement(event.target, ".ss-nav-item-has-mega");
+      if (!item || !nav.contains(item)) {
+        return;
+      }
+
+      openDesktopMenu(item, false);
+    });
+
+    document.addEventListener("pointermove", (event) => {
+      if (!isDesktop()) {
+        return;
+      }
+
+      if (!state.desktopItem || isPointerInsideDesktopMenu(event)) {
+        return;
+      }
+
+      closeDesktopMenu(false);
+    });
+
+    nav.addEventListener("focusin", (event) => {
+      if (!isDesktop()) {
+        return;
+      }
+
+      const item = closestElement(event.target, ".ss-nav-item-has-mega");
+      if (!item || !nav.contains(item)) {
+        return;
+      }
+
+      openDesktopMenu(item, false);
+    });
+
+    nav.addEventListener("focusout", (event) => {
+      if (!isDesktop()) {
+        return;
+      }
+
+      const item = closestElement(event.target, ".ss-nav-item-has-mega");
+      if (!item || !nav.contains(item) || item.contains(event.relatedTarget)) {
+        return;
+      }
+
+      closeDesktopMenu(false);
     });
 
     if (menuToggle) {
-      menuToggle.addEventListener("click", function () {
-        toggleMobileNav();
+      menuToggle.addEventListener("click", () => {
+        if (state.mobileOpen) {
+          closeMobileNav(true);
+        } else {
+          openMobileNav();
+        }
       });
     }
 
     if (mobileClose) {
-      mobileClose.addEventListener("click", function () {
-        toggleMobileNav(false, true);
-      });
+      mobileClose.addEventListener("click", () => closeMobileNav(true));
     }
 
     if (overlay) {
-      overlay.addEventListener("click", function () {
-        toggleMobileNav(false, true);
-      });
+      overlay.addEventListener("click", () => closeMobileNav(true));
     }
-  }
 
-  enhanceExistingMenu();
-
-  document.addEventListener("pointerdown", function (event) {
-    if (!root.contains(event.target)) {
-      closeAllMenus(false);
-      if (mobileOpen) {
-        toggleMobileNav(false, false);
-      }
-    }
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      if (mobileOpen) {
-        toggleMobileNav(false, true);
+    document.addEventListener("pointerdown", (event) => {
+      if (root.contains(event.target)) {
         return;
       }
 
-      if (activeItem) {
-        closeAllMenus(true);
+      closeAllSubmenus(false);
+      if (state.mobileOpen) {
+        closeMobileNav(false);
       }
-      return;
-    }
-
-    trapFocus(event);
-  });
-
-  var resizeQueued = false;
-  window.addEventListener("resize", function () {
-    if (resizeQueued) {
-      return;
-    }
-
-    resizeQueued = true;
-    window.requestAnimationFrame(function () {
-      closeForDesktopChange();
-      if (activeItem) {
-        updatePanelPosition(getPanel(activeItem));
-      }
-      resizeQueued = false;
     });
-  });
 
-  if (typeof desktopMq.addEventListener === "function") {
-    desktopMq.addEventListener("change", closeForDesktopChange);
-  } else if (typeof desktopMq.addListener === "function") {
-    desktopMq.addListener(closeForDesktopChange);
-  }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (state.mobileOpen) {
+          closeMobileNav(true);
+          return;
+        }
 
-  if (isDesktop()) {
-    mobileOpen = false;
-    nav.removeAttribute("aria-hidden");
-    nav.classList.remove("is-open");
-    applyMobileNavStyles();
-  } else {
-    mobileOpen = false;
-    nav.setAttribute("aria-hidden", "true");
-    nav.classList.remove("is-open");
-    applyMobileNavStyles();
-  }
+        if (state.desktopItem) {
+          closeDesktopMenu(true);
+        }
+        return;
+      }
 
+      trapMobileFocus(event);
+    });
+
+    window.addEventListener("resize", requestModeSync);
+    window.addEventListener("orientationchange", requestModeSync);
+
+    if (typeof desktopMq.addEventListener === "function") {
+      desktopMq.addEventListener("change", () => syncMode(false));
+    } else if (typeof desktopMq.addListener === "function") {
+      desktopMq.addListener(() => syncMode(false));
+    }
+
+    syncMode(true);
   }
 
   if (document.readyState === "loading") {
