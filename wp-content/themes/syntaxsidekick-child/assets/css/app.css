@@ -1883,6 +1883,31 @@ img { max-width: 100%; height: auto; }
   background: var(--ss-color-brand);
 }
 
+@media (max-width: 1024px) {
+  .ss-page-hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ss-page-hero__visual {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .ss-page-hero__code-body {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .ss-page-hero__glyph {
+    text-align: left;
+  }
+
+  .ss-page-hero__checks {
+    grid-auto-flow: column;
+  }
+}
+
 
 }
 
@@ -3341,22 +3366,12 @@ img { max-width: 100%; height: auto; }
 
 @layer components {
 /* Tutorials page */
-.ss-tutorials-page.ss-main {
-  padding: 0 0 var(--ss-space-5);
-}
-
+.ss-tutorials-page.ss-main,
 .ss-content-hub.ss-main {
   padding: 0 0 var(--ss-space-5);
 }
 
-.ss-tutorials-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  align-items: start;
-  padding-top: clamp(1.2rem, 2.8vw, 2.1rem);
-}
-
+.ss-tutorials-layout,
 .ss-content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -3429,12 +3444,7 @@ img { max-width: 100%; height: auto; }
   font-weight: 700;
 }
 
-.ss-tutorial-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.2rem;
-}
-
+.ss-tutorial-list,
 .ss-content-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3539,11 +3549,7 @@ img { max-width: 100%; height: auto; }
   }
 }
 
-.ss-tutorials-sidebar {
-  display: grid;
-  gap: 1rem;
-}
-
+.ss-tutorials-sidebar,
 .ss-content-sidebar {
   display: grid;
   gap: 1rem;
@@ -3671,98 +3677,20 @@ img { max-width: 100%; height: auto; }
 }
 
 @media (max-width: 1024px) {
-  .ss-page-hero__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-page-hero__visual {
-    justify-items: start;
-  }
-
-  .ss-about-values-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .ss-about-topics {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .ss-tutorials-layout {
-    grid-template-columns: minmax(0, 1fr) 290px;
-  }
-
+  .ss-tutorials-layout,
   .ss-content-grid {
     grid-template-columns: minmax(0, 1fr) 290px;
   }
-
-  .ss-contact-highlights {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ss-contact-grid {
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, .9fr);
-  }
-
-  .ss-contact-faq-grid {
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, .85fr);
-  }
-
 }
 
 @media (max-width: 900px) {
-  .ss-about-values-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ss-about-purpose-header,
-  .story-panel,
-  .creator-card {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-about-topics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ss-newsletter-cta--feature {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-contact-hero__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-contact-hero__visual {
-    justify-self: start;
-  }
-
-  .ss-contact-highlights {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-contact-grid,
-  .ss-contact-faq-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-contact-thanks {
-    max-inline-size: 420px;
-  }
-
-  .ss-tutorials-layout {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
-  }
-
+  .ss-tutorials-layout,
   .ss-content-grid {
     grid-template-columns: 1fr;
     gap: 1.2rem;
   }
 
-  .ss-tutorial-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
+  .ss-tutorial-list,
   .ss-content-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3781,46 +3709,6 @@ img { max-width: 100%; height: auto; }
 }
 
 @media (max-width: 640px) {
-  .ss-about-values-grid,
-  .ss-about-topics {
-    grid-template-columns: 1fr;
-  }
-
-  .creator-card {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .creator-card__media {
-    inline-size: 72px;
-    block-size: 72px;
-    font-size: 1.08rem;
-    margin: 0;
-  }
-
-  .ss-contact-hero {
-    padding: clamp(2.2rem, 5vw, 3rem) 0;
-  }
-
-  .ss-contact-form-card .ss-card-body,
-  .ss-contact-panel,
-  .ss-contact-thanks {
-    padding: .95rem;
-  }
-
-  .ss-contact-illustration::after {
-    display: none;
-  }
-
-  .ss-contact-illustration__body {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .ss-contact-faq-item p {
-    padding-inline-start: .9rem;
-  }
-
   .ss-tutorials-toolbar {
     align-items: stretch;
   }
@@ -3840,25 +3728,9 @@ img { max-width: 100%; height: auto; }
     width: 100%;
   }
 
-  .ss-tutorial-list {
-    grid-template-columns: 1fr;
-  }
-
+  .ss-tutorial-list,
   .ss-content-list {
     grid-template-columns: 1fr;
-  }
-
-  .ss-page-hero__code-body {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .ss-page-hero__glyph {
-    text-align: left;
-  }
-
-  .ss-page-hero__checks {
-    grid-auto-flow: column;
   }
 
   .ss-tutorial-card__body {
@@ -3895,18 +3767,7 @@ img { max-width: 100%; height: auto; }
 
 
 /* =============================================================================
-   20. Single
-   Source: assets/css/pages/single.css
-   ============================================================================= */
-
-@layer components {
-.ss-single-tutorial-page.ss-main { padding-top: clamp(1rem, 2vw, 1.5rem); }
-.ss-single-content-page.ss-main { padding-top: clamp(1rem, 2vw, 1.5rem); }
-}
-
-
-/* =============================================================================
-   21. About
+   20. About
    Source: assets/css/pages/about.css
    ============================================================================= */
 
@@ -4417,14 +4278,6 @@ img { max-width: 100%; height: auto; }
 }
 
 @media (max-width: 1024px) {
-  .ss-page-hero__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ss-page-hero__visual {
-    justify-items: start;
-  }
-
   .ss-about-purpose-header {
     grid-template-columns: 1fr;
   }
