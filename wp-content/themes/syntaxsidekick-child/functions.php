@@ -877,22 +877,279 @@ function syntaxsidekick_get_home_feature_highlights() {
     );
 }
 
-function syntaxsidekick_get_live_video_data() {
-    $default = array(
-        'state' => 'live',
-        'title' => 'Live on Twitch',
-        'description' => 'Building a responsive dashboard with CSS Grid and Container Queries.',
+function syntaxsidekick_get_twitch_channel_url() {
+    return 'https://www.twitch.tv/syntaxsidekick';
+}
+
+function syntaxsidekick_get_twitch_credentials() {
+    $client_id     = defined('TWITCH_CLIENT_ID') ? sanitize_text_field((string) TWITCH_CLIENT_ID) : '';
+    $client_secret = defined('TWITCH_CLIENT_SECRET') ? (string) TWITCH_CLIENT_SECRET : '';
+
+    if ('' === $client_id || '' === $client_secret) {
+        return null;
+    }
+
+    return array(
+        'client_id' => $client_id,
+        'client_secret' => $client_secret,
+    );
+}
+
+function syntaxsidekick_get_twitch_fallback_data($reason = '') {
+    $description = 'Catch SyntaxSidekick streams, tutorials, and replays on Twitch.';
+
+    if ('missing_credentials' === $reason) {
+        $description = 'Twitch stream status is unavailable until API credentials are configured.';
+    }
+
+    return array(
+        'state' => 'fallback',
+        'title' => 'SyntaxSidekick on Twitch',
+        'description' => $description,
         'platform' => 'Twitch',
-        'cta_label' => 'Watch Live',
-        'cta_url' => 'https://www.twitch.tv/',
-        'latest_title' => 'CSS Container Queries: Full Guide',
-        'latest_url' => 'https://www.youtube.com/',
-        'latest_duration' => '18:42',
-        'latest_thumbnail' => '',
-        'latest_thumbnail_alt' => 'Latest video thumbnail',
-        // Reserved for future integrations.
-        'providers' => array('twitch', 'youtube_live', 'youtube_latest'),
-        'provider_priority' => array('twitch', 'youtube_live', 'youtube_latest'),
+        'cta_label' => 'Visit SyntaxSidekick on Twitch',
+        'cta_url' => syntaxsidekick_get_twitch_channel_url(),
+    );
+}
+
+function syntaxsidekick_get_twitch_access_token() {
+    $cached = get_transient('syntaxsidekick_twitch_access_token');
+    if (is_string($cached) && '' !== $cached) {
+        return $cached;
+    }
+
+    $credentials = syntaxsidekick_get_twitch_credentials();
+    if (null === $credentials) {
+        return new WP_Error('syntaxsidekick_twitch_missing_credentials', 'Twitch credentials are missing.');
+    }
+
+    $response = wp_remote_post(
+        'https://id.twitch.tv/oauth2/token',
+        array(
+            'timeout' => 8,
+            'body' => array(
+                'client_id' => $credentials['client_id'],
+                'client_secret' => $credentials['client_secret'],
+                'grant_type' => 'client_credentials',
+            ),
+        )
+    );
+
+    if (is_wp_error($response)) {
+        return $response;
+    }
+
+    $status = (int) wp_remote_retrieve_response_code($response);
+    $body   = json_decode((string) wp_remote_retrieve_body($response), true);
+
+    if (200 !== $status || ! is_array($body) || empty($body['access_token'])) {
+        return new WP_Error('syntaxsidekick_twitch_token_error', 'Unable to retrieve Twitch access token.');
+    }
+
+    $token      = sanitize_text_field((string) $body['access_token']);
+    $expires_in = isset($body['expires_in']) ? max(300, (int) $body['expires_in'] - 300) : HOUR_IN_SECONDS;
+
+    set_transient('syntaxsidekick_twitch_access_token', $token, $expires_in);
+
+    return $token;
+}
+
+function syntaxsidekick_twitch_api_get($endpoint, $query = array()) {
+    $credentials = syntaxsidekick_get_twitch_credentials();
+    if (null === $credentials) {
+        return new WP_Error('syntaxsidekick_twitch_missing_credentials', 'Twitch credentials are missing.');
+    }
+
+    $token = syntaxsidekick_get_twitch_access_token();
+    if (is_wp_error($token)) {
+        return $token;
+    }
+
+    $url = add_query_arg($query, 'https://api.twitch.tv/helix/' . ltrim((string) $endpoint, '/'));
+
+    $response = wp_remote_get(
+        $url,
+        array(
+            'timeout' => 8,
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $token,
+                'Client-Id' => $credentials['client_id'],
+            ),
+        )
+    );
+
+    if (is_wp_error($response)) {
+        return $response;
+    }
+
+    $status = (int) wp_remote_retrieve_response_code($response);
+    $body   = json_decode((string) wp_remote_retrieve_body($response), true);
+
+    if (200 !== $status || ! is_array($body)) {
+        return new WP_Error('syntaxsidekick_twitch_api_error', 'Unable to retrieve Twitch API data.');
+    }
+
+    return $body;
+}
+
+function syntaxsidekick_get_twitch_broadcaster_id() {
+    $channel = 'syntaxsidekick';
+    $cached  = get_transient('syntaxsidekick_twitch_broadcaster_id_' . $channel);
+
+    if (is_string($cached) && '' !== $cached) {
+        return $cached;
+    }
+
+    $body = syntaxsidekick_twitch_api_get('users', array('login' => $channel));
+    if (is_wp_error($body) || empty($body['data'][0]['id'])) {
+        return is_wp_error($body) ? $body : new WP_Error('syntaxsidekick_twitch_user_missing', 'Twitch broadcaster was not found.');
+    }
+
+    $broadcaster_id = sanitize_text_field((string) $body['data'][0]['id']);
+    set_transient('syntaxsidekick_twitch_broadcaster_id_' . $channel, $broadcaster_id, DAY_IN_SECONDS);
+
+    return $broadcaster_id;
+}
+
+function syntaxsidekick_get_twitch_stream_status() {
+    $channel = 'syntaxsidekick';
+    $cached  = get_transient('syntaxsidekick_twitch_stream_status_' . $channel);
+
+    if (is_array($cached)) {
+        return $cached;
+    }
+
+    $body = syntaxsidekick_twitch_api_get('streams', array('user_login' => $channel));
+    if (is_wp_error($body)) {
+        return $body;
+    }
+
+    $stream = ! empty($body['data'][0]) && is_array($body['data'][0]) ? $body['data'][0] : array();
+    $status = array(
+        'is_live' => ! empty($stream),
+        'title' => ! empty($stream['title']) ? sanitize_text_field((string) $stream['title']) : '',
+        'game_name' => ! empty($stream['game_name']) ? sanitize_text_field((string) $stream['game_name']) : '',
+    );
+
+    set_transient('syntaxsidekick_twitch_stream_status_' . $channel, $status, 3 * MINUTE_IN_SECONDS);
+
+    return $status;
+}
+
+function syntaxsidekick_get_twitch_latest_video($broadcaster_id) {
+    $broadcaster_id = sanitize_text_field((string) $broadcaster_id);
+    if ('' === $broadcaster_id) {
+        return null;
+    }
+
+    $cached = get_transient('syntaxsidekick_twitch_latest_video_' . $broadcaster_id);
+    if (is_array($cached)) {
+        return $cached;
+    }
+
+    $body = syntaxsidekick_twitch_api_get(
+        'videos',
+        array(
+            'user_id' => $broadcaster_id,
+            'first' => 1,
+            'type' => 'archive',
+        )
+    );
+
+    if (is_wp_error($body)) {
+        return $body;
+    }
+
+    $video = ! empty($body['data'][0]) && is_array($body['data'][0]) ? $body['data'][0] : array();
+    if (empty($video['id'])) {
+        set_transient('syntaxsidekick_twitch_latest_video_' . $broadcaster_id, array(), 15 * MINUTE_IN_SECONDS);
+        return null;
+    }
+
+    $thumbnail = ! empty($video['thumbnail_url']) ? (string) $video['thumbnail_url'] : '';
+    $thumbnail = str_replace(array('%{width}', '%{height}'), array('640', '360'), $thumbnail);
+
+    $latest = array(
+        'id' => sanitize_text_field((string) $video['id']),
+        'title' => ! empty($video['title']) ? sanitize_text_field((string) $video['title']) : 'Latest Twitch stream',
+        'url' => ! empty($video['url']) ? esc_url_raw((string) $video['url']) : syntaxsidekick_get_twitch_channel_url(),
+        'duration' => ! empty($video['duration']) ? sanitize_text_field((string) $video['duration']) : '',
+        'thumbnail' => esc_url_raw($thumbnail),
+    );
+
+    set_transient('syntaxsidekick_twitch_latest_video_' . $broadcaster_id, $latest, 15 * MINUTE_IN_SECONDS);
+
+    return $latest;
+}
+
+function syntaxsidekick_get_live_video_data() {
+    if (null === syntaxsidekick_get_twitch_credentials()) {
+        return apply_filters('syntaxsidekick_live_video_data', syntaxsidekick_get_twitch_fallback_data('missing_credentials'));
+    }
+
+    $channel_url = syntaxsidekick_get_twitch_channel_url();
+    $stream      = syntaxsidekick_get_twitch_stream_status();
+    if (is_wp_error($stream)) {
+        return apply_filters('syntaxsidekick_live_video_data', syntaxsidekick_get_twitch_fallback_data('api_error'));
+    }
+
+    if (! empty($stream['is_live'])) {
+        $stream_title = ! empty($stream['title']) ? $stream['title'] : 'SyntaxSidekick is live on Twitch';
+        $game_name    = ! empty($stream['game_name']) ? ' Streaming ' . $stream['game_name'] . '.' : '';
+
+        return apply_filters(
+            'syntaxsidekick_live_video_data',
+            array(
+                'state' => 'live',
+                'title' => $stream_title,
+                'description' => 'SyntaxSidekick is live now on Twitch.' . $game_name,
+                'platform' => 'Twitch live stream',
+                'cta_label' => 'Live Now',
+                'cta_url' => $channel_url,
+                'embed_src' => 'https://player.twitch.tv/?channel=syntaxsidekick&muted=true',
+                'embed_title' => 'SyntaxSidekick live Twitch stream',
+            )
+        );
+    }
+
+    $broadcaster_id = syntaxsidekick_get_twitch_broadcaster_id();
+    if (is_wp_error($broadcaster_id)) {
+        return apply_filters('syntaxsidekick_live_video_data', syntaxsidekick_get_twitch_fallback_data('api_error'));
+    }
+
+    $latest_video = syntaxsidekick_get_twitch_latest_video($broadcaster_id);
+    if (is_wp_error($latest_video)) {
+        return apply_filters('syntaxsidekick_live_video_data', syntaxsidekick_get_twitch_fallback_data('api_error'));
+    }
+
+    if (is_array($latest_video) && ! empty($latest_video['id'])) {
+        return apply_filters(
+            'syntaxsidekick_live_video_data',
+            array(
+                'state' => 'offline',
+                'title' => $latest_video['title'],
+                'description' => 'SyntaxSidekick is offline right now. Watch the latest Twitch stream replay.',
+                'platform' => 'Latest Twitch video',
+                'cta_label' => 'Watch Latest Stream',
+                'cta_url' => $latest_video['url'],
+                'embed_src' => 'https://player.twitch.tv/?video=' . rawurlencode($latest_video['id']) . '&muted=true',
+                'embed_title' => 'Latest SyntaxSidekick Twitch video',
+                'latest_title' => $latest_video['title'],
+                'latest_url' => $latest_video['url'],
+                'latest_duration' => $latest_video['duration'],
+                'latest_thumbnail' => $latest_video['thumbnail'],
+                'latest_thumbnail_alt' => 'Latest SyntaxSidekick Twitch video thumbnail',
+            )
+        );
+    }
+
+    $default = array(
+        'state' => 'offline',
+        'title' => 'SyntaxSidekick on Twitch',
+        'description' => 'SyntaxSidekick is offline right now. Visit Twitch for streams and replays.',
+        'platform' => 'Twitch',
+        'cta_label' => 'Visit SyntaxSidekick on Twitch',
+        'cta_url' => $channel_url,
     );
 
     return apply_filters('syntaxsidekick_live_video_data', $default);

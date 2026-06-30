@@ -2780,6 +2780,21 @@ img { max-width: 100%; height: auto; }
   background: color-mix(in srgb, var(--ss-color-code-bg) 72%, transparent);
 }
 
+.ss-live-embed {
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid color-mix(in srgb, var(--ss-color-white) 18%, transparent);
+  border-radius: var(--ss-radius-sm);
+  background: color-mix(in srgb, var(--ss-color-code-bg) 72%, transparent);
+}
+
+.ss-live-embed iframe {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
 .ss-live-thumb img,
 .ss-live-thumb__preview {
   inline-size: 100%;

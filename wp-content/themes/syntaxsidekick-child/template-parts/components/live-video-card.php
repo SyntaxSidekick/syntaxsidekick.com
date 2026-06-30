@@ -19,10 +19,13 @@ $latest_url   = isset($data['latest_url']) ? (string) $data['latest_url'] : '#';
 $latest_time  = isset($data['latest_duration']) ? (string) $data['latest_duration'] : '';
 $latest_thumb = isset($data['latest_thumbnail']) ? (string) $data['latest_thumbnail'] : '';
 $latest_alt   = isset($data['latest_thumbnail_alt']) ? (string) $data['latest_thumbnail_alt'] : 'Latest video thumbnail';
+$embed_src    = isset($data['embed_src']) ? (string) $data['embed_src'] : '';
+$embed_title  = isset($data['embed_title']) ? (string) $data['embed_title'] : 'SyntaxSidekick Twitch video player';
+$has_embed    = '' !== $embed_src;
 ?>
 <aside class="ss-live-card" aria-label="Live stream and latest video">
     <?php if ($is_live) : ?>
-        <p class="ss-live-badge">Live</p>
+        <p class="ss-live-badge">Live Now</p>
     <?php endif; ?>
 
     <h3><?php echo esc_html($title); ?></h3>
@@ -34,7 +37,22 @@ $latest_alt   = isset($data['latest_thumbnail_alt']) ? (string) $data['latest_th
 
     <p class="ss-live-platform"><?php echo esc_html($platform); ?></p>
 
-    <?php if ('' !== $latest_title) : ?>
+    <?php if ($has_embed) : ?>
+        <div class="ss-live-embed">
+            <iframe
+                data-ss-twitch-embed
+                data-twitch-src="<?php echo esc_url($embed_src); ?>"
+                title="<?php echo esc_attr($embed_title); ?>"
+                loading="lazy"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <noscript>
+            <p class="ss-live-description">
+                Twitch video playback requires JavaScript. Use the link above to watch on Twitch.
+            </p>
+        </noscript>
+    <?php elseif ('' !== $latest_title) : ?>
         <div class="ss-live-latest">
             <p class="ss-live-label">Latest Video</p>
             <a class="ss-live-thumb" href="<?php echo esc_url($latest_url); ?>" aria-label="Watch <?php echo esc_attr($latest_title); ?>">
@@ -51,3 +69,24 @@ $latest_alt   = isset($data['latest_thumbnail_alt']) ? (string) $data['latest_th
         </div>
     <?php endif; ?>
 </aside>
+
+<?php if ($has_embed && empty($GLOBALS['syntaxsidekick_twitch_embed_script_printed'])) : ?>
+    <?php $GLOBALS['syntaxsidekick_twitch_embed_script_printed'] = true; ?>
+    <script>
+    (function () {
+      var host = window.location.hostname;
+      if (!host) {
+        return;
+      }
+
+      document.querySelectorAll('[data-ss-twitch-embed][data-twitch-src]').forEach(function (iframe) {
+        var src = iframe.getAttribute('data-twitch-src');
+        if (!src || iframe.getAttribute('src')) {
+          return;
+        }
+
+        iframe.setAttribute('src', src + (src.indexOf('?') === -1 ? '?' : '&') + 'parent=' + encodeURIComponent(host));
+      });
+    }());
+    </script>
+<?php endif; ?>
